@@ -1,0 +1,11 @@
+E:\project\VirtualMuseum.Domain\bin\Debug\net8.0\VirtualMuseum.Domain.deps.json
+E:\project\VirtualMuseum.Domain\bin\Debug\net8.0\VirtualMuseum.Domain.dll
+E:\project\VirtualMuseum.Domain\bin\Debug\net8.0\VirtualMuseum.Domain.pdb
+E:\project\VirtualMuseum.Domain\obj\Debug\net8.0\VirtualMuseum.Domain.GeneratedMSBuildEditorConfig.editorconfig
+E:\project\VirtualMuseum.Domain\obj\Debug\net8.0\VirtualMuseum.Domain.AssemblyInfoInputs.cache
+E:\project\VirtualMuseum.Domain\obj\Debug\net8.0\VirtualMuseum.Domain.AssemblyInfo.cs
+E:\project\VirtualMuseum.Domain\obj\Debug\net8.0\VirtualMuseum.Domain.csproj.CoreCompileInputs.cache
+E:\project\VirtualMuseum.Domain\obj\Debug\net8.0\VirtualMuseum.Domain.dll
+E:\project\VirtualMuseum.Domain\obj\Debug\net8.0\refint\VirtualMuseum.Domain.dll
+E:\project\VirtualMuseum.Domain\obj\Debug\net8.0\VirtualMuseum.Domain.pdb
+E:\project\VirtualMuseum.Domain\obj\Debug\net8.0\ref\VirtualMuseum.Domain.dll

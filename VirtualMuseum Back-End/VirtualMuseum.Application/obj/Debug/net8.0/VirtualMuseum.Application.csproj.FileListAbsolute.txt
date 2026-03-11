@@ -1,0 +1,15 @@
+E:\project\VirtualMuseum.Application\obj\Debug\net8.0\VirtualMuseum.Application.csproj.AssemblyReference.cache
+E:\project\VirtualMuseum.Application\obj\Debug\net8.0\VirtualMuseum.Application.GeneratedMSBuildEditorConfig.editorconfig
+E:\project\VirtualMuseum.Application\obj\Debug\net8.0\VirtualMuseum.Application.AssemblyInfoInputs.cache
+E:\project\VirtualMuseum.Application\obj\Debug\net8.0\VirtualMuseum.Application.AssemblyInfo.cs
+E:\project\VirtualMuseum.Application\obj\Debug\net8.0\VirtualMuseum.Application.csproj.CoreCompileInputs.cache
+E:\project\VirtualMuseum.Application\bin\Debug\net8.0\VirtualMuseum.Application.deps.json
+E:\project\VirtualMuseum.Application\bin\Debug\net8.0\VirtualMuseum.Application.dll
+E:\project\VirtualMuseum.Application\bin\Debug\net8.0\VirtualMuseum.Application.pdb
+E:\project\VirtualMuseum.Application\bin\Debug\net8.0\VirtualMuseum.Domain.dll
+E:\project\VirtualMuseum.Application\bin\Debug\net8.0\VirtualMuseum.Domain.pdb
+E:\project\VirtualMuseum.Application\obj\Debug\net8.0\VirtualM.15EC536E.Up2Date
+E:\project\VirtualMuseum.Application\obj\Debug\net8.0\VirtualMuseum.Application.dll
+E:\project\VirtualMuseum.Application\obj\Debug\net8.0\refint\VirtualMuseum.Application.dll
+E:\project\VirtualMuseum.Application\obj\Debug\net8.0\VirtualMuseum.Application.pdb
+E:\project\VirtualMuseum.Application\obj\Debug\net8.0\ref\VirtualMuseum.Application.dll
