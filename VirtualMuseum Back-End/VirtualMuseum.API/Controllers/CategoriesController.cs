@@ -63,9 +63,9 @@ public class CategoriesController : ControllerBase
         var existing = await _categoryService.GetByIdAsync(id, cancellationToken);
         if (existing == null)
             return NotFound(new ApiResponse(false, "Category not found"));
-        category.Id = id;
-        await _categoryService.UpdateAsync(category, cancellationToken);
-        return Ok(new ApiResponse<Category>(true, category));
+        existing.Name = category.Name;
+        await _categoryService.UpdateAsync(existing, cancellationToken);
+        return Ok(new ApiResponse<Category>(true, existing));
     }
 
     [HttpDelete("{id:guid}")]

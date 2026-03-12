@@ -63,9 +63,9 @@ public class TagsController : ControllerBase
         var existing = await _tagService.GetByIdAsync(id, cancellationToken);
         if (existing == null)
             return NotFound(new ApiResponse(false, "Tag not found"));
-        tag.Id = id;
-        await _tagService.UpdateAsync(tag, cancellationToken);
-        return Ok(new ApiResponse<Tag>(true, tag));
+        existing.Name = tag.Name;
+        await _tagService.UpdateAsync(existing, cancellationToken);
+        return Ok(new ApiResponse<Tag>(true, existing));
     }
 
     [HttpDelete("{id:guid}")]

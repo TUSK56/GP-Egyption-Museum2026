@@ -17,3 +17,23 @@ E:\project\VirtualMuseum.Infrastructure\obj\Debug\net8.0\refint\VirtualMuseum.In
 E:\project\VirtualMuseum.Infrastructure\obj\Debug\net8.0\VirtualMuseum.Infrastructure.pdb
 E:\project\VirtualMuseum.Infrastructure\obj\Debug\net8.0\VirtualMuseum.Infrastructure.genruntimeconfig.cache
 E:\project\VirtualMuseum.Infrastructure\obj\Debug\net8.0\ref\VirtualMuseum.Infrastructure.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\bin\Debug\net8.0\VirtualMuseum.Infrastructure.deps.json
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\bin\Debug\net8.0\VirtualMuseum.Infrastructure.runtimeconfig.json
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\bin\Debug\net8.0\VirtualMuseum.Infrastructure.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\bin\Debug\net8.0\VirtualMuseum.Infrastructure.pdb
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\bin\Debug\net8.0\VirtualMuseum.Application.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\bin\Debug\net8.0\VirtualMuseum.Domain.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\bin\Debug\net8.0\VirtualMuseum.Domain.pdb
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\bin\Debug\net8.0\VirtualMuseum.Application.pdb
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\obj\Debug\net8.0\VirtualMuseum.Infrastructure.csproj.AssemblyReference.cache
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\obj\Debug\net8.0\VirtualMuseum.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\obj\Debug\net8.0\VirtualMuseum.Infrastructure.AssemblyInfoInputs.cache
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\obj\Debug\net8.0\VirtualMuseum.Infrastructure.AssemblyInfo.cs
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\obj\Debug\net8.0\VirtualMuseum.Infrastructure.csproj.CoreCompileInputs.cache
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\obj\Debug\net8.0\VirtualMuseum.Infrastructure.sourcelink.json
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\obj\Debug\net8.0\VirtualM.D1A541EA.Up2Date
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\obj\Debug\net8.0\VirtualMuseum.Infrastructure.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\obj\Debug\net8.0\refint\VirtualMuseum.Infrastructure.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\obj\Debug\net8.0\VirtualMuseum.Infrastructure.pdb
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\obj\Debug\net8.0\VirtualMuseum.Infrastructure.genruntimeconfig.cache
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Infrastructure\obj\Debug\net8.0\ref\VirtualMuseum.Infrastructure.dll

@@ -368,6 +368,275 @@ Run the test script (with API running):
 
 ---
 
+## Tested Endpoints (step-by-step)
+
+This section documents the **endpoints that were tested**, the **exact sample inputs (“insertions”)** used, and whether the endpoint needs **Authorization**.
+
+### Authorization used in tests
+
+- **Public endpoints (no auth)**: no `Authorization` header.
+- **JWT-protected endpoints**: header must be:
+
+```
+Authorization: Bearer <JWT>
+```
+
+- **Admin-only endpoints**: same header, but the JWT must contain role **Admin**.
+
+### 0) Test environment
+
+- **Base URL**: `http://localhost:5209`
+- **Swagger UI**: `http://localhost:5209/swagger`
+- **DB**: migrations + seeding run automatically on startup.
+- **Seeded admin** (used for JWT in protected endpoints):
+  - **Email**: `admin@museum.com`
+  - **Password**: `admin@123`
+
+---
+
+### 1) Auth APIs (Public)
+
+#### 1.1 `POST /api/auth/register` (No Authorization)
+
+- **Inserted body used in testing**:
+
+```json
+{
+  "fullName": "Test User",
+  "email": "testuser1760814702@museum.com",
+  "region": "Europe",
+  "password": "Test@123"
+}
+```
+
+- **Expected result**: `201` with `data.userId`.
+
+#### 1.2 `POST /api/auth/login` (No Authorization)
+
+- **Inserted body used in testing (Admin)**:
+
+```json
+{
+  "email": "admin@museum.com",
+  "password": "admin@123"
+}
+```
+
+- **Expected result**: `200` with `data.token` (JWT), `data.userId`, `data.role`.
+
+#### 1.3 `POST /api/auth/forgot-password/request` (No Authorization)
+
+- **Inserted body used in testing**:
+
+```json
+{
+  "email": "testuser1760814702@museum.com"
+}
+```
+
+- **Expected result**: `200` (development OTP is `0000`).
+
+#### 1.4 `POST /api/auth/forgot-password/reset` (No Authorization)
+
+- **Inserted body used in testing**:
+
+```json
+{
+  "email": "testuser1760814702@museum.com",
+  "otpCode": "0000",
+  "newPassword": "NewTest@123",
+  "confirmPassword": "NewTest@123"
+}
+```
+
+- **Expected result**: `200`, then login works with the new password.
+
+---
+
+### 2) Public GET APIs (No Authorization)
+
+These were tested as **anonymous** requests:
+
+- `GET /api/artifacts`
+- `GET /api/artifacts/{id}` (example tested id: `a8637acb-1bc0-45c5-8c23-39ffbe10fb6d`)
+- `GET /api/categories`
+- `GET /api/categories/{id}` (example tested id: `b4fa1050-6eb5-4394-b6db-25c1220cd352`)
+- `GET /api/eras`
+- `GET /api/eras/{id}` (example tested id: `4d1801f4-2956-4a1a-8f54-6198a9b39d7a`)
+- `GET /api/materials`
+- `GET /api/materials/{id}` (example tested id: `fa2b1a73-596b-4ccd-95c3-0898cc4351d6`)
+- `GET /api/tags`
+  - Note: if no tags exist, this returns an empty list: `"data": []`
+
+---
+
+### 3) Protected CRUD APIs (JWT required)
+
+For all endpoints in this section, tests used:
+
+- **Authorization**: `Bearer <Admin JWT>` from `POST /api/auth/login`
+
+#### 3.1 Categories CRUD
+
+- `POST /api/categories` (**JWT required**)
+  - **Inserted**:
+
+```json
+{ "name": "TestCategory-1023702154" }
+```
+
+- `PUT /api/categories/{id}` (**JWT required**)
+  - **Inserted**:
+
+```json
+{ "name": "TestCategory-1023702154-Updated" }
+```
+
+- `DELETE /api/categories/{id}` (**JWT required**)
+
+#### 3.2 Eras CRUD
+
+- `POST /api/eras` (**JWT required**)
+  - **Inserted**:
+
+```json
+{ "name": "TestEra-1023702154", "startYear": -100, "endYear": 100 }
+```
+
+- `PUT /api/eras/{id}` (**JWT required**)
+  - **Inserted**:
+
+```json
+{ "name": "TestEra-1023702154-Updated", "startYear": -90, "endYear": 90 }
+```
+
+- `DELETE /api/eras/{id}` (**JWT required**)
+
+#### 3.3 Materials CRUD
+
+- `POST /api/materials` (**JWT required**)
+  - **Inserted**:
+
+```json
+{ "name": "TestMaterial-1023702154" }
+```
+
+- `PUT /api/materials/{id}` (**JWT required**)
+  - **Inserted**:
+
+```json
+{ "name": "TestMaterial-1023702154-Updated" }
+```
+
+- `DELETE /api/materials/{id}` (**JWT required**)
+
+#### 3.4 Tags CRUD
+
+- `POST /api/tags` (**JWT required**)
+  - **Inserted**:
+
+```json
+{ "name": "TestTag-1023702154" }
+```
+
+- `GET /api/tags/{id}` (**No auth required**)  
+  - Example tested id: `3502645e-92bc-4fbd-a73e-5ab5fa449d50`
+
+- `PUT /api/tags/{id}` (**JWT required**)
+  - **Inserted**:
+
+```json
+{ "name": "TestTag-1023702154-Updated" }
+```
+
+- `DELETE /api/tags/{id}` (**JWT required**)
+
+#### 3.5 Artifacts CRUD
+
+- `POST /api/artifacts` (**JWT required**)
+  - **Inserted** (using seeded ids from anonymous GETs):
+    - `eraId`: `4d1801f4-2956-4a1a-8f54-6198a9b39d7a`
+    - `categoryId`: `b4fa1050-6eb5-4394-b6db-25c1220cd352`
+    - `materialId`: `fa2b1a73-596b-4ccd-95c3-0898cc4351d6`
+    - `createdBy` (admin user id from login): `<admin userId>`
+
+```json
+{
+  "slug": "test-artifact-1023702154",
+  "eraId": "4d1801f4-2956-4a1a-8f54-6198a9b39d7a",
+  "categoryId": "b4fa1050-6eb5-4394-b6db-25c1220cd352",
+  "materialId": "fa2b1a73-596b-4ccd-95c3-0898cc4351d6",
+  "height": 1.1,
+  "width": 2.2,
+  "depth": 3.3,
+  "weight": 4.4,
+  "createdBy": "<admin userId>"
+}
+```
+
+- `PUT /api/artifacts/{id}` (**JWT required**)
+  - **Inserted**:
+
+```json
+{
+  "slug": "test-artifact-1023702154-updated",
+  "eraId": "4d1801f4-2956-4a1a-8f54-6198a9b39d7a",
+  "categoryId": "b4fa1050-6eb5-4394-b6db-25c1220cd352",
+  "materialId": "fa2b1a73-596b-4ccd-95c3-0898cc4351d6",
+  "height": 9.9,
+  "width": 8.8,
+  "depth": 7.7,
+  "weight": 6.6,
+  "createdBy": "<admin userId>"
+}
+```
+
+- `DELETE /api/artifacts/{id}` (**JWT required**)
+
+---
+
+### 4) Admin-only Users APIs (Admin JWT required)
+
+#### 4.1 Authorization behavior (tested)
+
+- `GET /api/users`:
+  - **Anonymous**: returns **401**
+  - **Normal user token**: returns **403**
+  - **Admin token**: returns **200**
+
+#### 4.2 Users CRUD (tested with Admin JWT)
+
+- `POST /api/users` (**Admin JWT required**)
+  - **Inserted**:
+    - `roleId` was taken from an existing non-admin user returned by `GET /api/users` (example value: `27a68335-d659-42d8-8078-ef932287b2a8`)
+
+```json
+{
+  "fullName": "Api User 1724500135",
+  "email": "apiuser1724500135@museum.com",
+  "region": "Test",
+  "password": "Pass@123",
+  "roleId": "27a68335-d659-42d8-8078-ef932287b2a8",
+  "isActive": true
+}
+```
+
+- `PUT /api/users/{id}` (**Admin JWT required**)
+  - **Inserted**:
+
+```json
+{
+  "fullName": "Api User 1724500135 Updated",
+  "email": "apiuser1724500135@museum.com",
+  "region": "Test2",
+  "isActive": false
+}
+```
+
+- `DELETE /api/users/{id}` (**Admin JWT required**)
+
+---
+
 ## Migrations
 
 ```bash

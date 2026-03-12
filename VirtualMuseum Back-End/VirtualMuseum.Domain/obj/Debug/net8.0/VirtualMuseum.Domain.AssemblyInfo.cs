@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VirtualMuseum.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b4774744238862754549ed72ccdf2f214b838966")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+44e47dc8b25682057c0ca258b7c56048988c9d66")]
 [assembly: System.Reflection.AssemblyProductAttribute("VirtualMuseum.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VirtualMuseum.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

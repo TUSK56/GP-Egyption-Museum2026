@@ -63,9 +63,11 @@ public class ErasController : ControllerBase
         var existing = await _eraService.GetByIdAsync(id, cancellationToken);
         if (existing == null)
             return NotFound(new ApiResponse(false, "Era not found"));
-        era.Id = id;
-        await _eraService.UpdateAsync(era, cancellationToken);
-        return Ok(new ApiResponse<Era>(true, era));
+        existing.Name = era.Name;
+        existing.StartYear = era.StartYear;
+        existing.EndYear = era.EndYear;
+        await _eraService.UpdateAsync(existing, cancellationToken);
+        return Ok(new ApiResponse<Era>(true, existing));
     }
 
     [HttpDelete("{id:guid}")]

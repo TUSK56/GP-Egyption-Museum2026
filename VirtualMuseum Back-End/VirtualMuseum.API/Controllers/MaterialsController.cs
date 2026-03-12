@@ -63,9 +63,9 @@ public class MaterialsController : ControllerBase
         var existing = await _materialService.GetByIdAsync(id, cancellationToken);
         if (existing == null)
             return NotFound(new ApiResponse(false, "Material not found"));
-        material.Id = id;
-        await _materialService.UpdateAsync(material, cancellationToken);
-        return Ok(new ApiResponse<Material>(true, material));
+        existing.Name = material.Name;
+        await _materialService.UpdateAsync(existing, cancellationToken);
+        return Ok(new ApiResponse<Material>(true, existing));
     }
 
     [HttpDelete("{id:guid}")]

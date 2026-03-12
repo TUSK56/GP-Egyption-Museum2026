@@ -9,3 +9,15 @@ E:\project\VirtualMuseum.Domain\obj\Debug\net8.0\VirtualMuseum.Domain.dll
 E:\project\VirtualMuseum.Domain\obj\Debug\net8.0\refint\VirtualMuseum.Domain.dll
 E:\project\VirtualMuseum.Domain\obj\Debug\net8.0\VirtualMuseum.Domain.pdb
 E:\project\VirtualMuseum.Domain\obj\Debug\net8.0\ref\VirtualMuseum.Domain.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Domain\bin\Debug\net8.0\VirtualMuseum.Domain.deps.json
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Domain\bin\Debug\net8.0\VirtualMuseum.Domain.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Domain\bin\Debug\net8.0\VirtualMuseum.Domain.pdb
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Domain\obj\Debug\net8.0\VirtualMuseum.Domain.GeneratedMSBuildEditorConfig.editorconfig
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Domain\obj\Debug\net8.0\VirtualMuseum.Domain.AssemblyInfoInputs.cache
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Domain\obj\Debug\net8.0\VirtualMuseum.Domain.AssemblyInfo.cs
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Domain\obj\Debug\net8.0\VirtualMuseum.Domain.csproj.CoreCompileInputs.cache
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Domain\obj\Debug\net8.0\VirtualMuseum.Domain.sourcelink.json
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Domain\obj\Debug\net8.0\VirtualMuseum.Domain.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Domain\obj\Debug\net8.0\refint\VirtualMuseum.Domain.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Domain\obj\Debug\net8.0\VirtualMuseum.Domain.pdb
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.Domain\obj\Debug\net8.0\ref\VirtualMuseum.Domain.dll

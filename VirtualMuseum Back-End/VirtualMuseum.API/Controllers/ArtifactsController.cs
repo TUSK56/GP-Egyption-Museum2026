@@ -63,10 +63,20 @@ public class ArtifactsController : ControllerBase
         var existing = await _artifactService.GetByIdAsync(id, cancellationToken);
         if (existing == null)
             return NotFound(new ApiResponse(false, "Artifact not found"));
-        artifact.Id = id;
-        artifact.CreatedAt = existing.CreatedAt;
-        await _artifactService.UpdateAsync(artifact, cancellationToken);
-        return Ok(new ApiResponse<Artifact>(true, artifact));
+        existing.Slug = artifact.Slug;
+        existing.EraId = artifact.EraId;
+        existing.CategoryId = artifact.CategoryId;
+        existing.MaterialId = artifact.MaterialId;
+        existing.DiscoveryLocationId = artifact.DiscoveryLocationId;
+        existing.ModelFileId = artifact.ModelFileId;
+        existing.ThumbnailFileId = artifact.ThumbnailFileId;
+        existing.Height = artifact.Height;
+        existing.Width = artifact.Width;
+        existing.Depth = artifact.Depth;
+        existing.Weight = artifact.Weight;
+        existing.CreatedBy = artifact.CreatedBy;
+        await _artifactService.UpdateAsync(existing, cancellationToken);
+        return Ok(new ApiResponse<Artifact>(true, existing));
     }
 
     [HttpDelete("{id:guid}")]
