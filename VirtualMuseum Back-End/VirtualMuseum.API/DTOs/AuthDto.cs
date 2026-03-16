@@ -10,7 +10,7 @@ public record LoginRequest(
     [MinLength(1)]
     string Password);
 
-public record LoginResponse(string Token, Guid UserId, string Email, string FullName, string Role);
+public record LoginResponse(string AccessToken, string RefreshToken, Guid UserId, string Email, string FullName, string Role);
 
 public record RegisterRequest(
     [Required(ErrorMessage = "Full name is required")]
@@ -44,3 +44,23 @@ public record ForgotPasswordResetRequest(
     string NewPassword,
     [Required]
     string ConfirmPassword);
+
+public record SendOtpRequest(
+    [Required]
+    [EmailAddress]
+    string Email);
+
+public record VerifyOtpRequest(
+    [Required]
+    [EmailAddress]
+    string Email,
+    [Required]
+    string Code);
+
+public record RefreshTokenRequest(
+    [Required]
+    string RefreshToken);
+
+public record GoogleLoginRequest(
+    [Required]
+    string IdToken);

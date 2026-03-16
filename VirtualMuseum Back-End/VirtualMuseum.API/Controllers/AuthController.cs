@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using VirtualMuseum.API.DTOs;
 using VirtualMuseum.Application.Interfaces;
 
@@ -41,7 +42,7 @@ public class AuthController : ControllerBase
         }
 
         return Ok(new ApiResponse<LoginResponse>(true, new LoginResponse(
-            result.Token, result.UserId, result.Email, result.FullName, result.Role)));
+            result.AccessToken, result.RefreshToken, result.UserId, result.Email, result.FullName, result.Role)));
     }
 
     /// <summary>
@@ -76,40 +77,82 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// Step 1 of forgot password: submit email. In development, OTP is always 0000.
+    /// Send email OTP for verification (5 minutes expiry).
     /// </summary>
-    [HttpPost("forgot-password/request")]
+    [HttpPost("send-otp")]
     [ProducesResponseType(typeof(ApiResponse), 200)]
-    public async Task<IActionResult> ForgotPasswordRequest([FromBody] ForgotPasswordRequestDto? request, CancellationToken cancellationToken)
+    public async Task<IActionResult> SendOtp([FromBody] SendOtpRequest? request, CancellationToken cancellationToken)
     {
         if (request == null)
             return BadRequest(new ApiResponse(false, "Invalid request body"));
-        var found = await _authService.ForgotPasswordRequestAsync(request.Email ?? string.Empty, cancellationToken);
-        return Ok(new ApiResponse(true, found
-            ? "If the email exists, an OTP has been sent. In development, use OTP: 0000"
-            : "If the email exists, an OTP has been sent. In development, use OTP: 0000"));
+
+        var code = await _authService.SendOtpAsync(request.Email, cancellationToken);
+        if (code == null)
+            return BadRequest(new ApiResponse(false, "Invalid email"));
+
+        // If SMTP sending is disabled (development), return the OTP code in response data for easy testing.
+        var smtpEnabled = bool.TryParse(HttpContext.RequestServices.GetService<IConfiguration>()?
+            .GetSection("Smtp")["Enabled"], out var enabled) && enabled;
+
+        if (!smtpEnabled)
+            return Ok(new ApiResponse<object>(true, new { code }, "OTP generated (SMTP disabled)"));
+
+        return Ok(new ApiResponse(true, "OTP has been sent"));
     }
 
     /// <summary>
-    /// Step 2 of forgot password: submit email, OTP (0000 in dev), new password, and confirm password.
+    /// Verify email OTP and mark user EmailConfirmed.
     /// </summary>
-    [HttpPost("forgot-password/reset")]
+    [HttpPost("verify-otp")]
     [ProducesResponseType(typeof(ApiResponse), 200)]
     [ProducesResponseType(typeof(ApiResponse), 400)]
-    public async Task<IActionResult> ForgotPasswordReset([FromBody] ForgotPasswordResetRequest? request, CancellationToken cancellationToken)
+    public async Task<IActionResult> VerifyOtp([FromBody] VerifyOtpRequest? request, CancellationToken cancellationToken)
     {
         if (request == null)
             return BadRequest(new ApiResponse(false, "Invalid request body"));
-        var success = await _authService.ForgotPasswordResetAsync(
-            request.Email ?? string.Empty,
-            request.OtpCode ?? string.Empty,
-            request.NewPassword ?? string.Empty,
-            request.ConfirmPassword ?? string.Empty,
-            cancellationToken);
 
-        if (!success)
-            return BadRequest(new ApiResponse(false, "Invalid OTP, email not found, or passwords do not match"));
+        var ok = await _authService.VerifyOtpAsync(request.Email, request.Code, cancellationToken);
+        if (!ok)
+            return BadRequest(new ApiResponse(false, "Invalid or expired OTP"));
 
-        return Ok(new ApiResponse(true, "Password has been reset successfully"));
+        return Ok(new ApiResponse(true, "Email verified successfully"));
+    }
+
+    /// <summary>
+    /// Exchange a refresh token for a new access + refresh token pair.
+    /// </summary>
+    [HttpPost("refresh-token")]
+    [ProducesResponseType(typeof(ApiResponse<LoginResponse>), 200)]
+    [ProducesResponseType(typeof(ApiResponse), 400)]
+    public async Task<IActionResult> RefreshToken([FromBody] RefreshTokenRequest? request, CancellationToken cancellationToken)
+    {
+        if (request == null)
+            return BadRequest(new ApiResponse(false, "Invalid request body"));
+
+        var result = await _authService.RefreshTokenAsync(request.RefreshToken, cancellationToken);
+        if (result == null)
+            return BadRequest(new ApiResponse(false, "Invalid or expired refresh token"));
+
+        return Ok(new ApiResponse<LoginResponse>(true, new LoginResponse(
+            result.AccessToken, result.RefreshToken, result.UserId, result.Email, result.FullName, result.Role)));
+    }
+
+    /// <summary>
+    /// Login using Google ID token.
+    /// </summary>
+    [HttpPost("google-login")]
+    [ProducesResponseType(typeof(ApiResponse<LoginResponse>), 200)]
+    [ProducesResponseType(typeof(ApiResponse), 400)]
+    public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest? request, CancellationToken cancellationToken)
+    {
+        if (request == null)
+            return BadRequest(new ApiResponse(false, "Invalid request body"));
+
+        var result = await _authService.GoogleLoginAsync(request.IdToken, cancellationToken);
+        if (result == null)
+            return BadRequest(new ApiResponse(false, "Invalid Google token"));
+
+        return Ok(new ApiResponse<LoginResponse>(true, new LoginResponse(
+            result.AccessToken, result.RefreshToken, result.UserId, result.Email, result.FullName, result.Role)));
     }
 }

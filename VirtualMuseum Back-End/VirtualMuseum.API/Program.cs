@@ -8,6 +8,7 @@ using VirtualMuseum.Application.Interfaces;
 using VirtualMuseum.Application.Services;
 using VirtualMuseum.Infrastructure.Data;
 using VirtualMuseum.Infrastructure.Repositories;
+using VirtualMuseum.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,9 +29,13 @@ builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IArtifactRepository, ArtifactRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+builder.Services.AddScoped<IOtpRepository, OtpRepository>();
+builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
 // Services
+builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<ArtifactService>();
 builder.Services.AddScoped<EraService>();
 builder.Services.AddScoped<CategoryService>();

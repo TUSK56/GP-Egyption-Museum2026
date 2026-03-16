@@ -313,3 +313,12 @@ E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.API\obj\Debug\net
 E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.API\obj\Debug\net8.0\VirtualMuseum.API.pdb
 E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.API\obj\Debug\net8.0\VirtualMuseum.API.genruntimeconfig.cache
 E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.API\obj\Debug\net8.0\ref\VirtualMuseum.API.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.API\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.API\bin\Debug\net8.0\Google.Apis.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.API\bin\Debug\net8.0\Google.Apis.Auth.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.API\bin\Debug\net8.0\Google.Apis.Core.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.API\bin\Debug\net8.0\MailKit.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.API\bin\Debug\net8.0\MimeKit.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.API\bin\Debug\net8.0\Newtonsoft.Json.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.API\bin\Debug\net8.0\System.Management.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.API\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Management.dll

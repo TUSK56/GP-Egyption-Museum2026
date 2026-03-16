@@ -321,6 +321,36 @@ namespace VirtualMuseum.Infrastructure.Migrations
                     b.ToTable("DiscoveryLocations", (string)null);
                 });
 
+            modelBuilder.Entity("VirtualMuseum.Domain.Entities.EmailOtp", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<DateTime>("ExpirationTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("EmailOtps", (string)null);
+                });
+
             modelBuilder.Entity("VirtualMuseum.Domain.Entities.Era", b =>
                 {
                     b.Property<Guid>("Id")
@@ -416,6 +446,39 @@ namespace VirtualMuseum.Infrastructure.Migrations
                     b.ToTable("Files", (string)null);
                 });
 
+            modelBuilder.Entity("VirtualMuseum.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Revoked")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(512)
+                        .HasColumnType("nvarchar(512)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Token")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens", (string)null);
+                });
+
             modelBuilder.Entity("VirtualMuseum.Domain.Entities.Review", b =>
                 {
                     b.Property<Guid>("Id")
@@ -495,6 +558,9 @@ namespace VirtualMuseum.Infrastructure.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -502,6 +568,9 @@ namespace VirtualMuseum.Infrastructure.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastLogin")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -707,6 +776,17 @@ namespace VirtualMuseum.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("VirtualMuseum.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("VirtualMuseum.Domain.Entities.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("VirtualMuseum.Domain.Entities.Review", b =>
                 {
                     b.HasOne("VirtualMuseum.Domain.Entities.Artifact", "Artifact")
@@ -803,6 +883,8 @@ namespace VirtualMuseum.Infrastructure.Migrations
                     b.Navigation("CreatedArtifacts");
 
                     b.Navigation("Favorites");
+
+                    b.Navigation("RefreshTokens");
 
                     b.Navigation("Reviews");
                 });

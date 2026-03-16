@@ -38,7 +38,8 @@ public static class DatabaseSeeder
             PasswordHash = BCrypt.Net.BCrypt.HashPassword("admin@123"),
             RoleId = adminRole.Id,
             IsActive = true,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            EmailConfirmed = true
         };
         context.Users.Add(adminUser);
         await context.SaveChangesAsync();

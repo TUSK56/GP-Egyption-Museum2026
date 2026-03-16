@@ -119,7 +119,8 @@ POST /api/auth/login
 {
   "success": true,
   "data": {
-    "token": "eyJhbGciOiJIUzI1NiIs...",
+    "accessToken": "eyJhbGciOiJIUzI1NiIs...",
+    "refreshToken": "base64-refresh-token",
     "userId": "guid",
     "email": "john@example.com",
     "fullName": "John Doe",
@@ -195,6 +196,93 @@ curl -X POST http://localhost:5209/api/auth/forgot-password/reset \
 ```
 
 ---
+
+#### Send OTP (Email verification)
+
+```
+POST /api/auth/send-otp
+```
+
+- **Authorization**: No
+- **Request body**:
+
+```json
+{
+  "email": "john@example.com"
+}
+```
+
+- **Response (200) when SMTP is enabled**:
+  - OTP is sent to the email inbox.
+
+- **Response (200) when SMTP is disabled** (`Smtp:Enabled=false` in `appsettings.json`):
+  - API returns the OTP code in `data.code` for development testing.
+
+```json
+{
+  "success": true,
+  "data": { "code": "123456" },
+  "message": "OTP generated (SMTP disabled)"
+}
+```
+
+#### Verify OTP (Email verification)
+
+```
+POST /api/auth/verify-otp
+```
+
+- **Authorization**: No
+- **Request body**:
+
+```json
+{
+  "email": "john@example.com",
+  "code": "123456"
+}
+```
+
+- **Result**: marks the user as `EmailConfirmed=true` (required before login).
+
+---
+
+#### Refresh Token
+
+```
+POST /api/auth/refresh-token
+```
+
+- **Authorization**: No
+- **Request body**:
+
+```json
+{
+  "refreshToken": "base64-refresh-token"
+}
+```
+
+- **Response (200)**: returns a new `accessToken` + `refreshToken` pair.
+
+---
+
+#### Google Login
+
+```
+POST /api/auth/google-login
+```
+
+- **Authorization**: No
+- **Request body**:
+
+```json
+{
+  "idToken": "google-id-token"
+}
+```
+
+- **Notes**:
+  - Configure `GoogleAuth:ClientId` in `appsettings.json`.
+  - If the user doesn’t exist, an account is created and marked `EmailConfirmed=true`.
 
 ### Artifacts (GET anonymous, POST/PUT/DELETE require JWT)
 
@@ -456,6 +544,38 @@ Connection string in `VirtualMuseum.API/appsettings.json`:
 {
   "ConnectionStrings": {
     "DefaultConnection": "Server=DESKTOP-K4668BN\\MSSQLSERVER02;Database=VirtualMuseumDB;Trusted_Connection=True;TrustServerCertificate=True;"
+  }
+}
+```
+
+### SMTP (MailKit)
+
+In `VirtualMuseum.API/appsettings.json`:
+
+```json
+{
+  "Smtp": {
+    "Enabled": "false",
+    "SmtpServer": "smtp.example.com",
+    "Port": "587",
+    "SenderName": "Virtual Museum",
+    "SenderEmail": "no-reply@example.com",
+    "Username": "smtp-username",
+    "Password": "smtp-password"
+  }
+}
+```
+
+- If `Enabled` is `false`, the API **will not send emails** and `POST /api/auth/send-otp` will return the OTP code in the response for development testing.
+
+### Google OAuth
+
+In `VirtualMuseum.API/appsettings.json`:
+
+```json
+{
+  "GoogleAuth": {
+    "ClientId": "your-google-client-id.apps.googleusercontent.com"
   }
 }
 ```

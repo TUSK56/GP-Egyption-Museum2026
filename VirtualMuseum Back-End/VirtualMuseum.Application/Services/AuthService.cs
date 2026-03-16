@@ -1,8 +1,6 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
+using System.Security.Cryptography;
+using Google.Apis.Auth;
 using VirtualMuseum.Application.Interfaces;
 using VirtualMuseum.Domain.Entities;
 
@@ -12,12 +10,27 @@ public class AuthService : IAuthService
 {
     private readonly IUserRepository _userRepository;
     private readonly IRoleRepository _roleRepository;
+    private readonly IOtpRepository _otpRepository;
+    private readonly IRefreshTokenRepository _refreshTokenRepository;
+    private readonly IEmailService _emailService;
+    private readonly TokenService _tokenService;
     private readonly IConfiguration _configuration;
 
-    public AuthService(IUserRepository userRepository, IRoleRepository roleRepository, IConfiguration configuration)
+    public AuthService(
+        IUserRepository userRepository,
+        IRoleRepository roleRepository,
+        IOtpRepository otpRepository,
+        IRefreshTokenRepository refreshTokenRepository,
+        IEmailService emailService,
+        TokenService tokenService,
+        IConfiguration configuration)
     {
         _userRepository = userRepository;
         _roleRepository = roleRepository;
+        _otpRepository = otpRepository;
+        _refreshTokenRepository = refreshTokenRepository;
+        _emailService = emailService;
+        _tokenService = tokenService;
         _configuration = configuration;
     }
 
@@ -27,7 +40,7 @@ public class AuthService : IAuthService
             return null;
 
         var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
-        if (user == null || !user.IsActive)
+        if (user == null || !user.IsActive || !user.EmailConfirmed)
             return null;
 
         try
@@ -40,8 +53,25 @@ public class AuthService : IAuthService
             return null;
         }
 
-        var token = GenerateJwtToken(user);
-        return new AuthResult(token, user.Id, user.Email, user.FullName, user.Role?.Name ?? "User");
+        user.LastLogin = DateTime.UtcNow;
+        await _userRepository.UpdateAsync(user, cancellationToken);
+
+        var roleName = user.Role?.Name ?? "User";
+        var accessToken = _tokenService.GenerateAccessToken(user, roleName);
+        await _refreshTokenRepository.InvalidateUserTokensAsync(user.Id, cancellationToken);
+        var (refreshToken, expiresAt) = _tokenService.GenerateRefreshToken();
+        var rt = new RefreshToken
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            Token = refreshToken,
+            CreatedAt = DateTime.UtcNow,
+            ExpiresAt = expiresAt
+        };
+        await _refreshTokenRepository.AddAsync(rt, cancellationToken);
+        await _refreshTokenRepository.SaveChangesAsync(cancellationToken);
+
+        return new AuthResult(accessToken, refreshToken, user.Id, user.Email, user.FullName, roleName);
     }
 
     public async Task<RegisterResult?> RegisterAsync(string fullName, string email, string region, string password, CancellationToken cancellationToken = default)
@@ -50,9 +80,8 @@ public class AuthService : IAuthService
         if (existing != null)
             return null;
 
-        var userRole = await _roleRepository.GetByNameAsync("User", cancellationToken);
-        if (userRole == null)
-            return null;
+        var userRole = await _roleRepository.GetByNameAsync("User", cancellationToken)
+                       ?? throw new InvalidOperationException("Default 'User' role is missing");
 
         var user = new User
         {
@@ -63,57 +92,169 @@ public class AuthService : IAuthService
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
             RoleId = userRole.Id,
             IsActive = true,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            EmailConfirmed = false
         };
 
         await _userRepository.AddAsync(user, cancellationToken);
         return new RegisterResult(user.Id, user.Email, user.FullName, user.Region);
     }
 
-    public async Task<bool> ForgotPasswordRequestAsync(string email, CancellationToken cancellationToken = default)
+    public async Task<string?> SendOtpAsync(string email, CancellationToken cancellationToken = default)
     {
-        var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
-        return user != null; // In dev, we don't send real email; OTP is always 0000
+        if (string.IsNullOrWhiteSpace(email))
+            return null;
+
+        var code = GenerateOtpCode();
+        var otp = new EmailOtp
+        {
+            Id = Guid.NewGuid(),
+            Email = email,
+            Code = code,
+            CreatedAt = DateTime.UtcNow,
+            ExpirationTime = DateTime.UtcNow.AddMinutes(5),
+            IsUsed = false
+        };
+
+        await _otpRepository.AddAsync(otp, cancellationToken);
+        await _otpRepository.SaveChangesAsync(cancellationToken);
+
+        var body = $"Your verification code is: {code}{Environment.NewLine}This code will expire in 5 minutes.";
+        await _emailService.SendEmailAsync(email, "Email Verification", body, cancellationToken);
+        return code;
     }
 
-    public async Task<bool> ForgotPasswordResetAsync(string email, string otpCode, string newPassword, string confirmPassword, CancellationToken cancellationToken = default)
+    public async Task<bool> VerifyOtpAsync(string email, string code, CancellationToken cancellationToken = default)
     {
-        if (otpCode != "0000")
+        var otp = await _otpRepository.GetActiveOtpAsync(email, code, cancellationToken);
+        if (otp == null)
             return false;
-        if (string.IsNullOrWhiteSpace(newPassword) || newPassword != confirmPassword)
-            return false;
+
+        otp.IsUsed = true;
+        await _otpRepository.SaveChangesAsync(cancellationToken);
 
         var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
         if (user == null)
             return false;
 
-        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+        user.EmailConfirmed = true;
         await _userRepository.UpdateAsync(user, cancellationToken);
         return true;
     }
 
-    private string GenerateJwtToken(User user)
+    public async Task<AuthResult?> RefreshTokenAsync(string refreshToken, CancellationToken cancellationToken = default)
     {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-            _configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured")));
-        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        var stored = await _refreshTokenRepository.GetByTokenAsync(refreshToken, cancellationToken);
+        if (stored == null)
+            return null;
 
-        var claims = new[]
+        var user = stored.User;
+        if (!user.IsActive || !user.EmailConfirmed)
+            return null;
+
+        var roleName = user.Role?.Name ?? "User";
+        var accessToken = _tokenService.GenerateAccessToken(user, roleName);
+
+        stored.Revoked = true;
+        await _refreshTokenRepository.InvalidateUserTokensAsync(user.Id, cancellationToken);
+        var (newRefreshToken, expiresAt) = _tokenService.GenerateRefreshToken();
+        var rt = new RefreshToken
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Email, user.Email),
-            new Claim(ClaimTypes.Role, user.Role.Name),
-            new Claim("FullName", user.FullName)
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            Token = newRefreshToken,
+            CreatedAt = DateTime.UtcNow,
+            ExpiresAt = expiresAt
         };
+        await _refreshTokenRepository.AddAsync(rt, cancellationToken);
+        await _refreshTokenRepository.SaveChangesAsync(cancellationToken);
 
-        var token = new JwtSecurityToken(
-            issuer: _configuration["Jwt:Issuer"],
-            audience: _configuration["Jwt:Audience"],
-            claims: claims,
-            expires: DateTime.UtcNow.AddHours(24),
-            signingCredentials: credentials
-        );
+        return new AuthResult(accessToken, newRefreshToken, user.Id, user.Email, user.FullName, roleName);
+    }
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+    public Task<AuthResult?> GoogleLoginAsync(string idToken, CancellationToken cancellationToken = default)
+    {
+        return GoogleLoginInternalAsync(idToken, cancellationToken);
+    }
+
+    private static string GenerateOtpCode()
+    {
+        // cryptographically secure 6-digit OTP
+        var n = RandomNumberGenerator.GetInt32(0, 1_000_000);
+        return n.ToString("D6");
+    }
+
+    private async Task<AuthResult?> GoogleLoginInternalAsync(string idToken, CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(idToken))
+            return null;
+
+        var clientId = _configuration["GoogleAuth:ClientId"];
+        if (string.IsNullOrWhiteSpace(clientId))
+            throw new InvalidOperationException("GoogleAuth:ClientId is not configured in appsettings.json");
+
+        GoogleJsonWebSignature.Payload payload;
+        try
+        {
+            payload = await GoogleJsonWebSignature.ValidateAsync(idToken, new GoogleJsonWebSignature.ValidationSettings
+            {
+                Audience = new[] { clientId }
+            });
+        }
+        catch
+        {
+            return null;
+        }
+
+        var email = payload.Email;
+        if (string.IsNullOrWhiteSpace(email))
+            return null;
+
+        var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
+        if (user == null)
+        {
+            var userRole = await _roleRepository.GetByNameAsync("User", cancellationToken)
+                           ?? throw new InvalidOperationException("Default 'User' role is missing");
+
+            user = new User
+            {
+                Id = Guid.NewGuid(),
+                FullName = payload.Name ?? payload.GivenName ?? "Google User",
+                Email = email,
+                Region = "Google",
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(Guid.NewGuid().ToString("N")),
+                RoleId = userRole.Id,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                EmailConfirmed = true,
+                LastLogin = DateTime.UtcNow
+            };
+            await _userRepository.AddAsync(user, cancellationToken);
+        }
+        else
+        {
+            if (!user.IsActive)
+                return null;
+            user.EmailConfirmed = true;
+            user.LastLogin = DateTime.UtcNow;
+            await _userRepository.UpdateAsync(user, cancellationToken);
+        }
+
+        var roleName = user.Role?.Name ?? "User";
+        var accessToken = _tokenService.GenerateAccessToken(user, roleName);
+        await _refreshTokenRepository.InvalidateUserTokensAsync(user.Id, cancellationToken);
+        var (refreshToken, expiresAt) = _tokenService.GenerateRefreshToken();
+        var rt = new RefreshToken
+        {
+            Id = Guid.NewGuid(),
+            UserId = user.Id,
+            Token = refreshToken,
+            CreatedAt = DateTime.UtcNow,
+            ExpiresAt = expiresAt
+        };
+        await _refreshTokenRepository.AddAsync(rt, cancellationToken);
+        await _refreshTokenRepository.SaveChangesAsync(cancellationToken);
+
+        return new AuthResult(accessToken, refreshToken, user.Id, user.Email, user.FullName, roleName);
     }
 }

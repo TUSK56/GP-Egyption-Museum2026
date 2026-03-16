@@ -29,6 +29,8 @@ public class MuseumDbContext : DbContext
     public DbSet<Favorite> Favorites => Set<Favorite>();
     public DbSet<Review> Reviews => Set<Review>();
     public DbSet<ArtifactView> ArtifactViews => Set<ArtifactView>();
+    public DbSet<EmailOtp> EmailOtps => Set<EmailOtp>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
