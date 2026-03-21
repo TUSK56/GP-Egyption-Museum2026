@@ -322,3 +322,4 @@ E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.API\bin\Debug\net
 E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.API\bin\Debug\net8.0\Newtonsoft.Json.dll
 E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.API\bin\Debug\net8.0\System.Management.dll
 E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.API\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Management.dll
+E:\GP Egyption Museum2026\VirtualMuseum Back-End\VirtualMuseum.API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

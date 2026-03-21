@@ -171,47 +171,21 @@
   },
   {
     "ContainingType": "VirtualMuseum.API.Controllers.AuthController",
-    "Method": "ForgotPasswordRequest",
-    "RelativePath": "api/Auth/forgot-password/request",
+    "Method": "GoogleLogin",
+    "RelativePath": "api/Auth/google-login",
     "HttpMethod": "POST",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
         "Name": "request",
-        "Type": "VirtualMuseum.API.DTOs.ForgotPasswordRequestDto",
+        "Type": "VirtualMuseum.API.DTOs.GoogleLoginRequest",
         "IsRequired": false
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "VirtualMuseum.API.DTOs.ApiResponse",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      }
-    ]
-  },
-  {
-    "ContainingType": "VirtualMuseum.API.Controllers.AuthController",
-    "Method": "ForgotPasswordReset",
-    "RelativePath": "api/Auth/forgot-password/reset",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "request",
-        "Type": "VirtualMuseum.API.DTOs.ForgotPasswordResetRequest",
-        "IsRequired": false
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "VirtualMuseum.API.DTOs.ApiResponse",
+        "Type": "VirtualMuseum.API.DTOs.ApiResponse\u00601[[VirtualMuseum.API.DTOs.LoginResponse, VirtualMuseum.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "text/plain",
           "application/json",
@@ -276,6 +250,41 @@
   },
   {
     "ContainingType": "VirtualMuseum.API.Controllers.AuthController",
+    "Method": "RefreshToken",
+    "RelativePath": "api/Auth/refresh-token",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "VirtualMuseum.API.DTOs.RefreshTokenRequest",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "VirtualMuseum.API.DTOs.ApiResponse\u00601[[VirtualMuseum.API.DTOs.LoginResponse, VirtualMuseum.API, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "VirtualMuseum.API.DTOs.ApiResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      }
+    ]
+  },
+  {
+    "ContainingType": "VirtualMuseum.API.Controllers.AuthController",
     "Method": "Register",
     "RelativePath": "api/Auth/register",
     "HttpMethod": "POST",
@@ -297,6 +306,67 @@
           "text/json"
         ],
         "StatusCode": 201
+      },
+      {
+        "Type": "VirtualMuseum.API.DTOs.ApiResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 400
+      }
+    ]
+  },
+  {
+    "ContainingType": "VirtualMuseum.API.Controllers.AuthController",
+    "Method": "SendOtp",
+    "RelativePath": "api/Auth/send-otp",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "VirtualMuseum.API.DTOs.SendOtpRequest",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "VirtualMuseum.API.DTOs.ApiResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "VirtualMuseum.API.Controllers.AuthController",
+    "Method": "VerifyOtp",
+    "RelativePath": "api/Auth/verify-otp",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "VirtualMuseum.API.DTOs.VerifyOtpRequest",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "VirtualMuseum.API.DTOs.ApiResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
       },
       {
         "Type": "VirtualMuseum.API.DTOs.ApiResponse",
