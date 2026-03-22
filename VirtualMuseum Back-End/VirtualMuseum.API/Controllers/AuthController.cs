@@ -25,6 +25,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<LoginResponse>), 200)]
     [ProducesResponseType(typeof(ApiResponse), 400)]
     [ProducesResponseType(typeof(ApiResponse), 401)]
+    [ProducesResponseType(typeof(ApiResponse), 403)]
     public async Task<IActionResult> Login([FromBody] LoginRequest? request, CancellationToken cancellationToken)
     {
         if (request == null)
@@ -33,16 +34,29 @@ public class AuthController : ControllerBase
             return BadRequest(new ApiResponse(false, "Invalid request body"));
         }
 
-        var result = await _authService.LoginAsync(request.Email ?? string.Empty, request.Password ?? string.Empty, cancellationToken);
+        var outcome = await _authService.LoginAsync(request.Email ?? string.Empty, request.Password ?? string.Empty, cancellationToken);
 
-        if (result == null)
+        if (outcome.Failure == LoginFailureKind.EmailNotConfirmed)
+        {
+            _logger.LogWarning("Login blocked - email not verified: {Email}", request.Email);
+            return StatusCode(StatusCodes.Status403Forbidden,
+                new ApiResponse(false, "Email not verified. Call POST /api/auth/send-otp then POST /api/auth/verify-otp, then try again."));
+        }
+
+        if (outcome.Failure == LoginFailureKind.AccountDisabled)
+        {
+            _logger.LogWarning("Login blocked - account inactive: {Email}", request.Email);
+            return StatusCode(StatusCodes.Status403Forbidden, new ApiResponse(false, "This account is disabled."));
+        }
+
+        if (outcome.Result == null)
         {
             _logger.LogWarning("Login failed for email: {Email}", request.Email);
             return Unauthorized(new ApiResponse(false, "Invalid email or password"));
         }
 
         return Ok(new ApiResponse<LoginResponse>(true, new LoginResponse(
-            result.AccessToken, result.RefreshToken, result.UserId, result.Email, result.FullName, result.Role)));
+            outcome.Result.AccessToken, outcome.Result.RefreshToken, outcome.Result.UserId, outcome.Result.Email, outcome.Result.FullName, outcome.Result.Role)));
     }
 
     /// <summary>
@@ -116,6 +130,41 @@ public class AuthController : ControllerBase
             return BadRequest(new ApiResponse(false, "Invalid or expired OTP"));
 
         return Ok(new ApiResponse(true, "Email verified successfully"));
+    }
+
+    /// <summary>
+    /// Request a password reset code (email must be registered). Response is generic for security.
+    /// </summary>
+    [HttpPost("forgot-password/request")]
+    [ProducesResponseType(typeof(ApiResponse), 200)]
+    [ProducesResponseType(typeof(ApiResponse), 400)]
+    public async Task<IActionResult> ForgotPasswordRequest([FromBody] ForgotPasswordRequestDto? request, CancellationToken cancellationToken)
+    {
+        if (request == null)
+            return BadRequest(new ApiResponse(false, "Invalid request body"));
+
+        await _authService.RequestPasswordResetAsync(request.Email, cancellationToken);
+        return Ok(new ApiResponse(true, "If an account exists for this email, a reset code has been sent."));
+    }
+
+    /// <summary>
+    /// Reset password using the code from forgot-password/request.
+    /// </summary>
+    [HttpPost("forgot-password/reset")]
+    [ProducesResponseType(typeof(ApiResponse), 200)]
+    [ProducesResponseType(typeof(ApiResponse), 400)]
+    public async Task<IActionResult> ForgotPasswordReset([FromBody] ForgotPasswordResetRequest? request, CancellationToken cancellationToken)
+    {
+        if (request == null)
+            return BadRequest(new ApiResponse(false, "Invalid request body"));
+        if (request.NewPassword != request.ConfirmPassword)
+            return BadRequest(new ApiResponse(false, "Passwords do not match"));
+
+        var ok = await _authService.ResetPasswordWithOtpAsync(request.Email, request.OtpCode, request.NewPassword, cancellationToken);
+        if (!ok)
+            return BadRequest(new ApiResponse(false, "Invalid or expired code, or password does not meet requirements"));
+
+        return Ok(new ApiResponse(true, "Password has been reset. You can sign in with your new password."));
     }
 
     /// <summary>

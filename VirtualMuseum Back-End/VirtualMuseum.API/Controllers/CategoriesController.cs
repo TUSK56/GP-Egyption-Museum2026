@@ -8,7 +8,6 @@ namespace VirtualMuseum.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
 public class CategoriesController : ControllerBase
 {
     private readonly CategoryService _categoryService;
@@ -42,6 +41,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<Category>), 201)]
     [ProducesResponseType(400)]
     public async Task<IActionResult> Create([FromBody] Category? category, CancellationToken cancellationToken)
@@ -53,6 +53,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<Category>), 200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
@@ -69,6 +70,7 @@ public class CategoriesController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)

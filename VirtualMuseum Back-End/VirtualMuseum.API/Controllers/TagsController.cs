@@ -8,7 +8,6 @@ namespace VirtualMuseum.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
 public class TagsController : ControllerBase
 {
     private readonly TagService _tagService;
@@ -53,6 +52,7 @@ public class TagsController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<Tag>), 200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
@@ -69,6 +69,7 @@ public class TagsController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)

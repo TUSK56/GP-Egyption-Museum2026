@@ -1,884 +1,294 @@
-# 3D Virtual Museum - Backend API
+# 3D Virtual Museum — Backend API
 
-Production-ready ASP.NET Core 8 Web API for the 3D Virtual Museum project.
+ASP.NET Core 8 Web API for the 3D Virtual Museum: artifacts, eras, categories, materials, tags, JWT auth (email/password, Google ID token), OTP email verification, refresh tokens, and admin user management.
 
-## Tech Stack
+## Tech stack
 
-- **Framework:** ASP.NET Core 8 Web API
-- **Database:** SQL Server
-- **ORM:** Entity Framework Core 8
-- **API Documentation:** Swagger/OpenAPI
-- **Architecture:** Clean Architecture (Controllers / Services / Repositories)
-- **Authentication:** JWT
-- **Password Hashing:** BCrypt
+| Area | Technology |
+|------|------------|
+| Runtime | .NET 8 |
+| API | ASP.NET Core Web API |
+| Database | SQL Server |
+| ORM | Entity Framework Core 8 |
+| Auth | JWT Bearer, BCrypt passwords |
+| Google sign-in | Google.Apis.Auth (ID token validation) |
+| Email | MailKit (optional; can be disabled for local dev) |
+| Docs | Swagger / OpenAPI |
+
+**Architecture:** layered solution — `API` → `Application` → `Domain` ← `Infrastructure` (repositories, EF Core, email).
 
 ## Prerequisites
 
-- .NET 8 SDK
-- SQL Server (LocalDB or full instance)
+- [.NET 8 SDK](https://dotnet.microsoft.com/download)
+- SQL Server (LocalDB or full instance) reachable from the connection string in `appsettings.json`
 
-## Run the Application
+## Run the API
 
 ```bash
+cd "VirtualMuseum Back-End"
 dotnet run --project VirtualMuseum.API
 ```
 
-- **Base URL:** http://localhost:5209
-- **Swagger UI:** http://localhost:5209/swagger
+Only one instance should run at a time. If the API is already running in another terminal or IDE, **stop it first** (Ctrl+C) before starting again — otherwise the build step can fail with **MSB3027 / MSB3021** (DLL copy locked by `VirtualMuseum.API`).
 
-The API creates the database, applies migrations, and seeds data on startup.
+Default URLs (see `Properties/launchSettings.json`):
+
+| Profile | HTTP | HTTPS |
+|--------|------|--------|
+| `http` | http://localhost:5209 | — |
+| `https` | http://localhost:5209 | https://localhost:7032 |
+
+- **Swagger UI:** http://localhost:5209/swagger  
+On startup the app connects to the database, applies **migrations**, and runs **seeding** (roles, admin user, sample eras/categories/materials/artifacts).
+
+## Configuration (`VirtualMuseum.API/appsettings.json`)
+
+### Database
+
+```json
+"ConnectionStrings": {
+  "DefaultConnection": "Server=...;Database=VirtualMuseumDB;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true;"
+}
+```
+
+Adjust `Server=` for your machine. The app fails fast if this is missing.
+
+### JWT
+
+```json
+"Jwt": {
+  "Key": "<long random secret, min 32 chars>",
+  "Issuer": "VirtualMuseum.API",
+  "Audience": "VirtualMuseum.Client",
+  "AccessTokenMinutes": 60,
+  "RefreshTokenDays": 7
+}
+```
+
+Use a strong key in production (User Secrets, environment variables, or a vault — not only a committed default).
+
+### SMTP (optional)
+
+```json
+"Smtp": {
+  "Enabled": "false",
+  "SmtpServer": "smtp.example.com",
+  "Port": "587",
+  "SenderName": "Virtual Museum",
+  "SenderEmail": "no-reply@example.com",
+  "Username": "...",
+  "Password": "..."
+}
+```
+
+- If **`Enabled`** is `false`, emails are **not** sent.  
+- **`POST /api/auth/send-otp`** still creates an OTP and, when SMTP is disabled, returns the code in **`data.code`** for local testing.  
+- **Forgot password** still stores an OTP server-side, but with SMTP off the user does not receive email; enable SMTP for real password reset, or use a verified flow in development via `send-otp` + `verify-otp` where applicable.
+
+### Google OAuth (Google Sign-In)
+
+```json
+"GoogleAuth": {
+  "ClientId": "<your-web-client-id>.apps.googleusercontent.com"
+}
+```
+
+Use the **same** OAuth 2.0 **Web** client ID as the frontend Google Sign-In / Identity Services configuration. The API validates the **`idToken`** from the client.
+
+### CORS
+
+```json
+"Cors": {
+  "Origins": [ "http://localhost:3000", "http://localhost:5173", "http://127.0.0.1:5173" ]
+}
+```
+
+Add your deployed frontend origin(s). If the array is empty, the app falls back to a permissive default for development only — prefer explicit origins in production.
 
 ---
 
-## API Reference
+## Response shape
 
-All responses use this format:
+Successful payloads are wrapped as:
 
 ```json
 {
   "success": true,
-  "data": { ... },
+  "data": { },
   "message": null
 }
 ```
 
-For errors: `success: false`, `message` contains the error text.
+Errors: `success: false`, `message` (and optionally `details` in Development). Global errors are handled by `ExceptionHandlingMiddleware`.
 
 ---
 
-### Authentication (Public – no Authorization header required)
+## Roles: **User** vs **Admin**
 
-#### Register (User self-registration)
+| Role | JWT `role` claim | Typical use |
+|------|------------------|-------------|
+| **User** | `User` | Default for registration and Google sign-up. |
+| **Admin** | `Admin` | Seeded admin account; full **user management** and **museum content writes**. |
 
-Creates a new user account with name, email, region, and password.
+Authorization behavior:
 
-```
-POST /api/auth/register
-```
+| Endpoint group | Anonymous GET | Authenticated **User** | **Admin** |
+|----------------|---------------|-------------------------|-----------|
+| `GET` artifacts, categories, eras, materials, tags | Allowed | Allowed (GET is public) | Allowed |
+| `POST` / `PUT` / `DELETE` on those resources | — | **403 Forbidden** | **Allowed** |
+| `GET` / `POST` / `PUT` / `DELETE` `/api/users` | **401** without token | **403** | **Allowed** |
 
-**Request Body:**
-```json
-{
-  "fullName": "John Doe",
-  "email": "john@example.com",
-  "region": "North America",
-  "password": "MySecure@123"
-}
-```
-
-**Response (201):**
-```json
-{
-  "success": true,
-  "data": {
-    "userId": "guid",
-    "email": "john@example.com",
-    "fullName": "John Doe",
-    "region": "North America"
-  }
-}
-```
-
-**Example tested request (body):**
-```json
-{
-  "fullName": "Doc User",
-  "email": "docuser@example.com",
-  "region": "Europe",
-  "password": "Doc@123"
-}
-```
-
-**cURL Example:**
-```bash
-curl -X POST http://localhost:5209/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"fullName":"John Doe","email":"john@example.com","region":"North America","password":"MySecure@123"}'
-```
+Use header: `Authorization: Bearer <accessToken>`.
 
 ---
 
-#### Login (Users & Admins)
+## Authentication flows
 
-Login with email and password. No OTP required. Returns JWT for both users and admins.
+### Email + password
 
-```
-POST /api/auth/login
-```
+1. **`POST /api/auth/register`** — creates user with `EmailConfirmed = false`.  
+2. **`POST /api/auth/send-otp`** — sends (or returns in dev) a 6-digit OTP.  
+3. **`POST /api/auth/verify-otp`** — sets `EmailConfirmed = true`.  
+4. **`POST /api/auth/login`** — returns `accessToken`, `refreshToken`, and profile including **`role`**.
 
-**Request Body:**
-```json
-{
-  "email": "john@example.com",
-  "password": "MySecure@123"
-}
-```
+Password login **requires** a confirmed email. If the password is correct but the email is not verified yet, **`POST /api/auth/login`** returns **403** with a message to use **`send-otp`** and **`verify-otp`** (not 401, so it is easier to tell apart from wrong password, which still returns **401**).
 
-**Response (200):**
-```json
-{
-  "success": true,
-  "data": {
-    "accessToken": "eyJhbGciOiJIUzI1NiIs...",
-    "refreshToken": "base64-refresh-token",
-    "userId": "guid",
-    "email": "john@example.com",
-    "fullName": "John Doe",
-    "role": "User"
-  }
-}
-```
+### Google
 
-**Example tested request (body – Admin login):**
-```json
-{
-  "email": "admin@museum.com",
-  "password": "admin@123"
-}
-```
+**`POST /api/auth/google-login`** with `{ "idToken": "..." }`. New users are created with email confirmed; role is **User** unless changed in the database.
 
-**cURL Example:**
-```bash
-curl -X POST http://localhost:5209/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"john@example.com","password":"MySecure@123"}'
-```
+### Refresh
+
+**`POST /api/auth/refresh-token`** with `{ "refreshToken": "..." }` — returns a new access + refresh pair; old refresh is invalidated per implementation.
+
+### Forgot password
+
+1. **`POST /api/auth/forgot-password/request`** — `{ "email": "..." }`  
+   - If the account exists, an OTP is created and email is sent when SMTP is enabled.  
+   - Response message is generic (does not reveal whether the email exists).
+
+2. **`POST /api/auth/forgot-password/reset`** — `{ "email", "otpCode", "newPassword", "confirmPassword" }`  
+   - On success, the user can log in with the new password (subject to email confirmation rules for login).
 
 ---
 
-#### Forgot Password – Step 1: Request OTP
+## API reference (summary)
 
-Submit email. In development, OTP is always `0000`.
+### Auth (no bearer token required)
 
-```
-POST /api/auth/forgot-password/request
-```
+| Method | Route | Description |
+|--------|--------|-------------|
+| POST | `/api/auth/register` | Register |
+| POST | `/api/auth/login` | Login (email confirmed required) |
+| POST | `/api/auth/send-otp` | Request verification OTP |
+| POST | `/api/auth/verify-otp` | Confirm email |
+| POST | `/api/auth/refresh-token` | Rotate tokens |
+| POST | `/api/auth/google-login` | Login with Google `idToken` |
+| POST | `/api/auth/forgot-password/request` | Request reset OTP |
+| POST | `/api/auth/forgot-password/reset` | Reset password with OTP |
 
-**Example tested request (body):**
-```json
-{
-  "email": "john@example.com"
-}
-```
+**Login response `data` fields:** `accessToken`, `refreshToken`, `userId`, `email`, `fullName`, `role`.
 
-**cURL Example:**
-```bash
-curl -X POST http://localhost:5209/api/auth/forgot-password/request \
-  -H "Content-Type: application/json" \
-  -d '{"email":"john@example.com"}'
-```
+### Museum resources (artifacts, categories, eras, materials, tags)
 
----
+For each controller pattern:
 
-#### Forgot Password – Step 2: Reset Password
+| Method | Auth |
+|--------|------|
+| `GET /api/{resource}` | **Public** (no token) |
+| `GET /api/{resource}/{id}` | **Public** |
+| `POST` / `PUT` / `DELETE` | **`Admin` JWT only** |
 
-Submit email, OTP, new password, and confirmation. In development, OTP must be `0000`.
+Replace `{resource}` with: `artifacts`, `categories`, `eras`, `materials`, `tags`.
 
-```
-POST /api/auth/forgot-password/reset
-```
+**Example — public list:**
 
-**Example tested request (body):**
-```json
-{
-  "email": "john@example.com",
-  "otpCode": "0000",
-  "newPassword": "NewSecure@456",
-  "confirmPassword": "NewSecure@456"
-}
-```
-
-**cURL Example:**
-```bash
-curl -X POST http://localhost:5209/api/auth/forgot-password/reset \
-  -H "Content-Type: application/json" \
-  -d '{"email":"john@example.com","otpCode":"0000","newPassword":"NewSecure@456","confirmPassword":"NewSecure@456"}'
-```
-
----
-
-#### Send OTP (Email verification)
-
-```
-POST /api/auth/send-otp
-```
-
-- **Authorization**: No
-- **Request body**:
-
-```json
-{
-  "email": "john@example.com"
-}
-```
-
-- **Response (200) when SMTP is enabled**:
-  - OTP is sent to the email inbox.
-
-- **Response (200) when SMTP is disabled** (`Smtp:Enabled=false` in `appsettings.json`):
-  - API returns the OTP code in `data.code` for development testing.
-
-```json
-{
-  "success": true,
-  "data": { "code": "123456" },
-  "message": "OTP generated (SMTP disabled)"
-}
-```
-
-#### Verify OTP (Email verification)
-
-```
-POST /api/auth/verify-otp
-```
-
-- **Authorization**: No
-- **Request body**:
-
-```json
-{
-  "email": "john@example.com",
-  "code": "123456"
-}
-```
-
-- **Result**: marks the user as `EmailConfirmed=true` (required before login).
-
----
-
-#### Refresh Token
-
-```
-POST /api/auth/refresh-token
-```
-
-- **Authorization**: No
-- **Request body**:
-
-```json
-{
-  "refreshToken": "base64-refresh-token"
-}
-```
-
-- **Response (200)**: returns a new `accessToken` + `refreshToken` pair.
-
----
-
-#### Google Login
-
-```
-POST /api/auth/google-login
-```
-
-- **Authorization**: No
-- **Request body**:
-
-```json
-{
-  "idToken": "google-id-token"
-}
-```
-
-- **Notes**:
-  - Configure `GoogleAuth:ClientId` in `appsettings.json`.
-  - If the user doesn’t exist, an account is created and marked `EmailConfirmed=true`.
-
-### Artifacts (GET anonymous, POST/PUT/DELETE require JWT)
-
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | /api/artifacts | No | List all artifacts |
-| GET | /api/artifacts/{id} | No | Get artifact by ID |
-| POST | /api/artifacts | Yes | Create artifact |
-| PUT | /api/artifacts/{id} | Yes | Update artifact |
-| DELETE | /api/artifacts/{id} | Yes | Delete artifact |
-
-**Example tested GET (anonymous):**
 ```bash
 curl http://localhost:5209/api/artifacts
 ```
 
-**Example tested POST (with Admin JWT):**
-
-- First, login as admin to get `token`:
-
-```bash
-curl -X POST http://localhost:5209/api/auth/login ^
-  -H "Content-Type: application/json" ^
-  -d "{\"email\":\"admin@museum.com\",\"password\":\"admin@123\"}"
-```
-
-- Then call:
-
-```bash
-curl -X POST http://localhost:5209/api/artifacts ^
-  -H "Content-Type: application/json" ^
-  -H "Authorization: Bearer ADMIN_JWT_TOKEN" ^
-  -d "{
-    \"slug\": \"doc-artifact-123\",
-    \"eraId\": \"d3d7880c-bf04-4fbd-b46a-ba7d3b2bcfc1\",
-    \"categoryId\": \"f4775cf7-30e1-447a-aef3-1b5f61012d01\",
-    \"materialId\": \"f565a9a2-8b4b-49c2-9349-fe75d3a89ee3\",
-    \"height\": 1.0,
-    \"width\": 2.0,
-    \"depth\": 3.0,
-    \"weight\": 4.0,
-    \"createdBy\": \"<admin userId from login>\"
-  }"
-```
-
----
-
-### Categories (GET anonymous, POST/PUT/DELETE require JWT)
-
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | /api/categories | No | List all |
-| GET | /api/categories/{id} | No | Get by ID |
-| POST | /api/categories | Yes | Create |
-| PUT | /api/categories/{id} | Yes | Update |
-| DELETE | /api/categories/{id} | Yes | Delete |
-
-**Example tested POST (with Admin JWT):**
-
-```bash
-curl -X POST http://localhost:5209/api/categories ^
-  -H "Content-Type: application/json" ^
-  -H "Authorization: Bearer ADMIN_JWT_TOKEN" ^
-  -d "{\"name\":\"DocCat-123\"}"
-```
-
-**Example tested PUT (with Admin JWT):**
-
-```bash
-curl -X PUT http://localhost:5209/api/categories/{id} ^
-  -H "Content-Type: application/json" ^
-  -H "Authorization: Bearer ADMIN_JWT_TOKEN" ^
-  -d "{\"name\":\"DocCat-123-Updated\"}"
-```
-
----
-
-### Eras (GET anonymous, POST/PUT/DELETE require JWT)
-
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | /api/eras | No | List all |
-| GET | /api/eras/{id} | No | Get by ID |
-| POST | /api/eras | Yes | Create |
-| PUT | /api/eras/{id} | Yes | Update |
-| DELETE | /api/eras/{id} | Yes | Delete |
-
-**Example tested POST (with Admin JWT):**
+**Example — create era (admin only):**
 
 ```bash
 curl -X POST http://localhost:5209/api/eras ^
   -H "Content-Type: application/json" ^
-  -H "Authorization: Bearer ADMIN_JWT_TOKEN" ^
-  -d "{
-    \"name\":\"DocEra-123\",
-    \"startYear\": -50,
-    \"endYear\": 50
-  }"
+  -H "Authorization: Bearer <ADMIN_ACCESS_TOKEN>" ^
+  -d "{\"name\":\"New Kingdom\",\"startYear\":-1550,\"endYear\":-1077}"
 ```
 
-**Example tested PUT (with Admin JWT):**
+Use IDs from your database (e.g. from GET responses) when creating artifacts or admin users.
 
-```bash
-curl -X PUT http://localhost:5209/api/eras/{id} ^
-  -H "Content-Type: application/json" ^
-  -H "Authorization: Bearer ADMIN_JWT_TOKEN" ^
-  -d "{
-    \"name\":\"DocEra-123-Updated\",
-    \"startYear\": -40,
-    \"endYear\": 40
-  }"
-```
+### Users (**Admin** only)
+
+| Method | Route |
+|--------|--------|
+| GET | `/api/users` |
+| GET | `/api/users/{id}` |
+| POST | `/api/users` |
+| PUT | `/api/users/{id}` |
+| DELETE | `/api/users/{id}` |
+
+`POST` body includes `fullName`, `email`, `region`, `password`, `roleId`, `isActive`.  
+`PUT` body: `fullName`, `email`, `region`, `isActive` (no password in update DTO).
 
 ---
 
-### Materials (GET anonymous, POST/PUT/DELETE require JWT)
+## Seeded admin (first run only if DB was empty)
 
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | /api/materials | No | List all |
-| GET | /api/materials/{id} | No | Get by ID |
-| POST | /api/materials | Yes | Create |
-| PUT | /api/materials/{id} | Yes | Update |
-| DELETE | /api/materials/{id} | Yes | Delete |
+| Field | Value |
+|-------|--------|
+| Email | `admin@museum.com` |
+| Password | `admin@123` |
+| Role | **Admin** |
 
-**Example tested POST (with Admin JWT):**
-
-```bash
-curl -X POST http://localhost:5209/api/materials ^
-  -H "Content-Type: application/json" ^
-  -H "Authorization: Bearer ADMIN_JWT_TOKEN" ^
-  -d "{\"name\":\"DocMat-123\"}"
-```
-
-**Example tested PUT (with Admin JWT):**
-
-```bash
-curl -X PUT http://localhost:5209/api/materials/{id} ^
-  -H "Content-Type: application/json" ^
-  -H "Authorization: Bearer ADMIN_JWT_TOKEN" ^
-  -d "{\"name\":\"DocMat-123-Updated\"}"
-```
+Change this password in production.
 
 ---
 
-### Tags (GET anonymous, POST/PUT/DELETE require JWT)
+## Automated tests
 
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | /api/tags | No | List all |
-| GET | /api/tags/{id} | No | Get by ID |
-| POST | /api/tags | Yes | Create |
-| PUT | /api/tags/{id} | Yes | Update |
-| DELETE | /api/tags/{id} | Yes | Delete |
-
-**Example tested POST (with Admin JWT):**
+Integration tests (real SQL Server from configuration; stop any manual `dotnet run` of the API if the build copies fail):
 
 ```bash
-curl -X POST http://localhost:5209/api/tags ^
-  -H "Content-Type: application/json" ^
-  -H "Authorization: Bearer ADMIN_JWT_TOKEN" ^
-  -d "{\"name\":\"DocTag-123\"}"
+dotnet test VirtualMuseum.IntegrationTests/VirtualMuseum.IntegrationTests.csproj
 ```
 
-**Example tested GET by id (no auth):**
-
-```bash
-curl http://localhost:5209/api/tags/{id}
-```
-
-**Example tested PUT (with Admin JWT):**
-
-```bash
-curl -X PUT http://localhost:5209/api/tags/{id} ^
-  -H "Content-Type: application/json" ^
-  -H "Authorization: Bearer ADMIN_JWT_TOKEN" ^
-  -d "{\"name\":\"DocTag-123-Updated\"}"
-```
-
----
-
-### Users (Admin only – requires Admin JWT)
-
-| Method | Endpoint | Auth | Description |
-|--------|----------|------|-------------|
-| GET | /api/users | Admin | List all users |
-| GET | /api/users/{id} | Admin | Get user by ID |
-| POST | /api/users | Admin | Create user |
-| PUT | /api/users/{id} | Admin | Update user |
-| DELETE | /api/users/{id} | Admin | Delete user |
-
-**Example tested GET (Admin JWT):**
-
-```bash
-curl http://localhost:5209/api/users ^
-  -H "Authorization: Bearer ADMIN_JWT_TOKEN"
-```
-
-**Example tested POST (Admin JWT):**
-
-```bash
-curl -X POST http://localhost:5209/api/users ^
-  -H "Content-Type: application/json" ^
-  -H "Authorization: Bearer ADMIN_JWT_TOKEN" ^
-  -d "{
-    \"fullName\":\"Api User 1\",
-    \"email\":\"apiuser1@example.com\",
-    \"region\":\"Test\",
-    \"password\":\"Pass@123\",
-    \"roleId\":\"<existing non-admin roleId>\",
-    \"isActive\":true
-  }"
-```
-
-**Example tested PUT (Admin JWT):**
-
-```bash
-curl -X PUT http://localhost:5209/api/users/{id} ^
-  -H "Content-Type: application/json" ^
-  -H "Authorization: Bearer ADMIN_JWT_TOKEN" ^
-  -d "{
-    \"fullName\":\"Api User 1 Updated\",
-    \"email\":\"apiuser1@example.com\",
-    \"region\":\"Test2\",
-    \"isActive\":false
-  }"
-```
-
----
-
-## Default Credentials
-
-### Admin
-
-- **Email:** admin@museum.com
-- **Password:** admin@123
-
-### Forgot Password (Development)
-
-- **OTP:** 0000
-
----
-
-## Using the JWT Token
-
-After login, send the token in the `Authorization` header:
-
-```
-Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
-```
-
----
-
-## Configuration
-
-Connection string in `VirtualMuseum.API/appsettings.json`:
-
-```json
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=DESKTOP-K4668BN\\MSSQLSERVER02;Database=VirtualMuseumDB;Trusted_Connection=True;TrustServerCertificate=True;"
-  }
-}
-```
-
-### SMTP (MailKit)
-
-In `VirtualMuseum.API/appsettings.json`:
-
-```json
-{
-  "Smtp": {
-    "Enabled": "false",
-    "SmtpServer": "smtp.example.com",
-    "Port": "587",
-    "SenderName": "Virtual Museum",
-    "SenderEmail": "no-reply@example.com",
-    "Username": "smtp-username",
-    "Password": "smtp-password"
-  }
-}
-```
-
-- If `Enabled` is `false`, the API **will not send emails** and `POST /api/auth/send-otp` will return the OTP code in the response for development testing.
-
-### Google OAuth
-
-In `VirtualMuseum.API/appsettings.json`:
-
-```json
-{
-  "GoogleAuth": {
-    "ClientId": "your-google-client-id.apps.googleusercontent.com"
-  }
-}
-```
-
----
-
-## Project Structure
-
-```
-VirtualMuseum.sln
-├── VirtualMuseum.API/           # Controllers, DTOs, Middleware
-├── VirtualMuseum.Application/   # Services, Interfaces
-├── VirtualMuseum.Domain/        # Entities
-└── VirtualMuseum.Infrastructure/ # DbContext, Repositories, Migrations
-```
-
----
-
-## Testing APIs
-
-Run the test script (with API running):
+Optional manual script (with API running):
 
 ```powershell
 .\API-Tests.ps1
+# Optional base URL:
+.\API-Tests.ps1 -BaseUrl "http://localhost:5209"
 ```
 
 ---
 
-## Tested Endpoints (step-by-step)
-
-This section documents the **endpoints that were tested**, the **exact sample inputs (“insertions”)** used, and whether the endpoint needs **Authorization**.
-
-### Authorization used in tests
-
-- **Public endpoints (no auth)**: no `Authorization` header.
-- **JWT-protected endpoints**: header must be:
-
-```
-Authorization: Bearer <JWT>
-```
-
-- **Admin-only endpoints**: same header, but the JWT must contain role **Admin**.
-
-### 0) Test environment
-
-- **Base URL**: `http://localhost:5209`
-- **Swagger UI**: `http://localhost:5209/swagger`
-- **DB**: migrations + seeding run automatically on startup.
-- **Seeded admin** (used for JWT in protected endpoints):
-  - **Email**: `admin@museum.com`
-  - **Password**: `admin@123`
-
----
-
-### 1) Auth APIs (Public)
-
-#### 1.1 `POST /api/auth/register` (No Authorization)
-
-- **Inserted body used in testing**:
-
-```json
-{
-  "fullName": "Test User",
-  "email": "testuser1760814702@museum.com",
-  "region": "Europe",
-  "password": "Test@123"
-}
-```
-
-- **Expected result**: `201` with `data.userId`.
-
-#### 1.2 `POST /api/auth/login` (No Authorization)
-
-- **Inserted body used in testing (Admin)**:
-
-```json
-{
-  "email": "admin@museum.com",
-  "password": "admin@123"
-}
-```
-
-- **Expected result**: `200` with `data.token` (JWT), `data.userId`, `data.role`.
-
-#### 1.3 `POST /api/auth/forgot-password/request` (No Authorization)
-
-- **Inserted body used in testing**:
-
-```json
-{
-  "email": "testuser1760814702@museum.com"
-}
-```
-
-- **Expected result**: `200` (development OTP is `0000`).
-
-#### 1.4 `POST /api/auth/forgot-password/reset` (No Authorization)
-
-- **Inserted body used in testing**:
-
-```json
-{
-  "email": "testuser1760814702@museum.com",
-  "otpCode": "0000",
-  "newPassword": "NewTest@123",
-  "confirmPassword": "NewTest@123"
-}
-```
-
-- **Expected result**: `200`, then login works with the new password.
-
----
-
-### 2) Public GET APIs (No Authorization)
-
-These were tested as **anonymous** requests:
-
-- `GET /api/artifacts`
-- `GET /api/artifacts/{id}` (example tested id: `a8637acb-1bc0-45c5-8c23-39ffbe10fb6d`)
-- `GET /api/categories`
-- `GET /api/categories/{id}` (example tested id: `b4fa1050-6eb5-4394-b6db-25c1220cd352`)
-- `GET /api/eras`
-- `GET /api/eras/{id}` (example tested id: `4d1801f4-2956-4a1a-8f54-6198a9b39d7a`)
-- `GET /api/materials`
-- `GET /api/materials/{id}` (example tested id: `fa2b1a73-596b-4ccd-95c3-0898cc4351d6`)
-- `GET /api/tags`
-  - Note: if no tags exist, this returns an empty list: `"data": []`
-
----
-
-### 3) Protected CRUD APIs (JWT required)
-
-For all endpoints in this section, tests used:
-
-- **Authorization**: `Bearer <Admin JWT>` from `POST /api/auth/login`
-
-#### 3.1 Categories CRUD
-
-- `POST /api/categories` (**JWT required**)
-  - **Inserted**:
-
-```json
-{ "name": "TestCategory-1023702154" }
-```
-
-- `PUT /api/categories/{id}` (**JWT required**)
-  - **Inserted**:
-
-```json
-{ "name": "TestCategory-1023702154-Updated" }
-```
-
-- `DELETE /api/categories/{id}` (**JWT required**)
-
-#### 3.2 Eras CRUD
-
-- `POST /api/eras` (**JWT required**)
-  - **Inserted**:
-
-```json
-{ "name": "TestEra-1023702154", "startYear": -100, "endYear": 100 }
-```
-
-- `PUT /api/eras/{id}` (**JWT required**)
-  - **Inserted**:
-
-```json
-{ "name": "TestEra-1023702154-Updated", "startYear": -90, "endYear": 90 }
-```
-
-- `DELETE /api/eras/{id}` (**JWT required**)
-
-#### 3.3 Materials CRUD
-
-- `POST /api/materials` (**JWT required**)
-  - **Inserted**:
-
-```json
-{ "name": "TestMaterial-1023702154" }
-```
-
-- `PUT /api/materials/{id}` (**JWT required**)
-  - **Inserted**:
-
-```json
-{ "name": "TestMaterial-1023702154-Updated" }
-```
-
-- `DELETE /api/materials/{id}` (**JWT required**)
-
-#### 3.4 Tags CRUD
-
-- `POST /api/tags` (**JWT required**)
-  - **Inserted**:
-
-```json
-{ "name": "TestTag-1023702154" }
-```
-
-- `GET /api/tags/{id}` (**No auth required**)  
-  - Example tested id: `3502645e-92bc-4fbd-a73e-5ab5fa449d50`
-
-- `PUT /api/tags/{id}` (**JWT required**)
-  - **Inserted**:
-
-```json
-{ "name": "TestTag-1023702154-Updated" }
-```
-
-- `DELETE /api/tags/{id}` (**JWT required**)
-
-#### 3.5 Artifacts CRUD
-
-- `POST /api/artifacts` (**JWT required**)
-  - **Inserted** (using seeded ids from anonymous GETs):
-    - `eraId`: `4d1801f4-2956-4a1a-8f54-6198a9b39d7a`
-    - `categoryId`: `b4fa1050-6eb5-4394-b6db-25c1220cd352`
-    - `materialId`: `fa2b1a73-596b-4ccd-95c3-0898cc4351d6`
-    - `createdBy` (admin user id from login): `<admin userId>`
-
-```json
-{
-  "slug": "test-artifact-1023702154",
-  "eraId": "4d1801f4-2956-4a1a-8f54-6198a9b39d7a",
-  "categoryId": "b4fa1050-6eb5-4394-b6db-25c1220cd352",
-  "materialId": "fa2b1a73-596b-4ccd-95c3-0898cc4351d6",
-  "height": 1.1,
-  "width": 2.2,
-  "depth": 3.3,
-  "weight": 4.4,
-  "createdBy": "<admin userId>"
-}
-```
-
-- `PUT /api/artifacts/{id}` (**JWT required**)
-  - **Inserted**:
-
-```json
-{
-  "slug": "test-artifact-1023702154-updated",
-  "eraId": "4d1801f4-2956-4a1a-8f54-6198a9b39d7a",
-  "categoryId": "b4fa1050-6eb5-4394-b6db-25c1220cd352",
-  "materialId": "fa2b1a73-596b-4ccd-95c3-0898cc4351d6",
-  "height": 9.9,
-  "width": 8.8,
-  "depth": 7.7,
-  "weight": 6.6,
-  "createdBy": "<admin userId>"
-}
-```
-
-- `DELETE /api/artifacts/{id}` (**JWT required**)
-
----
-
-### 4) Admin-only Users APIs (Admin JWT required)
-
-#### 4.1 Authorization behavior (tested)
-
-- `GET /api/users`:
-  - **Anonymous**: returns **401**
-  - **Normal user token**: returns **403**
-  - **Admin token**: returns **200**
-
-#### 4.2 Users CRUD (tested with Admin JWT)
-
-- `POST /api/users` (**Admin JWT required**)
-  - **Inserted**:
-    - `roleId` was taken from an existing non-admin user returned by `GET /api/users` (example value: `27a68335-d659-42d8-8078-ef932287b2a8`)
-
-```json
-{
-  "fullName": "Api User 1724500135",
-  "email": "apiuser1724500135@museum.com",
-  "region": "Test",
-  "password": "Pass@123",
-  "roleId": "27a68335-d659-42d8-8078-ef932287b2a8",
-  "isActive": true
-}
-```
-
-- `PUT /api/users/{id}` (**Admin JWT required**)
-  - **Inserted**:
-
-```json
-{
-  "fullName": "Api User 1724500135 Updated",
-  "email": "apiuser1724500135@museum.com",
-  "region": "Test2",
-  "isActive": false
-}
-```
-
-- `DELETE /api/users/{id}` (**Admin JWT required**)
-
----
-
-## Migrations
+## EF Core migrations
 
 ```bash
-# Create migration
-dotnet ef migrations add MigrationName -p VirtualMuseum.Infrastructure -s VirtualMuseum.API
-
-# Drop database
-dotnet ef database drop -p VirtualMuseum.Infrastructure -s VirtualMuseum.API
+dotnet ef migrations add <Name> -p VirtualMuseum.Infrastructure -s VirtualMuseum.API
+dotnet ef database update -p VirtualMuseum.Infrastructure -s VirtualMuseum.API
 ```
+
+---
+
+## Repository layout
+
+```
+VirtualMuseum Back-End/
+├── VirtualMuseum.API/              # Controllers, DTOs, middleware, Program.cs
+├── VirtualMuseum.Application/      # Services, interfaces
+├── VirtualMuseum.Domain/           # Entities
+├── VirtualMuseum.Infrastructure/ # DbContext, repositories, migrations, email
+└── VirtualMuseum.IntegrationTests/
+```
+
+---
+
+## Troubleshooting
+
+- **403 on POST/PUT/DELETE museum routes:** JWT must be for a user with role **Admin**.  
+- **401 on login:** Email not verified — complete `send-otp` + `verify-otp`.  
+- **Google login fails:** `GoogleAuth:ClientId` must match the client that mints the `idToken`.  
+- **CORS errors from browser:** Add your frontend origin under `Cors:Origins`.  
+- **Build errors MSB3027 / MSB3021 (“cannot access … VirtualMuseum.API.dll … used by another process”):** Another `VirtualMuseum.API` is still running. Close that terminal (Ctrl+C), stop debugging in Visual Studio, or end the process in Task Manager, then run `dotnet run` or `dotnet build` again. To find the PID on Windows: `tasklist | findstr VirtualMuseum` then `taskkill /PID <pid> /F` if needed.

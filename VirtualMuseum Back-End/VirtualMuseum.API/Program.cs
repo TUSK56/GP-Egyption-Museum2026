@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +49,8 @@ var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationExcep
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
+        // Map JWT "role" claim to ClaimTypes.Role so [Authorize(Roles = "Admin")] works reliably.
+        options.MapInboundClaims = true;
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
@@ -56,11 +59,25 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidAudience = builder.Configuration["Jwt:Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+            RoleClaimType = ClaimTypes.Role,
+            NameClaimType = ClaimTypes.NameIdentifier
         };
     });
 
 builder.Services.AddAuthorization();
+
+var corsOrigins = builder.Configuration.GetSection("Cors:Origins").Get<string[]>() ?? Array.Empty<string>();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        if (corsOrigins.Length > 0)
+            policy.WithOrigins(corsOrigins).AllowAnyHeader().AllowAnyMethod();
+        else
+            policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
 
 // Controllers with validation
 builder.Services.AddControllers()
@@ -134,6 +151,7 @@ app.UseSwaggerUI(c =>
 });
 
 app.UseHttpsRedirection();
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();

@@ -8,7 +8,6 @@ namespace VirtualMuseum.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
 public class ArtifactsController : ControllerBase
 {
     private readonly ArtifactService _artifactService;
@@ -42,6 +41,7 @@ public class ArtifactsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<Artifact>), 201)]
     [ProducesResponseType(400)]
     public async Task<IActionResult> Create([FromBody] Artifact? artifact, CancellationToken cancellationToken)
@@ -53,6 +53,7 @@ public class ArtifactsController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<Artifact>), 200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
@@ -80,6 +81,7 @@ public class ArtifactsController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)

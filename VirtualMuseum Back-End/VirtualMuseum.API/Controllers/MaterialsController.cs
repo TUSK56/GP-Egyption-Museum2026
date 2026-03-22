@@ -8,7 +8,6 @@ namespace VirtualMuseum.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
 public class MaterialsController : ControllerBase
 {
     private readonly MaterialService _materialService;
@@ -42,6 +41,7 @@ public class MaterialsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<Material>), 201)]
     [ProducesResponseType(400)]
     public async Task<IActionResult> Create([FromBody] Material? material, CancellationToken cancellationToken)
@@ -69,6 +69,7 @@ public class MaterialsController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)

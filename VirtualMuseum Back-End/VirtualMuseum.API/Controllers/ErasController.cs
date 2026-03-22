@@ -8,7 +8,6 @@ namespace VirtualMuseum.API.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
 public class ErasController : ControllerBase
 {
     private readonly EraService _eraService;
@@ -42,6 +41,7 @@ public class ErasController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<Era>), 201)]
     [ProducesResponseType(400)]
     public async Task<IActionResult> Create([FromBody] Era? era, CancellationToken cancellationToken)
@@ -71,6 +71,7 @@ public class ErasController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(204)]
     [ProducesResponseType(404)]
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)

@@ -34,24 +34,29 @@ public class AuthService : IAuthService
         _configuration = configuration;
     }
 
-    public async Task<AuthResult?> LoginAsync(string email, string password, CancellationToken cancellationToken = default)
+    public async Task<LoginOutcome> LoginAsync(string email, string password, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
-            return null;
+            return new LoginOutcome(null, LoginFailureKind.InvalidCredentials);
 
         var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
-        if (user == null || !user.IsActive || !user.EmailConfirmed)
-            return null;
+        if (user == null)
+            return new LoginOutcome(null, LoginFailureKind.InvalidCredentials);
+        if (!user.IsActive)
+            return new LoginOutcome(null, LoginFailureKind.AccountDisabled);
 
         try
         {
             if (!BCrypt.Net.BCrypt.Verify(password, user.PasswordHash ?? string.Empty))
-                return null;
+                return new LoginOutcome(null, LoginFailureKind.InvalidCredentials);
         }
         catch
         {
-            return null;
+            return new LoginOutcome(null, LoginFailureKind.InvalidCredentials);
         }
+
+        if (!user.EmailConfirmed)
+            return new LoginOutcome(null, LoginFailureKind.EmailNotConfirmed);
 
         user.LastLogin = DateTime.UtcNow;
         await _userRepository.UpdateAsync(user, cancellationToken);
@@ -71,7 +76,7 @@ public class AuthService : IAuthService
         await _refreshTokenRepository.AddAsync(rt, cancellationToken);
         await _refreshTokenRepository.SaveChangesAsync(cancellationToken);
 
-        return new AuthResult(accessToken, refreshToken, user.Id, user.Email, user.FullName, roleName);
+        return new LoginOutcome(new AuthResult(accessToken, refreshToken, user.Id, user.Email, user.FullName, roleName), LoginFailureKind.None);
     }
 
     public async Task<RegisterResult?> RegisterAsync(string fullName, string email, string region, string password, CancellationToken cancellationToken = default)
@@ -175,6 +180,54 @@ public class AuthService : IAuthService
     public Task<AuthResult?> GoogleLoginAsync(string idToken, CancellationToken cancellationToken = default)
     {
         return GoogleLoginInternalAsync(idToken, cancellationToken);
+    }
+
+    public async Task RequestPasswordResetAsync(string email, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(email))
+            return;
+
+        var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
+        if (user == null || !user.IsActive)
+            return;
+
+        var code = GenerateOtpCode();
+        var otp = new EmailOtp
+        {
+            Id = Guid.NewGuid(),
+            Email = email.Trim(),
+            Code = code,
+            CreatedAt = DateTime.UtcNow,
+            ExpirationTime = DateTime.UtcNow.AddMinutes(5),
+            IsUsed = false
+        };
+
+        await _otpRepository.AddAsync(otp, cancellationToken);
+        await _otpRepository.SaveChangesAsync(cancellationToken);
+
+        var body = $"Your password reset code is: {code}{Environment.NewLine}This code will expire in 5 minutes.{Environment.NewLine}If you did not request this, you can ignore this email.";
+        await _emailService.SendEmailAsync(email, "Password reset", body, cancellationToken);
+    }
+
+    public async Task<bool> ResetPasswordWithOtpAsync(string email, string code, string newPassword, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(code) || string.IsNullOrWhiteSpace(newPassword))
+            return false;
+        if (newPassword.Length < 6)
+            return false;
+
+        var otp = await _otpRepository.GetActiveOtpAsync(email, code, cancellationToken);
+        if (otp == null)
+            return false;
+
+        var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
+        if (user == null || !user.IsActive)
+            return false;
+
+        user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);
+        otp.IsUsed = true;
+        await _userRepository.UpdateAsync(user, cancellationToken);
+        return true;
     }
 
     private static string GenerateOtpCode()
