@@ -19,7 +19,6 @@
 
 # production
 /build
-/public/
 # misc
 .DS_Store
 *.pem
@@ -39,3 +38,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+public/assets/

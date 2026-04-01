@@ -6,25 +6,82 @@ import { useParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { 
   ArrowLeft, Box, Ruler, MapPin, 
-  Calendar, User, Hammer, Info 
+  Calendar, User, Hammer, Info,
+  Heart, Share2, Check, Star // 👈 ضفنا الـ Star هنا
 } from 'lucide-react';
 
-// السطر ده بيمنع السيرفر من قراءة الموديل وبيشغله في المتصفح بس
 const ModelViewer = dynamic(() => import('../../../components/ModelViewer/ModelViewer'), { ssr: false });
 import artifactsData from '../../../Data/artifacts.json'; 
 
 export default function ArtifactDetails() {
-  // ✅ نقلنا الـ State دي هنا (جوه الـ Component) وده المكان الصح
   const [show3D, setShow3D] = useState(false); 
-  
   const { id } = useParams();
   const router = useRouter();
   const [artifact, setArtifact] = useState(null);
 
+  // States الخاصة بالزراير
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [shareCopied, setShareCopied] = useState(false);
+  
+  // States الخاصة بالتقييم
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [hasRated, setHasRated] = useState(false);
+
+  // تحميل الداتا
   useEffect(() => {
     const found = artifactsData.find(item => item.id === id);
     setArtifact(found);
+
+    if (found) {
+      const liked = JSON.parse(localStorage.getItem('liked_artifacts') || '[]');
+      setIsFavorite(liked.some(item => item.id === found.id));
+    }
   }, [id]);
+
+  // دالة إضافة/إزالة من المفضلات
+  const toggleFavorite = () => {
+    let liked = JSON.parse(localStorage.getItem('liked_artifacts') || '[]');
+    
+    if (isFavorite) {
+      liked = liked.filter(item => item.id !== artifact.id);
+    } else {
+      liked.push(artifact);
+    }
+    
+    localStorage.setItem('liked_artifacts', JSON.stringify(liked));
+    setIsFavorite(!isFavorite);
+    
+    window.dispatchEvent(new Event('update_liked'));
+  };
+
+  // دالة المشاركة
+  const handleShare = async () => {
+    const shareData = {
+      title: `Grand Egyptian Museum: ${artifact.name}`,
+      text: `Check out this amazing historical artifact: ${artifact.name}`,
+      url: window.location.href,
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.log('Error sharing:', err);
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      setShareCopied(true);
+      setTimeout(() => setShareCopied(false), 2000); 
+    }
+  };
+
+  // دالة تسجيل التقييم
+  const handleRating = (selectedRating) => {
+    setRating(selectedRating);
+    setHasRated(true);
+    // هنا ممكن تبعت التقييم للـ Backend أو الـ Database بعدين
+  };
 
   if (!artifact) return (
     <div className="h-screen bg-[#050505] flex items-center justify-center text-[#D4AF37] font-serif">
@@ -60,7 +117,6 @@ export default function ArtifactDetails() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
           
-          {/* 3D Float Button */}
           <motion.button 
           onClick={() => setShow3D(true)}
             whileHover={{ scale: 1.1 }}
@@ -85,7 +141,6 @@ export default function ArtifactDetails() {
             </h1>
           </div>
 
-          {/* Quick Specs Grid */}
           <div className="grid grid-cols-2 gap-4">
             <SpecCard icon={<Calendar size={18}/>} label="Period" value={artifact.period} />
             <SpecCard icon={<User size={18}/>} label="Associated King" value={artifact.associatedKing} />
@@ -93,7 +148,6 @@ export default function ArtifactDetails() {
             <SpecCard icon={<MapPin size={18}/>} label="Discovery Site" value={artifact.discoverySite} />
           </div>
 
-          {/* Dimensions Section */}
           <div className="bg-white/5 border border-white/10 rounded-3xl p-8">
             <h3 className="text-[#D4AF37] font-bold flex items-center gap-2 mb-6 uppercase text-sm tracking-widest">
               <Ruler size={18} /> Physical Dimensions
@@ -108,7 +162,6 @@ export default function ArtifactDetails() {
             </div>
           </div>
 
-          {/* About Section */}
           <div className="space-y-4">
              <h3 className="text-xl font-serif font-bold flex items-center gap-2">
                <Info size={20} className="text-[#D4AF37]"/> Historical Context
@@ -119,14 +172,85 @@ export default function ArtifactDetails() {
              </p>
           </div>
 
-          {/* Action Footer */}
-          <div className="pt-8 flex gap-4">
-             <button className="flex-1 border border-[#D4AF37] text-[#D4AF37] py-4 rounded-2xl font-bold uppercase text-xs tracking-widest hover:bg-[#D4AF37] hover:text-black transition-all">
-                Add to Favorites
+          {/* ========================================== */}
+          {/* قسم التقييم التفاعلي (Interactive Rating) */}
+          {/* ========================================== */}
+          <div className="bg-gradient-to-r from-white/5 to-transparent border border-white/10 rounded-2xl p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h4 className="text-white font-bold mb-1">Rate this Artifact</h4>
+                <p className="text-gray-500 text-xs">How fascinating did you find this piece?</p>
+              </div>
+              
+              <div className="flex items-center gap-1">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    onMouseEnter={() => !hasRated && setHoverRating(star)}
+                    onMouseLeave={() => !hasRated && setHoverRating(0)}
+                    onClick={() => handleRating(star)}
+                    className="p-1 transition-transform hover:scale-125 focus:outline-none"
+                    disabled={hasRated}
+                  >
+                    <Star 
+                      size={24} 
+                      className={`transition-colors duration-200 ${
+                        (hoverRating || rating) >= star 
+                          ? 'fill-[#D4AF37] text-[#D4AF37]' 
+                          : 'text-gray-600'
+                      }`} 
+                    />
+                  </button>
+                ))}
+              </div>
+            </div>
+            {hasRated && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                className="mt-3 text-emerald-400 text-xs font-bold flex items-center gap-2"
+              >
+                <Check size={14} /> Thank you for your feedback!
+              </motion.div>
+            )}
+          </div>
+
+          {/* ========================================== */}
+          {/* الأزرار التفاعلية (Favorites & Share) */}
+          {/* ========================================== */}
+          <div className="pt-4 flex gap-4">
+             
+             {/* زرار المفضلات */}
+             <button 
+               onClick={toggleFavorite}
+               className={`flex-1 flex justify-center items-center gap-2 border border-[#D4AF37] py-4 rounded-2xl font-bold uppercase text-xs tracking-widest transition-all ${
+                 isFavorite 
+                 ? 'bg-[#D4AF37] text-black shadow-[0_0_20px_rgba(212,175,55,0.3)]' 
+                 : 'text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black'
+               }`}
+             >
+               <Heart size={18} className={isFavorite ? "fill-black" : ""} />
+               {isFavorite ? "Saved to Favorites" : "Add to Favorites"}
              </button>
-             <button className="flex-1 bg-white/5 text-white py-4 rounded-2xl font-bold uppercase text-xs tracking-widest hover:bg-white/10 transition-all">
-                Share Dossier
+
+             {/* زرار المشاركة */}
+             <button 
+               onClick={handleShare}
+               className="flex-1 flex justify-center items-center gap-2 bg-white/5 text-white py-4 rounded-2xl font-bold uppercase text-xs tracking-widest hover:bg-white/10 transition-all"
+             >
+               {shareCopied ? (
+                 <>
+                   <Check size={18} className="text-emerald-500" />
+                   <span className="text-emerald-500">Link Copied!</span>
+                 </>
+               ) : (
+                 <>
+                   <Share2 size={18} />
+                   Share Dossier
+                 </>
+               )}
              </button>
+
           </div>
         </motion.div>
 
@@ -143,7 +267,6 @@ export default function ArtifactDetails() {
   );
 }
 
-// مكون فرعي للكروت الصغيرة
 function SpecCard({ icon, label, value }) {
   return (
     <div className="bg-white/[0.03] border border-white/5 p-5 rounded-2xl hover:border-[#D4AF37]/30 transition-colors group">

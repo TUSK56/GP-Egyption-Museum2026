@@ -27,7 +27,7 @@
     "material": "Red Granite",
     "dimensions": { "height": "11 m", "weight": "83 tons" },
     "discoverySite": "Memphis",
-    "image3D": "/assets/models/ramses.glb",
+    "image3D": "/assets/images3D/19-33/ancient_egypt_pack.glb",
     "thumbnail": "https://upload.wikimedia.org/wikipedia/commons/5/5f/Ramses_II_statue.jpg",
     "status": "published"
   },
