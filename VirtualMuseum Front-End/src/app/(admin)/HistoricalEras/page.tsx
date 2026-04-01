@@ -1,7 +1,16 @@
 "use client";
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Edit, Trash2, Clock, X, Calendar, Globe } from "lucide-react";
+// استبدال الأيقونات بأخرى تعبر عن التاريخ والتحكم بشكل أعمق
+import { 
+  PlusCircle, 
+  Settings2, 
+  Eraser, 
+  History, 
+  XCircle, 
+  Hourglass, 
+  Map 
+} from "lucide-react";
 
 // --- الداتا الوهمية للعصور التاريخية ---
 const erasData = [
@@ -47,7 +56,7 @@ export default function HistoricalEras() {
           onClick={() => setShowAddModal(true)}
           className="flex items-center justify-center gap-2 px-6 py-3 bg-[#D4AF37] text-black font-black uppercase tracking-tighter rounded-xl hover:bg-[#b5952f] transition-all shadow-[0_0_20px_rgba(212,175,55,0.2)] active:scale-95"
         >
-          <Plus className="w-5 h-5" />
+          <PlusCircle className="w-5 h-5" /> {/* أيقونة إضافة دائرية أشيك */}
           Create New Era
         </button>
       </div>
@@ -73,14 +82,14 @@ export default function HistoricalEras() {
                 className="w-14 h-14 rounded-2xl flex items-center justify-center border border-white/5 shadow-inner transition-transform duration-500 group-hover:rotate-[360deg]"
                 style={{ backgroundColor: `${era.color}15` }}
               >
-                <Clock className="w-7 h-7" style={{ color: era.color }} />
+                <History className="w-7 h-7" style={{ color: era.color }} /> {/* أيقونة التاريخ بدلاً من الساعة */}
               </div>
               <div className="flex gap-2">
                 <button className="p-2 text-gray-500 hover:text-[#D4AF37] hover:bg-white/5 rounded-full transition-all">
-                  <Edit size={18} />
+                  <Settings2 size={18} /> {/* أيقونة إعدادات متقدمة بدلاً من التعديل التقليدي */}
                 </button>
                 <button className="p-2 text-gray-500 hover:text-red-500 hover:bg-red-500/5 rounded-full transition-all">
-                  <Trash2 size={18} />
+                  <Eraser size={18} /> {/* أيقونة ممحاة تعبيراً عن المسح التاريخي */}
                 </button>
               </div>
             </div>
@@ -91,7 +100,7 @@ export default function HistoricalEras() {
                   {era.name}
                 </h3>
                 <div className="flex items-center gap-2 text-[#D4AF37] text-[10px] font-black uppercase tracking-widest bg-[#D4AF37]/5 px-3 py-1 rounded-full w-fit border border-[#D4AF37]/20">
-                  <Calendar size={10} /> {era.period}
+                  <Hourglass size={10} /> {era.period} {/* الساعة الرملية تعبر عن الزمن */}
                 </div>
               </div>
 
@@ -132,11 +141,13 @@ export default function HistoricalEras() {
             >
               <div className="flex items-center justify-between mb-10">
                 <div className="flex items-center gap-4">
-                   <div className="p-3 bg-[#D4AF37]/10 rounded-2xl border border-[#D4AF37]/20"><Globe className="text-[#D4AF37]" size={24}/></div>
+                   <div className="p-3 bg-[#D4AF37]/10 rounded-2xl border border-[#D4AF37]/20">
+                     <Map className="text-[#D4AF37]" size={24}/> {/* أيقونة الخريطة لتدشين حقبة جديدة */}
+                   </div>
                    <h2 className="text-2xl font-serif font-bold text-white">New Historical Era</h2>
                 </div>
                 <button onClick={() => setShowAddModal(false)} className="p-2 text-gray-500 hover:text-white transition-colors bg-white/5 rounded-full">
-                  <X size={20} />
+                  <XCircle size={20} /> {/* أيقونة غلق دائرية */}
                 </button>
               </div>
 

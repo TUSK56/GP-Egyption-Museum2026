@@ -1,5 +1,6 @@
 import Navbar from "../../components/Navbar/Navbar"; // تأكد من صحة المسار
 import Footer from "../../components/Footer/Footer"; // تأكد من صحة المسار
+import FloatingButtons from "../../components/FloatingButtons/FloatingButtons"; // التعديل هنا (زودنا حرف S)
 
 export default function PageLayout({
   children,
@@ -14,6 +15,9 @@ export default function PageLayout({
         {children}
       </main>
       <Footer />
+      
+      {/* المربعين العائمين */}
+      <FloatingButtons /> 
     </div>
   );
 }
