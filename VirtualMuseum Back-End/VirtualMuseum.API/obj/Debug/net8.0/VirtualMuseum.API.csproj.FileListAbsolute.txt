@@ -354,3 +354,11 @@ C:\Users\PC\AppData\Local\Temp\vm-bld\VirtualMuseum.API.deps.json
 C:\Users\PC\AppData\Local\Temp\vm-bld\VirtualMuseum.API.runtimeconfig.json
 C:\Users\PC\AppData\Local\Temp\vm-bld\VirtualMuseum.API.dll
 C:\Users\PC\AppData\Local\Temp\vm-bld\VirtualMuseum.API.pdb
+C:\Users\PC\AppData\Local\Temp\vm-api-verify\appsettings.Development.json
+C:\Users\PC\AppData\Local\Temp\vm-api-verify\appsettings.json
+C:\Users\PC\AppData\Local\Temp\vm-api-verify\VirtualMuseum.API.staticwebassets.endpoints.json
+C:\Users\PC\AppData\Local\Temp\vm-api-verify\VirtualMuseum.API.exe
+C:\Users\PC\AppData\Local\Temp\vm-api-verify\VirtualMuseum.API.deps.json
+C:\Users\PC\AppData\Local\Temp\vm-api-verify\VirtualMuseum.API.runtimeconfig.json
+C:\Users\PC\AppData\Local\Temp\vm-api-verify\VirtualMuseum.API.dll
+C:\Users\PC\AppData\Local\Temp\vm-api-verify\VirtualMuseum.API.pdb

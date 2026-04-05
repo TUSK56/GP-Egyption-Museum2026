@@ -335,18 +335,18 @@ namespace VirtualMuseum.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
                     b.Property<DateTime>("ExpirationTime")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsUsed")
                         .HasColumnType("bit");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("EmailOtps", (string)null);
                 });
@@ -757,6 +757,17 @@ namespace VirtualMuseum.Infrastructure.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("VirtualMuseum.Domain.Entities.EmailOtp", b =>
+                {
+                    b.HasOne("VirtualMuseum.Domain.Entities.User", "User")
+                        .WithMany("EmailOtps")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("VirtualMuseum.Domain.Entities.Favorite", b =>
                 {
                     b.HasOne("VirtualMuseum.Domain.Entities.Artifact", "Artifact")
@@ -881,6 +892,8 @@ namespace VirtualMuseum.Infrastructure.Migrations
                     b.Navigation("ChatSessions");
 
                     b.Navigation("CreatedArtifacts");
+
+                    b.Navigation("EmailOtps");
 
                     b.Navigation("Favorites");
 

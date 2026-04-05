@@ -11,9 +11,10 @@ public class EmailOtpConfiguration : IEntityTypeConfiguration<EmailOtp>
         builder.ToTable("EmailOtps");
         builder.HasKey(e => e.Id);
 
-        builder.Property(e => e.Email)
-            .IsRequired()
-            .HasMaxLength(256);
+        builder.HasOne(e => e.User)
+            .WithMany(u => u.EmailOtps)
+            .HasForeignKey(e => e.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Property(e => e.Code)
             .IsRequired()

@@ -20,4 +20,5 @@ public class User
     public ICollection<Review> Reviews { get; set; } = new List<Review>();
     public ICollection<ArtifactView> ArtifactViews { get; set; } = new List<ArtifactView>();
     public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+    public ICollection<EmailOtp> EmailOtps { get; set; } = new List<EmailOtp>();
 }

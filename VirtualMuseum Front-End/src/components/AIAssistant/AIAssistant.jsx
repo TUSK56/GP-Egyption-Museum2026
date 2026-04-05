@@ -5,9 +5,9 @@ import { Send, Mic, Camera, Sparkles, ScanLine, Volume2, Image as ImageIcon, His
 
 // --- 1. خريطة تحويل الحروف الإنجليزية إلى هيروغليفية (للمترجم) ---
 const hieroglyphMap = {
-  a: '𓄿', b: '𓃀', c: '𓋴', d: '𓂧', e: '𓇋', f: '𓆑', g: '𓎼', h: '𓉔', i: '𓇋',
-  j: '𓆓', k: '𓎡', l: '𓃭', m: '𓅓', n: '𓈖', o: '𓍯', p: '𓊪', q: '𓈎', r: '𓂋',
-  s: '𓋴', t: '𓏏', u: '𓅱', v: '𓆑', w: '𓅱', x: '𓐍', y: '𓇋', z: '𓊃', ' ': '  '
+  a: 'a', b: 'b', c: 'c', d: 'd', e: 'e', f: 'f', g: 'g', h: 'h', i: 'i',
+  j: 'j', k: 'k', l: 'l', m: 'm', n: 'n', o: 'o', p: 'p', q: 'q', r: 'r',
+  s: 's', t: 't', u: 'u', v: 'v', w: 'w', x: 'x', y: 'y', z: 'z', ' ': '  '
 };
 
 const translateToHieroglyphs = (text) => {

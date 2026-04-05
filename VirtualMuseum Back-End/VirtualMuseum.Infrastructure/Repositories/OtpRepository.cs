@@ -19,11 +19,11 @@ public class OtpRepository : IOtpRepository
         await _context.EmailOtps.AddAsync(otp, cancellationToken);
     }
 
-    public async Task<EmailOtp?> GetActiveOtpAsync(string email, string code, CancellationToken cancellationToken = default)
+    public async Task<EmailOtp?> GetActiveOtpAsync(Guid userId, string code, CancellationToken cancellationToken = default)
     {
         var now = DateTime.UtcNow;
         return await _context.EmailOtps
-            .Where(o => o.Email == email && o.Code == code && !o.IsUsed && o.ExpirationTime >= now)
+            .Where(o => o.UserId == userId && o.Code == code && !o.IsUsed && o.ExpirationTime >= now)
             .OrderByDescending(o => o.CreatedAt)
             .FirstOrDefaultAsync(cancellationToken);
     }

@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("VirtualMuseum.IntegrationTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a5542c68f4209a1220a74b78f370b30742ba9cc8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d7f2aaa981a8354050b2ba548b75eda6864ef1f7")]
 [assembly: System.Reflection.AssemblyProductAttribute("VirtualMuseum.IntegrationTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("VirtualMuseum.IntegrationTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

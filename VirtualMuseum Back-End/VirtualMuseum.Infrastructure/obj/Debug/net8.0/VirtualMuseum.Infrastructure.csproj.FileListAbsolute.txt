@@ -53,3 +53,11 @@ C:\Users\PC\AppData\Local\Temp\vm-bld\VirtualMuseum.Infrastructure.deps.json
 C:\Users\PC\AppData\Local\Temp\vm-bld\VirtualMuseum.Infrastructure.runtimeconfig.json
 C:\Users\PC\AppData\Local\Temp\vm-bld\VirtualMuseum.Infrastructure.dll
 C:\Users\PC\AppData\Local\Temp\vm-bld\VirtualMuseum.Infrastructure.pdb
+C:\Users\PC\AppData\Local\Temp\vm-otp-bld\VirtualMuseum.Infrastructure.deps.json
+C:\Users\PC\AppData\Local\Temp\vm-otp-bld\VirtualMuseum.Infrastructure.runtimeconfig.json
+C:\Users\PC\AppData\Local\Temp\vm-otp-bld\VirtualMuseum.Infrastructure.dll
+C:\Users\PC\AppData\Local\Temp\vm-otp-bld\VirtualMuseum.Infrastructure.pdb
+C:\Users\PC\AppData\Local\Temp\vm-api-verify\VirtualMuseum.Infrastructure.deps.json
+C:\Users\PC\AppData\Local\Temp\vm-api-verify\VirtualMuseum.Infrastructure.runtimeconfig.json
+C:\Users\PC\AppData\Local\Temp\vm-api-verify\VirtualMuseum.Infrastructure.dll
+C:\Users\PC\AppData\Local\Temp\vm-api-verify\VirtualMuseum.Infrastructure.pdb

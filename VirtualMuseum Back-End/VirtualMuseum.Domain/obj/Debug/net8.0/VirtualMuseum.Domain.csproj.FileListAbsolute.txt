@@ -33,3 +33,9 @@ C:\Users\PC\AppData\Local\Temp\vm-test-build\VirtualMuseum.Domain.pdb
 C:\Users\PC\AppData\Local\Temp\vm-bld\VirtualMuseum.Domain.deps.json
 C:\Users\PC\AppData\Local\Temp\vm-bld\VirtualMuseum.Domain.dll
 C:\Users\PC\AppData\Local\Temp\vm-bld\VirtualMuseum.Domain.pdb
+C:\Users\PC\AppData\Local\Temp\vm-otp-bld\VirtualMuseum.Domain.deps.json
+C:\Users\PC\AppData\Local\Temp\vm-otp-bld\VirtualMuseum.Domain.dll
+C:\Users\PC\AppData\Local\Temp\vm-otp-bld\VirtualMuseum.Domain.pdb
+C:\Users\PC\AppData\Local\Temp\vm-api-verify\VirtualMuseum.Domain.deps.json
+C:\Users\PC\AppData\Local\Temp\vm-api-verify\VirtualMuseum.Domain.dll
+C:\Users\PC\AppData\Local\Temp\vm-api-verify\VirtualMuseum.Domain.pdb

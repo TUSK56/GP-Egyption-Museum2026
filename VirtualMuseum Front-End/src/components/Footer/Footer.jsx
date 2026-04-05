@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { Mail, Phone, MapPin, Ticket, Award, Globe } from 'lucide-react';
+import { Mail, Phone, MapPin, Ticket, Award, Globe ,Smartphone, QrCode } from 'lucide-react';
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa';
 import img from '../../../public/assets/images/Logo for Grand Egyptian Museum.png';
 
@@ -108,24 +108,54 @@ const PremiumFooter = () => {
         </div>
 
         {/* 4. Glassmorphism Newsletter Box */}
-        <div className="relative group p-[1px] rounded-3xl overflow-hidden mb-12 bg-gradient-to-r from-transparent via-gray-700 to-transparent">
-          <div className="bg-[#0A0A0A]/80 backdrop-blur-xl p-8 rounded-[23px] flex flex-col lg:flex-row items-center justify-between gap-8 border border-white/5">
-            <div className="text-center lg:text-left">
-              <h4 className="text-xl font-bold mb-1 tracking-tight italic">Join the Inner Circle</h4>
-              <p className="text-gray-500 text-sm italic">Receive monthly insights into Ancient Egypt directly from our curators.</p>
-            </div>
-            <div className="flex w-full lg:w-auto gap-3">
-              <input 
-                type="email" 
-                placeholder="The Pharaoh's scribe email..." 
-                className="bg-white/5 border border-white/10 rounded-full px-6 py-3 w-full lg:w-80 focus:outline-none focus:ring-1 focus:ring-[#D4AF37] transition-all text-sm"
-              />
-              <button className="bg-[#D4AF37] hover:bg-[#B8962E] text-black px-8 py-3 rounded-full font-bold text-sm shadow-lg shadow-yellow-600/20 transition-all active:scale-95 whitespace-nowrap">
-                SUBSCRIBE
-              </button>
-            </div>
-          </div>
+        <div className="relative group p-[1px] rounded-[2.5rem] overflow-hidden mb-12 bg-gradient-to-r from-transparent via-[#D4AF37]/40 to-transparent">
+  <div className="bg-gradient-to-br from-[#0A0A0A]/95 to-[#111]/90 backdrop-blur-xl p-8 md:p-10 rounded-[2.5rem] flex flex-col lg:flex-row items-center justify-between gap-12 border border-white/5 relative overflow-hidden">
+    
+    {/* إضاءة خلفية بتنور خفيف جوا الكارت */}
+    <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 blur-[80px] rounded-full pointer-events-none transition-opacity duration-700 group-hover:opacity-100 opacity-50"></div>
+
+    {/* الجزء الأيسر: النص */}
+    <div className="text-center lg:text-left relative z-10 flex-1">
+      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#D4AF37]/10 text-[#D4AF37] mb-4 border border-[#D4AF37]/20">
+        <Smartphone size={14} />
+        <span className="text-[10px] font-black uppercase tracking-widest">Official Mobile App</span>
+      </div>
+      <h4 className="text-3xl md:text-4xl font-serif font-bold mb-3 text-white">
+        Carry the <span className="text-[#D4AF37] italic">Legacy</span> With You
+      </h4>
+      <p className="text-gray-400 text-sm md:text-base leading-relaxed max-w-xl mx-auto lg:mx-0">
+        Unlock exclusive AR tours, multi-language audio guides, and your personal artifact vault. Download the Grand Egyptian Museum app to elevate your visit.
+      </p>
+    </div>
+
+    {/* الجزء الأيمن: أزرار التحميل */}
+    <div className="flex flex-col sm:flex-row w-full lg:w-auto gap-4 relative z-10 items-center">
+      
+      {/* زرار أبل (App Store) */}
+      <button className="flex items-center justify-center gap-3 bg-white text-black px-6 py-3.5 rounded-2xl hover:scale-105 transition-transform shadow-[0_10px_20px_rgba(255,255,255,0.1)] w-full sm:w-auto">
+        {/* تقدر تحط أيقونة Apple هنا لو بتستخدم مكتبة زي react-icons */}
+        <div className="text-left">
+          <div className="text-[9px] uppercase tracking-widest text-gray-600 font-black mb-0.5">Download on the</div>
+          <div className="text-base font-bold leading-none">App Store</div>
         </div>
+      </button>
+
+      {/* زرار جوجل (Google Play) */}
+      <button className="flex items-center justify-center gap-3 bg-[#111] border border-white/20 text-white px-6 py-3.5 rounded-2xl hover:bg-white/5 hover:border-[#D4AF37] transition-all w-full sm:w-auto group/btn">
+        <div className="text-left">
+          <div className="text-[9px] uppercase tracking-widest text-gray-400 font-black mb-0.5 group-hover/btn:text-[#D4AF37] transition-colors">GET IT ON</div>
+          <div className="text-base font-bold leading-none">Google Play</div>
+        </div>
+      </button>
+      
+      {/* لمسة فخامة: QR Code (بيظهر في الشاشات الكبيرة بس) */}
+      <div className="hidden xl:flex flex-col items-center justify-center w-20 h-20 bg-white/5 border border-white/10 rounded-2xl p-3 group-hover:border-[#D4AF37]/50 group-hover:shadow-[0_0_20px_rgba(212,175,55,0.2)] transition-all cursor-crosshair">
+        <QrCode className="text-[#D4AF37] w-full h-full opacity-80 group-hover:scale-110 transition-transform" strokeWidth={1.5}/>
+      </div>
+    </div>
+
+  </div>
+</div>
 
         {/* 5. Footer Bottom */}
         <div className="flex flex-col md:flex-row justify-between items-center text-[10px] text-gray-100 uppercase tracking-widest">

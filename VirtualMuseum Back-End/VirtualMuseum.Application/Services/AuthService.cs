@@ -110,11 +110,15 @@ public class AuthService : IAuthService
         if (string.IsNullOrWhiteSpace(email))
             return null;
 
+        var user = await _userRepository.GetByEmailAsync(email.Trim(), cancellationToken);
+        if (user == null)
+            return null;
+
         var code = GenerateOtpCode();
         var otp = new EmailOtp
         {
             Id = Guid.NewGuid(),
-            Email = email,
+            UserId = user.Id,
             Code = code,
             CreatedAt = DateTime.UtcNow,
             ExpirationTime = DateTime.UtcNow.AddMinutes(5),
@@ -125,22 +129,22 @@ public class AuthService : IAuthService
         await _otpRepository.SaveChangesAsync(cancellationToken);
 
         var body = $"Your verification code is: {code}{Environment.NewLine}This code will expire in 5 minutes.";
-        await _emailService.SendEmailAsync(email, "Email Verification", body, cancellationToken);
+        await _emailService.SendEmailAsync(user.Email, "Email Verification", body, cancellationToken);
         return code;
     }
 
     public async Task<bool> VerifyOtpAsync(string email, string code, CancellationToken cancellationToken = default)
     {
-        var otp = await _otpRepository.GetActiveOtpAsync(email, code, cancellationToken);
+        var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
+        if (user == null)
+            return false;
+
+        var otp = await _otpRepository.GetActiveOtpAsync(user.Id, code, cancellationToken);
         if (otp == null)
             return false;
 
         otp.IsUsed = true;
         await _otpRepository.SaveChangesAsync(cancellationToken);
-
-        var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
-        if (user == null)
-            return false;
 
         user.EmailConfirmed = true;
         await _userRepository.UpdateAsync(user, cancellationToken);
@@ -195,7 +199,7 @@ public class AuthService : IAuthService
         var otp = new EmailOtp
         {
             Id = Guid.NewGuid(),
-            Email = email.Trim(),
+            UserId = user.Id,
             Code = code,
             CreatedAt = DateTime.UtcNow,
             ExpirationTime = DateTime.UtcNow.AddMinutes(5),
@@ -206,7 +210,7 @@ public class AuthService : IAuthService
         await _otpRepository.SaveChangesAsync(cancellationToken);
 
         var body = $"Your password reset code is: {code}{Environment.NewLine}This code will expire in 5 minutes.{Environment.NewLine}If you did not request this, you can ignore this email.";
-        await _emailService.SendEmailAsync(email, "Password reset", body, cancellationToken);
+        await _emailService.SendEmailAsync(user.Email, "Password reset", body, cancellationToken);
     }
 
     public async Task<bool> ResetPasswordWithOtpAsync(string email, string code, string newPassword, CancellationToken cancellationToken = default)
@@ -216,12 +220,12 @@ public class AuthService : IAuthService
         if (newPassword.Length < 6)
             return false;
 
-        var otp = await _otpRepository.GetActiveOtpAsync(email, code, cancellationToken);
-        if (otp == null)
-            return false;
-
         var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
         if (user == null || !user.IsActive)
+            return false;
+
+        var otp = await _otpRepository.GetActiveOtpAsync(user.Id, code, cancellationToken);
+        if (otp == null)
             return false;
 
         user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newPassword);

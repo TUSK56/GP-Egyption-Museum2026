@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useRef } from 'react';
+import Link from 'next/link';
 import Image from 'next/image';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -123,14 +124,16 @@ export default function Hero() {
           </motion.h1>
 
           <motion.div 
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 1, delay: 0.5 }}
-          >
-            <button className="bg-gradient-to-r from-[#D4AF37] to-[#B8962E] text-black px-12 py-5 rounded-full font-black uppercase text-[11px] tracking-widest hover:scale-110 transition-all shadow-2xl shadow-yellow-900/40">
-              Start Expedition
-            </button>
-          </motion.div>
+  initial={{ opacity: 0 }}
+  whileInView={{ opacity: 1 }}
+  transition={{ duration: 1, delay: 0.5 }}
+>
+  <Link href="/community">
+    <button className="bg-gradient-to-r from-[#D4AF37] to-[#B8962E] text-black px-12 py-5 rounded-full font-black uppercase text-[11px] tracking-widest hover:scale-110 transition-all shadow-2xl shadow-yellow-900/40">
+      Start Community
+    </button>
+  </Link>
+</motion.div>
         </div>
       </div>
 

@@ -1,98 +1,106 @@
 "use client";
 import React from 'react';
 import { motion } from 'framer-motion';
-import { MessageSquare, Sparkles, Send } from 'lucide-react';
+import { MapPin, Navigation, Compass, Map } from 'lucide-react';
 
-export default function VirtualCurator() {
+export default function MuseumLocation() {
+  // دالة فتح جوجل ماب على موقع المتحف المصري الكبير
+  const openGoogleMaps = () => {
+    // اللينك ده بيفتح جوجل ماب على الـ GEM وتقدر تغيره لأي لينك تاني
+    const destination = "Grand+Egyptian+Museum,+Giza";
+    window.open(`https://www.google.com/maps/dir/?api=1&destination=${destination}`, '_blank');
+  };
+
   return (
-    <section className="py-20 bg-white relative overflow-hidden">
-      <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-12">
+    <section className="py-24 bg-[#050505dd] relative overflow-hidden border-t border-white/5">
+      
+      {/* شبكة إحداثيات في الخلفية (لمسة جمالية) */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-[size:40px_40px]"></div>
+
+      <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center gap-16 relative z-10">
         
-        {/* الجزء الأيسر: الشخصية الفرعونية (AI Avatar) */}
-        <div className="relative w-full md:w-1/2 flex justify-center">
-          {/* دوائر إشعاع خلف الشخصية */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-72 h-72 bg-[#D4AF37]/20 rounded-full blur-3xl animate-pulse"></div>
-          
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            animate={{ 
-              y: [0, -15, 0], // حركة طفو هادئة
-            }}
-            transition={{ 
-              duration: 4, 
-              repeat: Infinity, 
-              ease: "easeInOut" 
-            }}
-            className="relative z-10"
-          >
-            {/* هنا تضع صورة الشخصية الفرعونية المرسومة بالـ AI */}
-            <img 
-              src="/assets/images/ai-curator.png" // تأكد من إضافة صورة شفافة (PNG) لشخصية فرعونية
-              alt="AI Curator"
-              className="w-64 md:w-80 h-auto drop-shadow-[0_20px_50px_rgba(212,175,55,0.3)]"
-            />
-            
-            {/* Bubble Talk - فقاعة الكلام */}
+        {/* الجزء الأيسر: الرادار والخريطة */}
+        <div className="relative w-full md:w-1/2 flex justify-center items-center h-[400px]">
+          {/* دوائر الرادار المتحركة */}
+          <div className="absolute inset-0 flex items-center justify-center">
             <motion.div 
-              initial={{ scale: 0, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="absolute -top-10 -right-10 bg-white p-4 rounded-2xl rounded-bl-none shadow-2xl border border-gray-100 max-w-[200px] z-20"
-            >
-              <p className="text-xs font-medium text-gray-800 leading-relaxed">
-                "Welcome traveler! I am your <span className="text-[#D4AF37] font-bold">AI Guide</span>. Ask me anything about our treasures."
-              </p>
-              <div className="flex gap-1 mt-2">
-                <div className="w-1.5 h-1.5 bg-[#D4AF37] rounded-full animate-bounce"></div>
-                <div className="w-1.5 h-1.5 bg-[#D4AF37] rounded-full animate-bounce delay-100"></div>
-                <div className="w-1.5 h-1.5 bg-[#D4AF37] rounded-full animate-bounce delay-200"></div>
+              animate={{ scale: [1, 2, 2.5], opacity: [0.8, 0.3, 0] }} 
+              transition={{ duration: 3, repeat: Infinity, ease: "easeOut" }} 
+              className="absolute w-32 h-32 border border-[#D4AF37]/50 rounded-full"
+            />
+            <motion.div 
+              animate={{ scale: [1, 2.5, 3.5], opacity: [0.6, 0.1, 0] }} 
+              transition={{ duration: 3, repeat: Infinity, ease: "easeOut", delay: 1 }} 
+              className="absolute w-32 h-32 border border-[#D4AF37]/30 rounded-full"
+            />
+          </div>
+
+          {/* كارت الخريطة */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            className="relative bg-[#111] p-2 rounded-[2rem] border border-white/10 shadow-[0_0_40px_rgba(212,175,55,0.1)] overflow-hidden group w-full max-w-[350px] cursor-pointer"
+            onClick={openGoogleMaps}
+          >
+            {/* صورة الخريطة (تقدر تحط صورة خريطة حقيقية مكان اللينك ده) */}
+            <div className="relative h-64 w-full rounded-[1.5rem] overflow-hidden bg-black">
+              <img 
+                src="https://images.unsplash.com/photo-1524661135-423995f22d0b?q=80&w=600&auto=format&fit=crop" 
+                alt="Map Location" 
+                className="w-full h-full object-cover opacity-60 group-hover:scale-110 transition-transform duration-700 grayscale"
+              />
+              <div className="absolute inset-0 bg-[#D4AF37]/10 mix-blend-overlay"></div>
+              
+              {/* الدبوس (Map Pin) */}
+              <motion.div 
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[#D4AF37] drop-shadow-2xl"
+              >
+                <MapPin size={48} className="fill-black" />
+              </motion.div>
+            </div>
+
+            {/* شريط تحت الصورة */}
+            <div className="absolute bottom-4 left-4 right-4 bg-black/80 backdrop-blur-md border border-white/10 p-3 rounded-2xl flex items-center justify-between">
+              <div>
+                <div className="text-white font-bold text-sm">Grand Egyptian Museum</div>
+                <div className="text-gray-400 text-[10px] uppercase tracking-widest">Giza, Egypt</div>
               </div>
-            </motion.div>
+              <div className="bg-[#D4AF37] text-black p-2 rounded-full">
+                <Navigation size={16} />
+              </div>
+            </div>
           </motion.div>
         </div>
 
-        {/* الجزء الأيمن: واجهة التفاعل السريع */}
+        {/* الجزء الأيمن: النص وزرار الـ GPS */}
         <div className="w-full md:w-1/2 text-left">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#D4AF37]/10 text-[#D4AF37] mb-6">
-            <Sparkles size={16} />
-            <span className="text-xs font-bold uppercase tracking-widest">Next-Gen Interaction</span>
-          </div>
-          
-          <h2 className="text-4xl md:text-5xl font-serif font-bold text-gray-900 mb-6 leading-tight">
-            Meet Your <span className="text-[#D4AF37]">Virtual Curator</span>
-          </h2>
-          
-          <p className="text-gray-600 mb-8 text-lg leading-relaxed">
-            Experience history like never before. Our AI-powered guide understands your questions and provides deep insights into the secrets of Ancient Egypt in real-time.
-          </p>
-
-          {/* Quick Chat Input Box (Mockup) */}
-          <div className="relative max-w-md group">
-            <div className="absolute inset-0 bg-[#D4AF37] rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity"></div>
-            <div className="relative bg-white border border-gray-200 rounded-2xl p-2 flex items-center shadow-sm">
-              <div className="pl-4 text-gray-400">
-                <MessageSquare size={20} />
-              </div>
-              <input 
-                type="text" 
-                placeholder="Ask: Who built the Pyramids?" 
-                className="w-full bg-transparent border-none focus:ring-0 text-sm py-3 px-4 text-gray-700 outline-none"
-              />
-              <button className="bg-[#1A1A40] hover:bg-[#D4AF37] text-white p-3 rounded-xl transition-all shadow-lg">
-                <Send size={18} />
-              </button>
+          <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[#D4AF37] mb-6">
+              <Compass size={16} />
+              <span className="text-xs font-bold uppercase tracking-widest">Plan Your Visit</span>
             </div>
             
-            {/* Quick Suggestions */}
-            <div className="flex flex-wrap gap-2 mt-4">
-              {["Golden Mask", "Mummification", "King Tut"].map((tag) => (
-                <button key={tag} className="text-[10px] font-bold uppercase tracking-tighter px-3 py-1.5 bg-gray-50 text-gray-400 rounded-md border border-gray-100 hover:border-[#D4AF37] hover:text-[#D4AF37] transition-all">
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
+            <h2 className="text-4xl md:text-5xl font-serif font-bold text-white mb-6 leading-tight">
+              Navigate to the <span className="text-[#D4AF37] italic">Legacy</span>
+            </h2>
+            
+            <p className="text-gray-400 mb-8 text-lg leading-relaxed max-w-lg">
+              Located directly overlooking the Giza Pyramids, the Grand Egyptian Museum is easily accessible. Click below to get real-time GPS directions from your current location.
+            </p>
+
+            {/* زرار الـ GPS الأساسي */}
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={openGoogleMaps}
+              className="bg-[#D4AF37] text-black px-8 py-4 rounded-full font-black uppercase tracking-widest text-xs flex items-center gap-3 shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:bg-white transition-colors"
+            >
+              <Map size={20} />
+              Start GPS Navigation
+            </motion.button>
+          </motion.div>
         </div>
 
       </div>

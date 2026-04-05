@@ -1,0 +1,68 @@
+[
+  {
+    "id": "cat_001",
+    "slug": "grand-atrium",
+    "name": "Grand Atrium & Entrance",
+    "hieroglyph": "𓇓𓏲𓁹𓊹", 
+    "title": "The majestic gateway featuring monumental statues like the 83-ton Colossus of Ramses II.",
+    "image": "https://media-cdn.tripadvisor.com/media/attractions-splice-spp-720x480/15/b6/f9/cd.jpg",
+    "itemCount": 3,
+    "status": "published",
+    "featured": true
+  },
+  {
+    "id": "cat_002",
+    "slug": "grand-staircase",
+    "name": "The Grand Staircase",
+    "hieroglyph": "𓇳𓍟𓐍𓅓𓏏",
+    "title": "A chronological journey through 60 masterpieces showcasing Royal Image and Divine Houses.",
+    "image": "https://art50.net/wp-content/uploads/2025/11/4-GEM-Grand-Staircase-Copyright-Grand-Egyptian-Museum-donusturuldugu-kaynak-JPG-1024x576.webp",
+    "itemCount": 60,
+    "status": "published",
+    "featured": true
+  },
+  {
+    "id": "cat_003",
+    "slug": "tutankhamun-gallery",
+    "name": "Tutankhamun Gallery",
+    "hieroglyph": "𓏇𓇋𓈖𓇋𓍉𓄿𓈖𓐍𓇓",
+    "title": "The complete collection of the boy king, showcasing the Golden Mask and over 5,000 treasures.",
+    "image": "https://www.cairo24.com/Upload/libfiles/159/2/378.jfif",
+    "itemCount": 45,
+    "status": "published",
+    "featured": true
+  },
+  {
+    "id": "cat_004",
+    "slug": "solar-boat",
+    "name": "Solar Boat Pavilion",
+    "hieroglyph": "𓎛𓇳𓅱𓆑𓅱",
+    "title": "Home to King Khufu's solar boat, the oldest intact wooden vessel symbolizing the journey to eternity.",
+    "image": "https://newsroom.info/UploadCache/libfiles/29/0/800x450o/345.jpeg",
+    "itemCount": 1,
+    "status": "published",
+    "featured": false
+  },
+  {
+    "id": "cat_005",
+    "slug": "main-exhibition",
+    "name": "Main Exhibition Halls",
+    "hieroglyph": "𓂓𓏠𓏏𓊖",
+    "title": "Exploring Egypt's history from the Old Kingdom to the Greco-Roman period with curated artifacts.",
+    "image": "https://artdogistanbul.com/wp-content/uploads/2025/11/grand-egyptian-museum-galleries-1-2048x1466-1-1024x733.webp",
+    "itemCount": 11,
+    "status": "published",
+    "featured": false
+  },
+  {
+    "id": "cat_006",
+    "slug": "royal-sarcophagi",
+    "name": "Journey to Eternity",
+    "hieroglyph": "𓊭𓏏𓆱𓐍",
+    "title": "A specialized collection of royal stone and wooden coffins that protected pharaohs in the afterlife.",
+    "image": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2a/c6/e3/b4/caption.jpg?w=800&h=800&s=1",
+    "itemCount": 15,
+    "status": "published",
+    "featured": false
+  }
+]
