@@ -142,7 +142,7 @@ const PharaohNavbar = () => {
                 <Image src={gemLogo} alt="GEM Logo" width={35} height={35} className="mix-blend-multiply brightness-90" />
               </div>
               <div className="hidden lg:flex flex-col">
-                <span className="text-white font-serif font-bold leading-none text-lg tracking-tight group-hover:text-[#D4AF37] transition-colors">The GEM</span>
+                <span className="text-white font-serif font-bold leading-none text-lg tracking-tight group-hover:text-[#D4AF37] transition-colors">The Kemet 3D</span>
                 <span className="text-[#D4AF37] text-[9px] tracking-[0.2em] font-light uppercase mt-1">Grand Egyptian Museum</span>
               </div>
             </Link>
