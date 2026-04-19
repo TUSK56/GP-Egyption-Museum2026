@@ -1,3 +1,110 @@
+
+
+
+
+
+
+
+"use client";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Shield, ExternalLink, Sparkles, ArrowRight, Ticket, Lock, Globe } from 'lucide-react';
+
+export default function BookingPage() {
+  // The official direct link to the museum ticketing page
+  const officialBookingUrl = "https://www.visit-gem.com/en/AdmissionTkt"; 
+
+  return (
+    <div className="min-h-screen bg-[#050505] text-white pt-32 pb-12 px-4 flex items-center justify-center font-sans">
+      <div className="max-w-3xl w-full">
+        
+        {/* Redirect Gateway Card */}
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-[#111] rounded-[48px] border-2 border-[#D4AF37]/30 p-8 md:p-16 text-center relative overflow-hidden shadow-2xl"
+        >
+          {/* Decorative Elements */}
+          <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent"></div>
+          <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl"></div>
+          <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-[#D4AF37]/5 rounded-full blur-3xl"></div>
+
+          <div className="relative z-10">
+            {/* Top Icon */}
+            <div className="w-20 h-20 bg-[#D4AF37] rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-[0_0_50px_rgba(212,175,55,0.3)] transform -rotate-6">
+              <Ticket size={40} className="text-black" />
+            </div>
+
+            <h4 className="text-[#D4AF37] font-black tracking-[5px] uppercase mb-4 text-[10px] md:text-xs">
+              Grand Egyptian Museum Gateway
+            </h4>
+            
+            <h1 className="text-3xl md:text-5xl font-serif font-bold mb-6 leading-tight">
+              Official Booking <br/> 
+              <span className="text-[#D4AF37] italic font-normal">Secure Portal</span>
+            </h1>
+
+            <p className="text-gray-400 text-sm md:text-base mb-10 max-w-lg mx-auto leading-relaxed">
+              To ensure the highest level of security for your payment, you are now being redirected to the 
+              <span className="text-white font-bold"> Official Grand Egyptian Museum </span> 
+              ticketing system to complete your reservation safely.
+            </p>
+
+            {/* Main Action Button */}
+            <div className="flex flex-col items-center gap-4">
+              <a 
+                href={officialBookingUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="group relative inline-flex items-center justify-center gap-4 bg-[#D4AF37] text-black font-black py-5 px-10 md:px-14 rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-[#D4AF37]/20 overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center gap-3">
+                  BOOK OFFICIAL TICKETS NOW <ArrowRight size={22} className="group-hover:translate-x-2 transition-transform" />
+                </span>
+                <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+              </a>
+              
+              <p className="text-[10px] text-gray-500 mt-2 flex items-center gap-2">
+                <Globe size={12} /> Portal will open in a new secure window
+              </p>
+            </div>
+
+            {/* Security Badges */}
+            <div className="mt-12 flex items-center justify-center gap-6 md:gap-12 border-t border-white/5 pt-10">
+              <div className="flex items-center gap-2 text-gray-500">
+                <Lock size={14} className="text-green-500" />
+                <span className="text-[9px] uppercase font-black tracking-widest">SSL Encrypted</span>
+              </div>
+              <div className="flex items-center gap-2 text-gray-500">
+                <Shield size={14} className="text-[#D4AF37]" />
+                <span className="text-[9px] uppercase font-black tracking-widest">Verified Merchant</span>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
+        {/* Footer info */}
+        <div className="text-center mt-10 space-y-2">
+          <p className="text-gray-600 text-[10px] uppercase tracking-[3px]">
+            Grand Egyptian Museum • Giza, Egypt • 2026
+          </p>
+          <button 
+            onClick={() => window.history.back()}
+            className="text-[#D4AF37]/50 hover:text-[#D4AF37] text-xs transition-colors"
+          >
+            ← Back to website
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+
+/*
+
+
 "use client";
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -193,7 +300,7 @@ export default function BookingPage() {
   return (
     <div className="min-h-screen bg-[#050505] text-white pt-24 pb-12 px-6">
       
-      {/* واجهة النجاح المخصصة (Success Modal) */}
+      
       <AnimatePresence>
         {showSuccess && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-md px-6">
@@ -238,7 +345,7 @@ export default function BookingPage() {
             <h1 className="text-5xl font-serif font-bold text-white mb-4">Book Your <span className="text-[#D4AF37] italic">Tickets</span></h1>
           </div>
 
-          {/* Stepper */}
+          
           <div className="flex items-center justify-between mb-12 relative">
             <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-white/10 z-0"></div>
             <div className={`absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-[#D4AF37] z-0 transition-all duration-500`} style={{ width: `${((step - 1) / 3) * 100}%` }}></div>
@@ -369,7 +476,7 @@ export default function BookingPage() {
           </div>
         </div>
 
-        {/* التذكرة الجانبية المستمرة */}
+      
         <div className="w-full lg:w-2/5">
           <div className="sticky top-32">
             <motion.div layout className="bg-[#111] rounded-[48px] overflow-hidden border-2 border-[#D4AF37]/30 shadow-2xl relative">
@@ -411,3 +518,4 @@ export default function BookingPage() {
     </div>
   );
 }
+*/
