@@ -25,7 +25,7 @@ const recentExecutions = [
 ];
 
 export default function workflow() {
-  const getStatusConfig = (status) => {
+  const getStatusConfig = (status: string) => {
     switch (status) {
       case "success": return { icon: CheckCircle, color: "text-emerald-500", bg: "bg-emerald-500/10", border: "border-emerald-500/20", glow: "shadow-[0_0_15px_rgba(16,185,129,0.2)]" };
       case "error": return { icon: XCircle, color: "text-red-500", bg: "bg-red-500/10", border: "border-red-500/20", glow: "shadow-[0_0_15px_rgba(239,68,68,0.2)]" };
@@ -87,7 +87,7 @@ export default function workflow() {
               <motion.div
                 key={wf.id}
                 initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.05 }}
-                className="group flex flex-col xl:flex-row items-start xl:items-center justify-between p-6 bg-white/[0.02] border border-white/5 rounded-2xl hover:bg-white/[0.04] transition-all"
+                className="group flex flex-col xl:flex-row items-start xl:items-center justify-between p-6 bg-white/2 border border-white/5 rounded-2xl hover:bg-white/4 transition-all"
               >
                 <div className="flex items-center gap-6 mb-4 xl:mb-0">
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center border ${config.border} ${config.bg} ${config.glow}`}>
@@ -129,12 +129,12 @@ export default function workflow() {
 
       {/* ================= Recent Executions Table ================= */}
       <div className="bg-[#111] border border-white/5 rounded-[2.5rem] overflow-hidden shadow-2xl">
-        <div className="p-8 border-b border-white/5 bg-white/[0.01]">
+        <div className="p-8 border-b border-white/5 bg-white/1">
           <h3 className="text-lg font-serif font-bold text-white">Telemetric Logs</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-white/[0.02] text-gray-500 text-[10px] font-black uppercase tracking-[0.2em]">
+            <thead className="bg-white/2 text-gray-500 text-[10px] font-black uppercase tracking-[0.2em]">
               <tr>
                 <th className="px-8 py-5 text-left">Process Identity</th>
                 <th className="px-8 py-5 text-left">State</th>
@@ -148,7 +148,7 @@ export default function workflow() {
                 return (
                   <motion.tr 
                     key={exec.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 + (idx * 0.05) }}
-                    className="hover:bg-white/[0.01] transition-colors"
+                    className="hover:bg-white/1 transition-colors"
                   >
                     <td className="px-8 py-5 text-sm font-bold text-gray-200">{exec.workflow}</td>
                     <td className="px-8 py-5">

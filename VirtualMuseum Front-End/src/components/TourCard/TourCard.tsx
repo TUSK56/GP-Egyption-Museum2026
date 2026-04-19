@@ -3,7 +3,17 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Clock, Calendar, User, Star, PlayCircle } from 'lucide-react';
 
-export default function TourCard({ tour, index }) {
+type Tour = {
+  image: string;
+  title: string;
+  rating: number | string;
+  guide: string;
+  duration: string;
+  date: string;
+  price: string;
+};
+
+export default function TourCard({ tour, index }: { tour: Tour; index: number }) {
   return (
     <motion.div 
       initial={{ opacity: 0, y: 30 }}

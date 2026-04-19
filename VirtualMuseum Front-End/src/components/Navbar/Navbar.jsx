@@ -137,11 +137,15 @@ const PharaohNavbar = () => {
           {/* Logo & Live Clock */}
           <div className="flex items-center gap-6">
             <Link href="/" className="flex items-center gap-3 min-w-max cursor-pointer group">
-              <div className="bg-gradient-to-br from-[#D4AF37] to-[#8A6D3B] p-1.5 rounded-lg shadow-[0_0_15px_rgba(212,175,55,0.3)] group-hover:shadow-[0_0_25px_rgba(212,175,55,0.6)] transition-all duration-300">
-                <Image src="/assets/images/Logo for Grand Egyptian Museum.png" alt="GEM Logo" width={35} height={35} className="mix-blend-multiply brightness-90" />
-              </div>
+              <Image
+                src="/assets/images/eh.png"
+                alt="GEM Logo"
+                width={56}
+                height={56}
+                className="w-12 h-12 object-contain drop-shadow-[0_0_8px_rgba(0,0,0,0.35)]"
+              />
               <div className="hidden lg:flex flex-col">
-                <span className="text-white font-serif font-bold leading-none text-lg tracking-tight group-hover:text-[#D4AF37] transition-colors">The Kemet 3D</span>
+                <span className="text-white font-serif font-bold leading-none text-lg tracking-tight group-hover:text-[#D4AF37] transition-colors">The GEM</span>
                 <span className="text-[#D4AF37] text-[9px] tracking-[0.2em] font-light uppercase mt-1">Grand Egyptian Museum</span>
               </div>
             </Link>

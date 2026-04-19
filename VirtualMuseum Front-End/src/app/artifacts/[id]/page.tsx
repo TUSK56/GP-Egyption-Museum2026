@@ -13,11 +13,13 @@ import {
 const ModelViewer = dynamic(() => import('../../../components/ModelViewer/ModelViewer'), { ssr: false });
 import artifactsData from '../../../Data/artifacts.json'; 
 
+type Artifact = (typeof artifactsData)[number];
+
 export default function ArtifactDetails() {
   const [show3D, setShow3D] = useState(false); 
-  const { id } = useParams();
+  const { id } = useParams<{ id: string }>();
   const router = useRouter();
-  const [artifact, setArtifact] = useState(null);
+  const [artifact, setArtifact] = useState<Artifact | null>(null);
 
   // States الخاصة بالزراير
   const [isFavorite, setIsFavorite] = useState(false);
@@ -30,21 +32,23 @@ export default function ArtifactDetails() {
 
   // تحميل الداتا
   useEffect(() => {
-    const found = artifactsData.find(item => item.id === id);
-    setArtifact(found);
+    const found = artifactsData.find((item: Artifact) => item.id === id);
+    setArtifact(found ?? null);
 
     if (found) {
-      const liked = JSON.parse(localStorage.getItem('liked_artifacts') || '[]');
-      setIsFavorite(liked.some(item => item.id === found.id));
+      const liked: Artifact[] = JSON.parse(localStorage.getItem('liked_artifacts') || '[]');
+      setIsFavorite(liked.some((item: Artifact) => item.id === found.id));
     }
   }, [id]);
 
   // دالة إضافة/إزالة من المفضلات
   const toggleFavorite = () => {
+    if (!artifact) return;
+
     let liked = JSON.parse(localStorage.getItem('liked_artifacts') || '[]');
     
     if (isFavorite) {
-      liked = liked.filter(item => item.id !== artifact.id);
+      liked = liked.filter((item: Artifact) => item.id !== artifact.id);
     } else {
       liked.push(artifact);
     }
@@ -57,6 +61,8 @@ export default function ArtifactDetails() {
 
   // دالة المشاركة
   const handleShare = async () => {
+    if (!artifact) return;
+
     const shareData = {
       title: `Grand Egyptian Museum: ${artifact.name}`,
       text: `Check out this amazing historical artifact: ${artifact.name}`,
@@ -77,7 +83,7 @@ export default function ArtifactDetails() {
   };
 
   // دالة تسجيل التقييم
-  const handleRating = (selectedRating) => {
+  const handleRating = (selectedRating: number) => {
     setRating(selectedRating);
     setHasRated(true);
     // هنا ممكن تبعت التقييم للـ Backend أو الـ Database بعدين
@@ -107,15 +113,18 @@ export default function ArtifactDetails() {
         <motion.div 
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
-          className="relative h-[500px] lg:h-[700px] rounded-[2rem] overflow-hidden border border-white/10 group shadow-2xl"
+          className="relative h-125 lg:h-175 rounded-4xl overflow-hidden border border-white/10 group shadow-2xl"
         >
           <Image 
             src={artifact.image} 
             alt={artifact.name} 
             fill 
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            loading="eager"
+            priority
             className="object-cover group-hover:scale-105 transition-transform duration-1000"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
+          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent"></div>
           
           <motion.button 
           onClick={() => setShow3D(true)}
@@ -175,7 +184,7 @@ export default function ArtifactDetails() {
           {/* ========================================== */}
           {/* قسم التقييم التفاعلي (Interactive Rating) */}
           {/* ========================================== */}
-          <div className="bg-gradient-to-r from-white/5 to-transparent border border-white/10 rounded-2xl p-6">
+          <div className="bg-linear-to-r from-white/5 to-transparent border border-white/10 rounded-2xl p-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <h4 className="text-white font-bold mb-1">Rate this Artifact</h4>
@@ -267,9 +276,17 @@ export default function ArtifactDetails() {
   );
 }
 
-function SpecCard({ icon, label, value }) {
+function SpecCard({
+  icon,
+  label,
+  value,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}) {
   return (
-    <div className="bg-white/[0.03] border border-white/5 p-5 rounded-2xl hover:border-[#D4AF37]/30 transition-colors group">
+    <div className="bg-white/3 border border-white/5 p-5 rounded-2xl hover:border-[#D4AF37]/30 transition-colors group">
       <div className="text-[#D4AF37] mb-3 group-hover:scale-110 transition-transform">{icon}</div>
       <div className="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-1">{label}</div>
       <div className="text-sm font-bold text-gray-200">{value}</div>

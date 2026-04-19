@@ -5,8 +5,15 @@ import { ArrowLeft, Trash2, Heart } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
+type VaultArtifact = {
+  id: string;
+  image: string;
+  name: string;
+  period: string;
+};
+
 // --- مكون الكارت الملكي (بلمسة حمراء للـ Love) ---
-const LovedCard = ({ artifact, onRemove }) => {
+const LovedCard = ({ artifact, onRemove }: { artifact: VaultArtifact; onRemove: (id: string) => void }) => {
   const router = useRouter();
   return (
     <motion.div 
@@ -15,11 +22,11 @@ const LovedCard = ({ artifact, onRemove }) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, scale: 0.8, filter: "blur(10px)" }} // خروج سينمائي
       transition={{ duration: 0.4 }}
-      className="group relative bg-gradient-to-b from-[#111] to-[#050505] border border-white/10 rounded-[2rem] p-5 cursor-pointer hover:border-red-600 hover:shadow-[0_0_30px_rgba(220,38,38,0.15)] transition-all duration-500 overflow-hidden flex flex-col justify-between"
+      className="group relative bg-linear-to-b from-[#111] to-[#050505] border border-white/10 rounded-4xl p-5 cursor-pointer hover:border-red-600 hover:shadow-[0_0_30px_rgba(220,38,38,0.15)] transition-all duration-500 overflow-hidden flex flex-col justify-between"
       onClick={() => router.push(`/artifacts/${artifact.id}`)}
     >
       {/* خلفية بتنور أحمر خفيف لما تعمل Hover */}
-      <div className="absolute inset-0 bg-gradient-to-t from-red-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+      <div className="absolute inset-0 bg-linear-to-t from-red-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
       {/* قسم الصورة */}
       <div className="relative h-56 w-full mb-6 flex justify-center items-center overflow-hidden rounded-xl bg-black/20">
@@ -53,17 +60,17 @@ const LovedCard = ({ artifact, onRemove }) => {
 
 // --- الصفحة الرئيسية ---
 export default function LovePage() {
-  const [lovedArtifacts, setLovedArtifacts] = useState([]);
+  const [lovedArtifacts, setLovedArtifacts] = useState<VaultArtifact[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem('liked_artifacts') || '[]');
+    const data: VaultArtifact[] = JSON.parse(localStorage.getItem('liked_artifacts') || '[]');
     setLovedArtifacts(data);
     setIsLoaded(true);
   }, []);
 
-  const removeItem = (id) => {
-    const updated = lovedArtifacts.filter(item => item.id !== id);
+  const removeItem = (id: string) => {
+    const updated = lovedArtifacts.filter((item: VaultArtifact) => item.id !== id);
     setLovedArtifacts(updated);
     localStorage.setItem('liked_artifacts', JSON.stringify(updated));
     window.dispatchEvent(new Event('update_liked'));
@@ -74,7 +81,7 @@ export default function LovePage() {
   return (
     <div className="min-h-screen bg-[#050505] pt-32 pb-20 px-6 md:px-12 relative overflow-hidden">
       {/* إضاءة خلفية حمراء خفيفة */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-red-600/5 blur-[120px] pointer-events-none rounded-full"></div>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-200 h-75 bg-red-600/5 blur-[120px] pointer-events-none rounded-full"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header Section */}
@@ -104,7 +111,7 @@ export default function LovePage() {
         {lovedArtifacts.length > 0 ? (
           <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             <AnimatePresence>
-              {lovedArtifacts.map((artifact) => (
+              {lovedArtifacts.map((artifact: VaultArtifact) => (
                 <LovedCard 
                   key={artifact.id} 
                   artifact={artifact} 
@@ -118,7 +125,7 @@ export default function LovePage() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="flex flex-col items-center justify-center py-32 text-center bg-white/[0.02] border border-white/5 rounded-[3rem]"
+            className="flex flex-col items-center justify-center py-32 text-center bg-white/2 border border-white/5 rounded-[3rem]"
           >
             <div className="relative mb-8">
               <div className="absolute inset-0 bg-red-600 blur-2xl opacity-20 rounded-full"></div>

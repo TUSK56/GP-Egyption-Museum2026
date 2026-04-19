@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { Mail, Phone, MapPin, Ticket, Award, Globe ,Smartphone, QrCode } from 'lucide-react';
+import { Mail, Phone, MapPin, Ticket, Smartphone, QrCode } from 'lucide-react';
 import { FaFacebookF, FaTwitter, FaInstagram, FaYoutube } from 'react-icons/fa';
 
 const PremiumFooter = () => {
@@ -32,23 +32,20 @@ const PremiumFooter = () => {
           {/* Logo & Vision */}
           <div className="space-y-6">
             <div className="flex items-center gap-3">
-              <div className="bg-gradient-to-br from-[#D4AF37] to-[#8A6D3B] p-2 rounded-xl flex items-center justify-center">
-                <Image
-                  src="/assets/images/Logo for Grand Egyptian Museum.png"
-                  alt="Grand Egyptian Museum Logo"
-                  width={40}
-                  height={40}
-
-                  className="object-contain mix-blend-multiply"
-                />
-              </div>
+              <Image
+                src="/assets/images/eh.png"
+                alt="Grand Egyptian Museum Logo"
+                width={56}
+                height={56}
+                className="w-12 h-12 object-contain"
+              />
               <div>
                 <h2 className="font-serif text-xl font-bold tracking-tighter ">The Egyptian Museum</h2>
                 <p className="text-[#D4AF37] text-[10px] tracking-[0.2em] font-light uppercase italic">Eternal Civilization</p>
               </div>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed italic">
-              "Man fears time, but time fears the pyramids." Journey through the gates of history.
+              &quot;Man fears time, but time fears the pyramids.&quot; Journey through the gates of history.
             </p>
             <div className="flex gap-3">
               {[FaFacebookF, FaTwitter, FaInstagram, FaYoutube].map((Icon, i) => (

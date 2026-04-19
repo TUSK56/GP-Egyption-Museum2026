@@ -5,7 +5,7 @@ import { Search, Filter, ArrowUpRight, Hexagon, History, Heart, Bookmark, Share2
 import { useRouter } from 'next/navigation';
 
 // --- استيراد البيانات مباشرة من ملف JSON ---
-import artifactsData from '../../data/artifacts.json';
+import artifactsData from '../../Data/artifacts.json';
 
 const categoriesMap = {
   "cat_001": "Statues",

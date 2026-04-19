@@ -5,15 +5,45 @@ import { ArrowLeft, MessageCircle, ImageIcon, Send, Share2, MoreHorizontal, MapP
 import Link from 'next/link';
 
 // --- الريأكتات المتاحة ---
-const REACTIONS_OPTIONS = [
+const REACTIONS_OPTIONS: Array<{
+  id: ReactionId;
+  icon: string;
+  label: string;
+  color: string;
+}> = [
   { id: 'like', icon: '👍', label: 'Like', color: 'text-blue-400' },
   { id: 'love', icon: '❤️', label: 'Love', color: 'text-red-500' },
   { id: 'wow', icon: '🤯', label: 'Wow', color: 'text-purple-400' },
   { id: 'crown', icon: '👑', label: 'Royal', color: 'text-[#D4AF37]' },
 ];
 
+type ReactionId = 'like' | 'love' | 'wow' | 'crown';
+
+type CommunityComment = {
+  id: number;
+  user: string;
+  avatar: string;
+  text: string;
+};
+
+type CommunityPost = {
+  id: number;
+  user: string;
+  role: string;
+  isVerified: boolean;
+  avatar: string;
+  time: string;
+  location: string;
+  content: string;
+  image: string | null;
+  reactionCount: number;
+  userReaction: ReactionId | null;
+  commentsCount: number;
+  commentsList: CommunityComment[];
+};
+
 // --- داتا وهمية مطورة (بما فيها التعليقات) ---
-const INITIAL_POSTS = [
+const INITIAL_POSTS: CommunityPost[] = [
   {
     id: 1,
     user: "Dr. Zahi Hawass",
@@ -50,16 +80,16 @@ const INITIAL_POSTS = [
 ];
 
 export default function CommunityPage() {
-  const [posts, setPosts] = useState(INITIAL_POSTS);
+  const [posts, setPosts] = useState<CommunityPost[]>(INITIAL_POSTS);
   const [newPostText, setNewPostText] = useState("");
   
   // States للتعليقات
-  const [openComments, setOpenComments] = useState({}); // عشان نفتح ونقفل سكشن الكومنتات لكل بوست
-  const [commentInputs, setCommentInputs] = useState({}); // عشان نحفظ الكلام اللي بيتكتب في كل بوست
+  const [openComments, setOpenComments] = useState<Record<number, boolean>>({}); // عشان نفتح ونقفل سكشن الكومنتات لكل بوست
+  const [commentInputs, setCommentInputs] = useState<Record<number, string>>({}); // عشان نحفظ الكلام اللي بيتكتب في كل بوست
 
   // 1. دالة اختيار الريأكت
-  const handleReact = (postId, reactionId) => {
-    setPosts(posts.map(post => {
+  const handleReact = (postId: number, reactionId: ReactionId) => {
+    setPosts(posts.map((post) => {
       if (post.id === postId) {
         const isRemoving = post.userReaction === reactionId;
         return {
@@ -73,7 +103,7 @@ export default function CommunityPage() {
   };
 
   // 2. دالة نشر بوست جديد
-  const handlePostSubmit = (e) => {
+  const handlePostSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!newPostText.trim()) return;
 
@@ -98,12 +128,12 @@ export default function CommunityPage() {
   };
 
   // 3. دالة فتح/قفل سكشن الكومنتات للبوست
-  const toggleCommentsSection = (postId) => {
+  const toggleCommentsSection = (postId: number) => {
     setOpenComments(prev => ({ ...prev, [postId]: !prev[postId] }));
   };
 
   // 4. دالة إضافة تعليق جديد
-  const handleAddComment = (e, postId) => {
+  const handleAddComment = (e: React.FormEvent<HTMLFormElement>, postId: number) => {
     e.preventDefault();
     const commentText = commentInputs[postId];
     if (!commentText?.trim()) return;
@@ -133,7 +163,7 @@ export default function CommunityPage() {
   return (
     <div className="min-h-screen bg-[#050505] text-white pt-24 pb-32 px-4 md:px-8 relative overflow-hidden">
       
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#D4AF37]/5 blur-[150px] pointer-events-none rounded-full"></div>
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-200 h-100 bg-[#D4AF37]/5 blur-[150px] pointer-events-none rounded-full"></div>
 
       <div className="max-w-3xl mx-auto relative z-10">
         
@@ -180,7 +210,7 @@ export default function CommunityPage() {
                   key={post.id}
                   layout
                   initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.9 }}
-                  className="bg-gradient-to-b from-[#111] to-[#0a0a0a] border border-white/10 rounded-[2rem] p-6 md:p-8 shadow-2xl hover:border-[#D4AF37]/30 transition-all"
+                  className="bg-linear-to-b from-[#111] to-[#0a0a0a] border border-white/10 rounded-4xl p-6 md:p-8 shadow-2xl hover:border-[#D4AF37]/30 transition-all"
                 >
                   {/* Post Header */}
                   <div className="flex items-start justify-between mb-6">
@@ -334,9 +364,9 @@ export default function CommunityPage() {
       </div>
 
       {/* --- Sticky Input Box (لإضافة بوست جديد) --- */}
-      <div className="fixed bottom-0 left-0 w-full bg-gradient-to-t from-[#050505] via-[#050505]/90 to-transparent pt-24 pb-8 px-4 z-50">
+      <div className="fixed bottom-0 left-0 w-full bg-linear-to-t from-[#050505] via-[#050505]/90 to-transparent pt-24 pb-8 px-4 z-50">
         <div className="max-w-3xl mx-auto">
-          <form onSubmit={handlePostSubmit} className="bg-[#111]/90 backdrop-blur-xl border border-white/10 rounded-[2rem] p-3 flex items-center gap-2 shadow-[0_0_50px_rgba(0,0,0,0.8)] focus-within:border-[#D4AF37]/50 transition-colors">
+          <form onSubmit={handlePostSubmit} className="bg-[#111]/90 backdrop-blur-xl border border-white/10 rounded-4xl p-3 flex items-center gap-2 shadow-[0_0_50px_rgba(0,0,0,0.8)] focus-within:border-[#D4AF37]/50 transition-colors">
             <div className="flex gap-1 shrink-0">
               <button type="button" className="p-3 text-gray-400 hover:text-[#D4AF37] hover:bg-[#D4AF37]/10 rounded-full transition-colors"><ImageIcon size={20} /></button>
               <button type="button" className="hidden sm:block p-3 text-gray-400 hover:text-blue-400 hover:bg-blue-400/10 rounded-full transition-colors"><Map size={20} /></button>

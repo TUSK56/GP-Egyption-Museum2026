@@ -10,6 +10,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
+    formats: ['image/avif', 'image/webp'],
+    deviceSizes: [320, 420, 640, 768, 1024, 1280, 1536, 1920],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     remotePatterns: [
       { protocol: 'https', hostname: 'tse2.mm.bing.net' },
       { protocol: 'https', hostname: 'tse1.mm.bing.net' },
@@ -18,6 +21,9 @@ const nextConfig = {
       { protocol: 'https', hostname: 'w7.pngwing.com' },
       { protocol: 'https', hostname: 'img.freepik.com' },
     ],
+  },
+  experimental: {
+    optimizePackageImports: ['lucide-react', 'framer-motion', 'react-icons', 'recharts', 'swiper'],
   },
 };
 

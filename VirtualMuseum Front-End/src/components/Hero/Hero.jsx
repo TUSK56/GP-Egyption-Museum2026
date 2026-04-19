@@ -66,6 +66,7 @@ export default function Hero() {
                   src={img} 
                   alt="Museum View" 
                   fill 
+                  sizes="100vw"
                   className="object-cover opacity-40 animate-[slowPan_20s_linear_infinite]"
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent"></div>

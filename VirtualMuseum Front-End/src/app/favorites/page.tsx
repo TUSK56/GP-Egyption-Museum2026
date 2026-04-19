@@ -5,8 +5,15 @@ import { ArrowLeft, Trash2, Box, Bookmark } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
+type VaultArtifact = {
+  id: string;
+  image: string;
+  name: string;
+  period: string;
+};
+
 // --- مكون الكارت الملكي ---
-const FavoriteCard = ({ artifact, onRemove }) => {
+const FavoriteCard = ({ artifact, onRemove }: { artifact: VaultArtifact; onRemove: (id: string) => void }) => {
   const router = useRouter();
   return (
     <motion.div 
@@ -53,17 +60,17 @@ const FavoriteCard = ({ artifact, onRemove }) => {
 
 // --- الصفحة الرئيسية ---
 export default function FavoritesPage() {
-  const [savedArtifacts, setSavedArtifacts] = useState([]);
+  const [savedArtifacts, setSavedArtifacts] = useState<VaultArtifact[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const data = JSON.parse(localStorage.getItem('saved_artifacts') || '[]');
+    const data: VaultArtifact[] = JSON.parse(localStorage.getItem('saved_artifacts') || '[]');
     setSavedArtifacts(data);
     setIsLoaded(true);
   }, []);
 
-  const removeItem = (id) => {
-    const updated = savedArtifacts.filter(item => item.id !== id);
+  const removeItem = (id: string) => {
+    const updated = savedArtifacts.filter((item: VaultArtifact) => item.id !== id);
     setSavedArtifacts(updated);
     localStorage.setItem('saved_artifacts', JSON.stringify(updated));
     window.dispatchEvent(new Event('update_saved'));
@@ -104,7 +111,7 @@ export default function FavoritesPage() {
         {savedArtifacts.length > 0 ? (
           <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
             <AnimatePresence>
-              {savedArtifacts.map((artifact) => (
+              {savedArtifacts.map((artifact: VaultArtifact) => (
                 <FavoriteCard 
                   key={artifact.id} 
                   artifact={artifact} 

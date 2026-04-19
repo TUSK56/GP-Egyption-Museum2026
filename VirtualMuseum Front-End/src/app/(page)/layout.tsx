@@ -1,6 +1,5 @@
 import Navbar from "../../components/Navbar/Navbar"; // تأكد من صحة المسار
-import Footer from "../../components/Footer/Footer"; // تأكد من صحة المسار
-import FloatingButtons from "../../components/FloatingButtons/FloatingButtons"; // التعديل هنا (زودنا حرف S)
+import PublicChrome from "../../components/PublicChrome/PublicChrome";
 
 export default function PageLayout({
   children,
@@ -11,13 +10,10 @@ export default function PageLayout({
     <div className="flex flex-col min-h-screen">
       <Navbar />
       {/* الـ main هنا عشان يضمن إن المحتوى واخد مساحة بين النافبار والفوتر */}
-      <main className="flex-grow pt-10"> 
+      <main className="grow pt-10"> 
         {children}
       </main>
-      <Footer />
-      
-      {/* المربعين العائمين */}
-      <FloatingButtons /> 
+      <PublicChrome />
     </div>
   );
 }

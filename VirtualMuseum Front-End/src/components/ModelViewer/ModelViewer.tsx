@@ -3,16 +3,33 @@ import React, { Suspense, useState, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, useGLTF, Stage, Html, useProgress } from '@react-three/drei';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { Transition } from 'framer-motion';
 import { X, Box, Loader2 } from 'lucide-react';
 
+type ModelProps = {
+  path: string;
+  onError?: () => void;
+};
+
+type ModelViewerProps = {
+  modelPath: string;
+  onClose: () => void;
+};
+
 // --- مكون تحميل الموديل (بيحاول يحمل الأول، لو ملقاش الملف بيفعل الخطأ) ---
-function Model({ path, onError }) {
+function Model({ path, onError }: ModelProps) {
   try {
     const { scene } = useGLTF(path);
     return <primitive object={scene} scale={1} />;
   } catch (error) {
     // لو لسه بيحمل، خليه يكمل تحميل
-    if (error instanceof Promise || typeof error.then === 'function') {
+    const isThenable =
+      typeof error === 'object' &&
+      error !== null &&
+      'then' in error &&
+      typeof (error as { then?: unknown }).then === 'function';
+
+    if (error instanceof Promise || isThenable) {
       throw error;
     }
 
@@ -34,10 +51,16 @@ function Loader() {
     setSmoothProgress(progress);
   }, [progress]);
 
+  const breatheTransition: Transition = {
+    duration: 2,
+    ease: 'easeInOut',
+    repeat: Infinity,
+  };
+
   const breatheAnimation = {
     scale: [1, 1.05, 1],
     opacity: [0.5, 1, 0.5],
-    transition: { duration: 2, ease: "easeInOut", repeat: Infinity },
+    transition: breatheTransition,
   };
 
   return (
@@ -58,10 +81,16 @@ function Loader() {
 
 // --- رسالة "قريباً" (لو القطعة مش موجودة) ---
 function ComingSoonMessage() {
+  const pulseTransition: Transition = {
+    duration: 3,
+    ease: 'easeInOut',
+    repeat: Infinity,
+  };
+
   const pulseAnimation = {
     opacity: [0.3, 0.6, 0.3],
     scale: [0.98, 1.02, 0.98],
-    transition: { duration: 3, ease: "easeInOut", repeat: Infinity },
+    transition: pulseTransition,
   };
 
   return (
@@ -95,7 +124,7 @@ function ComingSoonMessage() {
 }
 
 // --- المكون الرئيسي ---
-export default function ModelViewer({ modelPath, onClose }) {
+export default function ModelViewer({ modelPath, onClose }: ModelViewerProps) {
   const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
@@ -138,8 +167,6 @@ export default function ModelViewer({ modelPath, onClose }) {
               title="3D Model"
               frameBorder="0"
               allowFullScreen
-              mozallowfullscreen="true"
-              webkitallowfullscreen="true"
               allow="autoplay; fullscreen; xr-spatial-tracking"
               src={modelPath}
               className="absolute left-0 w-full"
@@ -156,12 +183,12 @@ export default function ModelViewer({ modelPath, onClose }) {
         ) : (
           /* ---------------- حالة القطع اللي على الجهاز (.glb) ---------------- */
           <div className="w-full h-full rounded-[2rem] overflow-hidden border border-[#D4AF37]/20 relative bg-[#050505] shadow-[0_0_30px_rgba(0,0,0,0.8)] cursor-grab active:cursor-grabbing">
-            <Canvas shadows dpr={[1, 2]} camera={{ position: [0, 0, 4], fov: 45 }} className="w-full h-full outline-none">
+            <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 4], fov: 45 }} className="w-full h-full outline-none">
               <Suspense fallback={<Loader />}>
                 {hasError ? (
                   <ComingSoonMessage />
                 ) : (
-                  <Stage environment="city" intensity={0.5} contactShadow opacity={0.5} contactShadowBlur={2}>
+                  <Stage environment="city" intensity={0.5}>
                     <Model
                       path={modelPath}
                       onError={() => setHasError(true)}

@@ -8,7 +8,7 @@ import * as LucideIcons from 'lucide-react';
 
 // استيراد البيانات
 import categoriesData from '../../data/categories.json';
-import artifactsData from '../../data/artifacts.json'; // تأكد من وجود هذا الملف
+import artifactsData from '../../Data/artifacts.json'; // تأكد من وجود هذا الملف
 
 // مكون الأيقونة الديناميكي
 const DynamicIcon = ({ name, size = 32 }) => {

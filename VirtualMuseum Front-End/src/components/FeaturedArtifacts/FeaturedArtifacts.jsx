@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Star, MapPin, Clock, ArrowRight, History, Sparkles } from 'lucide-react';
 
 // استيراد الداتا الخاصة بك
-import artifactsData from '../../data/artifacts.json';
+import artifactsData from '../../Data/artifacts.json';
 
 export default function FeaturedArtifacts() {
   // نختار أول 3 قطع فقط لعرضها كـ Featured
@@ -59,7 +59,7 @@ export default function FeaturedArtifacts() {
               className="group relative"
             >
               {/* الكارت الخلفي الفخم */}
-              <div className="absolute inset-0 bg-gradient-to-b from-[#1a1a1f] to-[#0a0a0f] border border-white/5 rounded-[2.5rem] group-hover:border-[#D4AF37]/30 transition-all duration-500 shadow-2xl"></div>
+              <div className="absolute inset-0 bg-linear-to-b from-[#1a1a1f] to-[#0a0a0f] border border-white/5 rounded-[2.5rem] group-hover:border-[#D4AF37]/30 transition-all duration-500 shadow-2xl"></div>
               
               {/* تأثير ضوئي ذهبي عند الـ Hover */}
               <div className="absolute -top-20 -right-20 w-40 h-40 bg-[#D4AF37]/5 rounded-full blur-[60px] group-hover:bg-[#D4AF37]/15 transition-all"></div>
