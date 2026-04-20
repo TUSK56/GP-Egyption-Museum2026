@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { ThemeSchedulerProvider } from "../components/Theme/ThemeSchedulerProvider";
 
 export const metadata: Metadata = {
   title: "Grand Egyptian Museum | GEM",
@@ -13,8 +14,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" dir="ltr">
-      <body className="antialiased m-0 p-0 bg-[#050505]">
-        {children}
+      <body className="antialiased m-0 p-0">
+        <ThemeSchedulerProvider>{children}</ThemeSchedulerProvider>
       </body>
     </html>
   );
