@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -119,29 +120,66 @@ app.UseMiddleware<ExceptionHandlingMiddleware>();
 using (var scope = app.Services.CreateScope())
 {
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+    var context = scope.ServiceProvider.GetRequiredService<MuseumDbContext>();
+    var targetConnectionString = context.Database.GetConnectionString();
     try
     {
-        var context = scope.ServiceProvider.GetRequiredService<MuseumDbContext>();
-        logger.LogInformation("Attempting database connection...");
+        const int maxRetries = 12;
+        for (var attempt = 1; attempt <= maxRetries; attempt++)
+        {
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(targetConnectionString))
+                {
+                    await EnsureDatabaseExistsAsync(targetConnectionString, logger);
+                }
 
-        if (await context.Database.CanConnectAsync())
-        {
-            logger.LogInformation("Database connection successful. Applying migrations...");
-            context.Database.Migrate();
-            await DatabaseSeeder.SeedAsync(context);
-            logger.LogInformation("Database migrations and seeding completed successfully.");
-        }
-        else
-        {
-            logger.LogError("Database connection failed. Please verify SQL Server is running and connection string in appsettings.json");
-            throw new InvalidOperationException("Unable to connect to database.");
+                logger.LogInformation("Attempting database migration... (Attempt {Attempt}/{MaxRetries})", attempt, maxRetries);
+                await context.Database.MigrateAsync();
+                await DatabaseSeeder.SeedAsync(context);
+                logger.LogInformation("Database migrations and seeding completed successfully.");
+                break;
+            }
+            catch (Exception) when (attempt < maxRetries)
+            {
+                await Task.Delay(TimeSpan.FromSeconds(5));
+            }
+            catch
+            {
+                logger.LogError("Database migration failed after retries. Please verify SQL Server is running and connection string in appsettings.json");
+                throw new InvalidOperationException("Unable to initialize database.");
+            }
         }
     }
     catch (Exception ex)
     {
-        logger.LogError(ex, "Database initialization failed: {Message}. Verify connection string: Server=...;Database=VirtualMuseumDB;Trusted_Connection=True;TrustServerCertificate=True;MultipleActiveResultSets=true;", ex.Message);
+        logger.LogError(ex, "Database initialization failed: {Message}. Verify connection string: Server=...;Database=VirtualMuseumDB;User ID=sa;Password=...;TrustServerCertificate=True;Encrypt=False;MultipleActiveResultSets=true;", ex.Message);
         throw;
     }
+}
+
+static async Task EnsureDatabaseExistsAsync(string targetConnectionString, ILogger logger)
+{
+    var targetBuilder = new SqlConnectionStringBuilder(targetConnectionString);
+    if (string.IsNullOrWhiteSpace(targetBuilder.InitialCatalog))
+    {
+        return;
+    }
+
+    var targetDatabase = targetBuilder.InitialCatalog;
+    var masterBuilder = new SqlConnectionStringBuilder(targetConnectionString)
+    {
+        InitialCatalog = "master"
+    };
+
+    await using var connection = new SqlConnection(masterBuilder.ConnectionString);
+    await connection.OpenAsync();
+
+    await using var command = connection.CreateCommand();
+    command.CommandText = $"IF DB_ID(N'{targetDatabase.Replace("'", "''")}') IS NULL CREATE DATABASE [{targetDatabase.Replace("]", "]]}")}]";
+    await command.ExecuteNonQueryAsync();
+
+    logger.LogInformation("Verified database '{DatabaseName}' exists.", targetDatabase);
 }
 
 app.UseSwagger();

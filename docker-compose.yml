@@ -1,0 +1,55 @@
+name: VirtualMuseum
+
+services:
+    db:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        container_name: VirtualMuseum-db
+        environment:
+            ACCEPT_EULA: "Y"
+            MSSQL_SA_PASSWORD: "VmStrongP@ssw0rd123"
+        ports:
+            - "1433:1433"
+        healthcheck:
+            test:
+                [
+                    "CMD-SHELL",
+                    '/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$${MSSQL_SA_PASSWORD}" -Q "SELECT 1" -C || exit 1',
+                ]
+            interval: 10s
+            timeout: 5s
+            retries: 10
+            start_period: 30s
+        restart: unless-stopped
+
+    backend:
+        build:
+            context: ./VirtualMuseum Back-End
+            dockerfile: VirtualMuseum.API/Dockerfile
+        container_name: VirtualMuseum-backend
+        environment:
+            ASPNETCORE_ENVIRONMENT: Development
+            ASPNETCORE_URLS: http://+:8080
+            ConnectionStrings__DefaultConnection: Server=db,1433;Database=VirtualMuseumDB;User ID=sa;Password=VmStrongP@ssw0rd123;TrustServerCertificate=True;Encrypt=False;MultipleActiveResultSets=true;
+            Cors__Origins__0: http://localhost:3000
+            Cors__Origins__1: http://frontend:3000
+        ports:
+            - "8080:8080"
+        depends_on:
+            db:
+                condition: service_healthy
+        restart: unless-stopped
+
+    frontend:
+        build:
+            context: ./VirtualMuseum Front-End
+            dockerfile: Dockerfile
+        container_name: VirtualMuseum-frontend
+        environment:
+            NODE_ENV: production
+            PORT: 3000
+        ports:
+            - "3000:3000"
+        depends_on:
+            backend:
+                condition: service_started
+        restart: unless-stopped
