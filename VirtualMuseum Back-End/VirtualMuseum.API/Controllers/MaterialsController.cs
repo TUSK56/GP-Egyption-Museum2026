@@ -53,6 +53,7 @@ public class MaterialsController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<Material>), 200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]

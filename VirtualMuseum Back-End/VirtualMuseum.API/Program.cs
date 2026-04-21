@@ -1,6 +1,8 @@
 using System.Security.Claims;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -26,6 +28,12 @@ builder.Services.AddDbContext<MuseumDbContext>(options =>
     options.UseSqlServer(connectionString);
 });
 
+var dataProtectionKeyPath = builder.Configuration["DataProtection:KeyPath"] ?? "/var/aspnet-keys";
+builder.Services
+    .AddDataProtection()
+    .SetApplicationName("VirtualMuseum.API")
+    .PersistKeysToFileSystem(new DirectoryInfo(dataProtectionKeyPath));
+
 // Repositories
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<IArtifactRepository, ArtifactRepository>();
@@ -47,6 +55,10 @@ builder.Services.AddScoped<UserService>();
 
 // JWT Authentication
 var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured in appsettings.json");
+if (jwtKey.Length < 32)
+{
+    throw new InvalidOperationException("Jwt:Key must be at least 32 characters for production safety.");
+}
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -73,10 +85,18 @@ builder.Services.AddCors(options =>
 {
     options.AddDefaultPolicy(policy =>
     {
-        if (corsOrigins.Length > 0)
-            policy.WithOrigins(corsOrigins).AllowAnyHeader().AllowAnyMethod();
-        else
-            policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        if (corsOrigins.Length == 0)
+        {
+            if (builder.Environment.IsDevelopment())
+            {
+                policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                return;
+            }
+
+            throw new InvalidOperationException("Cors:Origins must be configured in non-development environments.");
+        }
+
+        policy.WithOrigins(corsOrigins).AllowAnyHeader().AllowAnyMethod();
     });
 });
 
@@ -112,6 +132,11 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 // Global exception handling - must be first
 app.UseMiddleware<ExceptionHandlingMiddleware>();
@@ -182,11 +207,18 @@ static async Task EnsureDatabaseExistsAsync(string targetConnectionString, ILogg
     logger.LogInformation("Verified database '{DatabaseName}' exists.", targetDatabase);
 }
 
-app.UseSwagger();
-app.UseSwaggerUI(c =>
+if (app.Environment.IsDevelopment())
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "3D Virtual Museum API v1");
-});
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "3D Virtual Museum API v1");
+    });
+}
+else
+{
+    app.UseHsts();
+}
 
 app.UseHttpsRedirection();
 app.UseCors();

@@ -41,6 +41,7 @@ public class TagsController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<Tag>), 201)]
     [ProducesResponseType(400)]
     public async Task<IActionResult> Create([FromBody] Tag? tag, CancellationToken cancellationToken)

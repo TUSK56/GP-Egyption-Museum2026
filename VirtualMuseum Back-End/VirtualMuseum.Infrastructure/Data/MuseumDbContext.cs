@@ -36,5 +36,20 @@ public class MuseumDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(MuseumDbContext).Assembly);
+
+        // Explicit decimal precision avoids provider defaults and truncation warnings.
+        modelBuilder.Entity<Artifact>(entity =>
+        {
+            entity.Property(x => x.Height).HasPrecision(18, 2);
+            entity.Property(x => x.Width).HasPrecision(18, 2);
+            entity.Property(x => x.Depth).HasPrecision(18, 2);
+            entity.Property(x => x.Weight).HasPrecision(18, 2);
+        });
+
+        modelBuilder.Entity<DiscoveryLocation>(entity =>
+        {
+            entity.Property(x => x.Latitude).HasPrecision(18, 6);
+            entity.Property(x => x.Longitude).HasPrecision(18, 6);
+        });
     }
 }

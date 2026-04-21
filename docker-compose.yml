@@ -26,14 +26,14 @@ services:
             context: ./VirtualMuseum Back-End
             dockerfile: VirtualMuseum.API/Dockerfile
         container_name: VirtualMuseum-backend
+        env_file:
+            - ./VirtualMuseum Back-End/.env
         environment:
-            ASPNETCORE_ENVIRONMENT: Development
-            ASPNETCORE_URLS: http://+:8080
-            ConnectionStrings__DefaultConnection: Server=db,1433;Database=VirtualMuseumDB;User ID=sa;Password=VmStrongP@ssw0rd123;TrustServerCertificate=True;Encrypt=False;MultipleActiveResultSets=true;
-            Cors__Origins__0: http://localhost:3000
-            Cors__Origins__1: http://frontend:3000
+            DataProtection__KeyPath: /var/aspnet-keys
         ports:
             - "8080:8080"
+        volumes:
+            - backend_data_protection_keys:/var/aspnet-keys
         depends_on:
             db:
                 condition: service_healthy
@@ -44,12 +44,14 @@ services:
             context: ./VirtualMuseum Front-End
             dockerfile: Dockerfile
         container_name: VirtualMuseum-frontend
-        environment:
-            NODE_ENV: production
-            PORT: 3000
+        env_file:
+            - ./VirtualMuseum Front-End/.env
         ports:
             - "3000:3000"
         depends_on:
             backend:
                 condition: service_started
         restart: unless-stopped
+
+volumes:
+    backend_data_protection_keys:

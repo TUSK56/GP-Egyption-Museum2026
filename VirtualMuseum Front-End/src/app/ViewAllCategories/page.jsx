@@ -1,14 +1,28 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Search, LayoutGrid, Sparkles, ArrowLeft } from "lucide-react";
 import * as LucideIcons from "lucide-react";
+import { getCategories } from "../../lib/museumApi";
 
 // استيراد البيانات
 import categoriesData from "../../Data/categories.json";
-import artifactsData from "../../Data/artifacts.json"; // تأكد من وجود هذا الملف
+
+function mapApiCategoryToUi(category) {
+    return {
+        id: category?.id || "",
+        slug:
+            category?.name?.toLowerCase().replace(/\s+/g, "-") || "collection",
+        name: category?.name || "Collection",
+        hieroglyph: "𓋹",
+        title: "Collection from the museum archive.",
+        image: "/assets/images/eh.png",
+        itemCount: 0,
+        status: "published",
+        featured: false,
+    };
+}
 
 // مكون الأيقونة الديناميكي
 const DynamicIcon = ({ name, size = 32 }) => {
@@ -23,16 +37,37 @@ const DynamicIcon = ({ name, size = 32 }) => {
 // --- المكون الرئيسي للملف ---
 export default function ViewAllCategories() {
     const [searchTerm, setSearchTerm] = useState("");
-    const params = useParams();
+    const [categories, setCategories] = useState(categoriesData);
 
-    // 1. منطق استخراج الـ slug (لو كنت في صفحة داخلية)
-    const slug = params?.slug;
-    const filteredArtifacts = artifactsData
-        ? artifactsData.filter((item) => item.categoryId === slug)
-        : [];
+    useEffect(() => {
+        let isMounted = true;
+
+        async function loadCategories() {
+            try {
+                const response = await getCategories();
+                const apiCategories = Array.isArray(response?.data)
+                    ? response.data.map(mapApiCategoryToUi)
+                    : [];
+
+                if (!isMounted || apiCategories.length === 0) {
+                    return;
+                }
+
+                setCategories(apiCategories);
+            } catch {
+                // Keep JSON fallback.
+            }
+        }
+
+        loadCategories();
+
+        return () => {
+            isMounted = false;
+        };
+    }, []);
 
     // 2. فلترة الأقسام بناءً على البحث (للصفحة الرئيسية)
-    const filteredCategories = categoriesData.filter(
+    const filteredCategories = categories.filter(
         (cat) =>
             cat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             cat.title.toLowerCase().includes(searchTerm.toLowerCase()),

@@ -53,6 +53,7 @@ public class ErasController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<Era>), 200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
