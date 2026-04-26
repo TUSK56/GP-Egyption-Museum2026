@@ -9,6 +9,8 @@
         "lint": "eslint ."
     },
     "dependencies": {
+        "@tailwindcss/postcss": "^4",
+        "tailwindcss": "^4",
         "@ai-sdk/google": "^3.0.53",
         "@emailjs/browser": "^4.4.1",
         "@react-three/drei": "^10.0.0",
@@ -31,13 +33,11 @@
         "three": "^0.183.2"
     },
     "devDependencies": {
-        "@tailwindcss/postcss": "^4",
         "@types/node": "^20",
         "@types/react": "^19.0.0",
         "@types/react-dom": "^19.0.0",
         "eslint": "^9",
         "eslint-config-next": "16.1.6",
-        "tailwindcss": "^4",
         "typescript": "^5"
     },
     "overrides": {
