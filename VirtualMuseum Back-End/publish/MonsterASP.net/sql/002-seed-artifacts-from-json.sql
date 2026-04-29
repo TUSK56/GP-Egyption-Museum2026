@@ -1,4 +1,4 @@
-﻿-- Auto-generated from src/Data/artifacts.json + categories.json
+﻿-- Auto-generated from Data/artifacts.json + Data/categories.json
 -- Safe to run multiple times (upsert pattern).
 SET XACT_ABORT ON;
 BEGIN TRANSACTION;
@@ -2109,8 +2109,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/0bc5a237388d4e648d27ac4736ede617/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'sarcophagus-of-tiye-3d-embed', N'text/html', N'https://sketchfab.com/models/0bc5a237388d4e648d27ac4736ede617/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'sarcophagus-of-tiye-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1Jc8Hg2M2gFkCJNRmLw7nGO9J0CSRIhVY');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'sarcophagus-of-tiye-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1Jc8Hg2M2gFkCJNRmLw7nGO9J0CSRIhVY', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -2165,8 +2165,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Saqqara', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/bd76c8e653604e9288a8ba07143bb041/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'granite-sarcophagus-from-dynasty-26-3d-embed', N'text/html', N'https://sketchfab.com/models/bd76c8e653604e9288a8ba07143bb041/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'granite-sarcophagus-from-dynasty-26-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1oiFkhs4fKEhZbM2B4YagkdgXK4kYJgIg');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'granite-sarcophagus-from-dynasty-26-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1oiFkhs4fKEhZbM2B4YagkdgXK4kYJgIg', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -2221,8 +2221,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Deir el-Bahari', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/7dfd0e2f89e54c33baf4f383a8678cd7/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'coffin-of-hatshepsut-3d-embed', N'text/html', N'https://sketchfab.com/models/7dfd0e2f89e54c33baf4f383a8678cd7/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'coffin-of-hatshepsut-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=17QHvqxAD0IHm7cmuFEiJ1TZs1R_0Y73W');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'coffin-of-hatshepsut-thumb', N'image', N'https://drive.google.com/uc?export=view&id=17QHvqxAD0IHm7cmuFEiJ1TZs1R_0Y73W', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -2277,8 +2277,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Deir el-Bahari', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/d62befca88c14a91aef9c0748e998d07/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'painted-wooden-coffin-lid-3d-embed', N'text/html', N'https://sketchfab.com/models/d62befca88c14a91aef9c0748e998d07/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'painted-wooden-coffin-lid-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1zEZE_UJ-JT2c9caULy6bisTqRJgbnI_B');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'painted-wooden-coffin-lid-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1zEZE_UJ-JT2c9caULy6bisTqRJgbnI_B', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -2333,8 +2333,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Saqqara', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/33e8ca175ff84d798402fb981cb71cf5/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'sarcophagus-of-psamtik-3d-embed', N'text/html', N'https://sketchfab.com/models/33e8ca175ff84d798402fb981cb71cf5/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'sarcophagus-of-psamtik-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1nE4ZRMmr7Dw9TEOY8BRFisceVkjA2flq');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'sarcophagus-of-psamtik-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1nE4ZRMmr7Dw9TEOY8BRFisceVkjA2flq', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -2389,8 +2389,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Thebes', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/26fd99e1e2c1405684b4fca701b1127a/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'sarcophagus-with-book-of-the-dead-texts-3d-embed', N'text/html', N'https://sketchfab.com/models/26fd99e1e2c1405684b4fca701b1127a/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'sarcophagus-with-book-of-the-dead-texts-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1egAS6Ag9GrY65NoFcaLcTy6RgXn-fl5Z');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'sarcophagus-with-book-of-the-dead-texts-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1egAS6Ag9GrY65NoFcaLcTy6RgXn-fl5Z', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -2445,8 +2445,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Giza', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/edf8580f2a5f45a8aabc53de2058da4b/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'anthropoid-sarcophagus-3d-embed', N'text/html', N'https://sketchfab.com/models/edf8580f2a5f45a8aabc53de2058da4b/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'anthropoid-sarcophagus-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=18SljU7MGCGC-AXj8Yc0j9Mxe-_BCUILJ');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'anthropoid-sarcophagus-thumb', N'image', N'https://drive.google.com/uc?export=view&id=18SljU7MGCGC-AXj8Yc0j9Mxe-_BCUILJ', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -2501,8 +2501,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Thebes', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/b991224b8b83438cbc96abe60f419558/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'sarcophagus-with-funerary-texts-3d-embed', N'text/html', N'https://sketchfab.com/models/b991224b8b83438cbc96abe60f419558/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'sarcophagus-with-funerary-texts-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1eT-H1nLfs1Pa9SYbt4U9gU7_Au7r4Mot');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'sarcophagus-with-funerary-texts-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1eT-H1nLfs1Pa9SYbt4U9gU7_Au7r4Mot', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -2557,8 +2557,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/992c57047cdf4412b970ad798d5ad0c9/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'tutankhamuns-golden-mask-3d-embed', N'text/html', N'https://sketchfab.com/models/992c57047cdf4412b970ad798d5ad0c9/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'tutankhamuns-golden-mask-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1tkc6mxHXUbCfygg2hlqbZV8B8U81nYl2');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'tutankhamuns-golden-mask-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1tkc6mxHXUbCfygg2hlqbZV8B8U81nYl2', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -2613,8 +2613,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/e83d63e2e21f48e19ad7c28b2671348d/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'inner-golden-coffin-3d-embed', N'text/html', N'https://sketchfab.com/models/e83d63e2e21f48e19ad7c28b2671348d/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'inner-golden-coffin-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1IiWoEgLd6ff6_KKT-gezD1bIceZgMOqZ');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'inner-golden-coffin-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1IiWoEgLd6ff6_KKT-gezD1bIceZgMOqZ', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -2669,8 +2669,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/2aaf85ca66b044e3aa2ccda0d9c3b33b/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'outer-quartzite-sarcophagus-3d-embed', N'text/html', N'https://sketchfab.com/models/2aaf85ca66b044e3aa2ccda0d9c3b33b/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'outer-quartzite-sarcophagus-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1wFkq21L1JfeNulEOjzNjQKxU4R7rBTQU');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'outer-quartzite-sarcophagus-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1wFkq21L1JfeNulEOjzNjQKxU4R7rBTQU', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -2725,8 +2725,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/277832097a2544fd9f3c95a2d1af3385/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'gilded-shrines-four-shrines-3d-embed', N'text/html', N'https://sketchfab.com/models/277832097a2544fd9f3c95a2d1af3385/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'gilded-shrines-four-shrines-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1_gKUV8L_EcgCSNNJPm8Mrgj8jdTME7yl');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'gilded-shrines-four-shrines-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1_gKUV8L_EcgCSNNJPm8Mrgj8jdTME7yl', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -2781,8 +2781,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/5253bc094adb4ce7bb68f370d1f56301/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'royal-golden-throne-3d-embed', N'text/html', N'https://sketchfab.com/models/5253bc094adb4ce7bb68f370d1f56301/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'royal-golden-throne-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1TvxfIvo5CKhv2RAIzMB7iNN2GwLVnyss');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'royal-golden-throne-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1TvxfIvo5CKhv2RAIzMB7iNN2GwLVnyss', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -2837,8 +2837,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/d29a834451014363a789edcc28ed90eb/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'great-war-chariot-3d-embed', N'text/html', N'https://sketchfab.com/models/d29a834451014363a789edcc28ed90eb/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'great-war-chariot-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1vH-2826v8DuGzmzIjH9vmcsxEfAM6D2V');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'great-war-chariot-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1vH-2826v8DuGzmzIjH9vmcsxEfAM6D2V', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -2893,8 +2893,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/8bdbc56cc989432c804b08dd02a74e60/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'ceremonial-chariot-3d-embed', N'text/html', N'https://sketchfab.com/models/8bdbc56cc989432c804b08dd02a74e60/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'ceremonial-chariot-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1OtSFXTpf4GzDFb0rZYu5qh4dDT76M9UJ');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'ceremonial-chariot-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1OtSFXTpf4GzDFb0rZYu5qh4dDT76M9UJ', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -2949,8 +2949,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/9ead56cffdab4e20a1d08d6c2bbfff22/embed?autostart=1&ui_theme=dark');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'the-ka-statue-3d-embed', N'text/html', N'https://sketchfab.com/models/9ead56cffdab4e20a1d08d6c2bbfff22/embed?autostart=1&ui_theme=dark', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'the-ka-statue-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=13ITVfJls1zwrLYFMucGqnsta7PxI3hBr');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'the-ka-statue-thumb', N'image', N'https://drive.google.com/uc?export=view&id=13ITVfJls1zwrLYFMucGqnsta7PxI3hBr', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -3005,8 +3005,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/d67f1d336e34459497ba980dc5953f39/embed?autostart=1&ui_theme=dark');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'alabaster-canopic-chest-3d-embed', N'text/html', N'https://sketchfab.com/models/d67f1d336e34459497ba980dc5953f39/embed?autostart=1&ui_theme=dark', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'alabaster-canopic-chest-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1Oi7lw6QHp2LooUnwkodIDKUcYMRq5G0t');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'alabaster-canopic-chest-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1Oi7lw6QHp2LooUnwkodIDKUcYMRq5G0t', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -3061,8 +3061,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/a04030b9268c4db9a6d21378700914c3/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'statues-of-the-protective-goddesses-3d-embed', N'text/html', N'https://sketchfab.com/models/a04030b9268c4db9a6d21378700914c3/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'statues-of-the-protective-goddesses-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1kaAeJgXXsQ4RV-D1TZj1w_L68rwPi2Bl');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'statues-of-the-protective-goddesses-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1kaAeJgXXsQ4RV-D1TZj1w_L68rwPi2Bl', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -3117,8 +3117,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/af779ec92a594c7786d1e1fcd5c0b8a9/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'cow-headed-funerary-bed-3d-embed', N'text/html', N'https://sketchfab.com/models/af779ec92a594c7786d1e1fcd5c0b8a9/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'cow-headed-funerary-bed-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1kVuI074wlJ1t3zHkU75un4qBuo0DwiYN');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'cow-headed-funerary-bed-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1kVuI074wlJ1t3zHkU75un4qBuo0DwiYN', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -3173,8 +3173,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/3d43740429814f9aa94b2f23ca0b7b9c/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'painted-wardrobe-chest-3d-embed', N'text/html', N'https://sketchfab.com/models/3d43740429814f9aa94b2f23ca0b7b9c/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'painted-wardrobe-chest-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=12zjSuiKSZDCKou7oFyPqx6dApopFTLZc');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'painted-wardrobe-chest-thumb', N'image', N'https://drive.google.com/uc?export=view&id=12zjSuiKSZDCKou7oFyPqx6dApopFTLZc', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -3229,8 +3229,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/981c038c5e20402582954a060a99b6ed/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'ostrich-feather-fan-3d-embed', N'text/html', N'https://sketchfab.com/models/981c038c5e20402582954a060a99b6ed/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'ostrich-feather-fan-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1savELesEYlWFwHj18J7pvBjwVCb849Gw');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'ostrich-feather-fan-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1savELesEYlWFwHj18J7pvBjwVCb849Gw', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -3285,8 +3285,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/526d0fe88388480eaf29dfec25bfe20a/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'meteoric-iron-dagger-3d-embed', N'text/html', N'https://sketchfab.com/models/526d0fe88388480eaf29dfec25bfe20a/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'meteoric-iron-dagger-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1tZ6xzKgIycUv2FWlidL918qQwfu0IL78');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'meteoric-iron-dagger-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1tZ6xzKgIycUv2FWlidL918qQwfu0IL78', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -3341,8 +3341,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/7fc4496e06b74293b23b24afc28b46e6/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'winged-scarab-necklace-3d-embed', N'text/html', N'https://sketchfab.com/models/7fc4496e06b74293b23b24afc28b46e6/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'winged-scarab-necklace-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1eLXd9nCW9VWvpwRUCD7kUOWMWeTU_zTP');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'winged-scarab-necklace-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1eLXd9nCW9VWvpwRUCD7kUOWMWeTU_zTP', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -3397,8 +3397,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/3960cebd332346dc8eb275b2c8288101/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'anubis-shrine-3d-embed', N'text/html', N'https://sketchfab.com/models/3960cebd332346dc8eb275b2c8288101/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'anubis-shrine-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VN47-ln0wz9hkEdl6aHWK5_0gCLdS__y');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'anubis-shrine-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VN47-ln0wz9hkEdl6aHWK5_0gCLdS__y', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -3453,8 +3453,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/0f18b35477ca4808a6d04d47d3b2c58f/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'king-hunting-with-harpoon-3d-embed', N'text/html', N'https://sketchfab.com/models/0f18b35477ca4808a6d04d47d3b2c58f/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'king-hunting-with-harpoon-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1EACXlVbfa64jtv_wXrNWDkGSRm_xM71R');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'king-hunting-with-harpoon-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1EACXlVbfa64jtv_wXrNWDkGSRm_xM71R', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -3509,8 +3509,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/09650b26200548f5995eef58237f2eea/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'funerary-boat-models-3d-embed', N'text/html', N'https://sketchfab.com/models/09650b26200548f5995eef58237f2eea/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'funerary-boat-models-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1Ixd40ZPGfifBXJt4Kv4fUGzRDWpcBzNw');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'funerary-boat-models-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1Ixd40ZPGfifBXJt4Kv4fUGzRDWpcBzNw', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -3565,8 +3565,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/04ca992a5c704a5896586243287a0869/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'ceremonial-hunting-shield-3d-embed', N'text/html', N'https://sketchfab.com/models/04ca992a5c704a5896586243287a0869/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'ceremonial-hunting-shield-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1jZKbD7T90sBIiqtEjMLQSy6vN5l8NjEh');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'ceremonial-hunting-shield-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1jZKbD7T90sBIiqtEjMLQSy6vN5l8NjEh', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -3621,8 +3621,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/37e6756681594907a2471d18abc1471e/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'royal-bow-and-arrows-3d-embed', N'text/html', N'https://sketchfab.com/models/37e6756681594907a2471d18abc1471e/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'royal-bow-and-arrows-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1dV3K0AHvmskSpX-_pUvGmSP05cOvNUhm');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'royal-bow-and-arrows-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1dV3K0AHvmskSpX-_pUvGmSP05cOvNUhm', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -3677,8 +3677,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/f811f1f4183b4f4cbdb633581274febd/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'golden-sandals-3d-embed', N'text/html', N'https://sketchfab.com/models/f811f1f4183b4f4cbdb633581274febd/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'golden-sandals-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1IbUZQ3FsmcAv479aoshkGFG3-3P0hK6S');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'golden-sandals-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1IbUZQ3FsmcAv479aoshkGFG3-3P0hK6S', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -3733,8 +3733,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/44e6d1d37add41fbade46a94053cfa43/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'senet-game-board-3d-embed', N'text/html', N'https://sketchfab.com/models/44e6d1d37add41fbade46a94053cfa43/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'senet-game-board-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1ijT_XjjNpJ9JxULTYEFETOnR82vZF_8s');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'senet-game-board-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1ijT_XjjNpJ9JxULTYEFETOnR82vZF_8s', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -3789,8 +3789,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/5ec2ee051a2d469690338314ad49e554/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'silver-trumpet-3d-embed', N'text/html', N'https://sketchfab.com/models/5ec2ee051a2d469690338314ad49e554/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'silver-trumpet-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1Un15BhkXkASc2tGC_UIad4x9dWbSLd_4');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'silver-trumpet-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1Un15BhkXkASc2tGC_UIad4x9dWbSLd_4', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -3845,8 +3845,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/5ec2ee051a2d469690338314ad49e554/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'bronze-trumpet-3d-embed', N'text/html', N'https://sketchfab.com/models/5ec2ee051a2d469690338314ad49e554/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'bronze-trumpet-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1Un15BhkXkASc2tGC_UIad4x9dWbSLd_4');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'bronze-trumpet-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1Un15BhkXkASc2tGC_UIad4x9dWbSLd_4', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -3901,8 +3901,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/90e45042cd7245c9ac53aae48e10168c/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'childhood-ebony-chair-3d-embed', N'text/html', N'https://sketchfab.com/models/90e45042cd7245c9ac53aae48e10168c/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'childhood-ebony-chair-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1DHY16yBphYZQkGVdsZ0Q-w4c4PSHLUHo');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'childhood-ebony-chair-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1DHY16yBphYZQkGVdsZ0Q-w4c4PSHLUHo', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -3957,8 +3957,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/2593ca03edf84fa382c829ab3f392ce0/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'blue-glass-headrest-3d-embed', N'text/html', N'https://sketchfab.com/models/2593ca03edf84fa382c829ab3f392ce0/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'blue-glass-headrest-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=12RGTAJh_aAOoC22B6Qd7NLvYGWGMMO8z');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'blue-glass-headrest-thumb', N'image', N'https://drive.google.com/uc?export=view&id=12RGTAJh_aAOoC22B6Qd7NLvYGWGMMO8z', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -4013,8 +4013,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/763ece58611d4e6eb7bb93ab34d9881b/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'kings-ushabti-figurine-3d-embed', N'text/html', N'https://sketchfab.com/models/763ece58611d4e6eb7bb93ab34d9881b/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'kings-ushabti-figurine-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1pFM54ZIL9DqzA3GCDUlVYj9Oz9UEBbJb');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'kings-ushabti-figurine-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1pFM54ZIL9DqzA3GCDUlVYj9Oz9UEBbJb', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -4069,8 +4069,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/4db1321a1bd34236afa0db91f65688d8/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'alabaster-perfume-vessel-3d-embed', N'text/html', N'https://sketchfab.com/models/4db1321a1bd34236afa0db91f65688d8/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'alabaster-perfume-vessel-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1OB8VWYSo4z3eZmkBbaKe58gwu83-axcE');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'alabaster-perfume-vessel-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1OB8VWYSo4z3eZmkBbaKe58gwu83-axcE', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -4125,8 +4125,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/35fec58b221a426ba9dc0b9908c03695/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'wooden-clothing-bust-mannequin-3d-embed', N'text/html', N'https://sketchfab.com/models/35fec58b221a426ba9dc0b9908c03695/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'wooden-clothing-bust-mannequin-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1IL97VTIhw2L5N3ui35RRTFDAWxQEsbBx');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'wooden-clothing-bust-mannequin-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1IL97VTIhw2L5N3ui35RRTFDAWxQEsbBx', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -4181,8 +4181,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/d24f3d8d372c47e3854b1b3033278c32/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'scarab-signet-ring-3d-embed', N'text/html', N'https://sketchfab.com/models/d24f3d8d372c47e3854b1b3033278c32/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'scarab-signet-ring-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1EQxPjPCmk_1qjdv73jpGcJwMbJBKOujF');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'scarab-signet-ring-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1EQxPjPCmk_1qjdv73jpGcJwMbJBKOujF', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -4237,8 +4237,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/af779ec92a594c7786d1e1fcd5c0b8a9/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'inscribed-ivory-box-3d-embed', N'text/html', N'https://sketchfab.com/models/af779ec92a594c7786d1e1fcd5c0b8a9/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'inscribed-ivory-box-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1qiAMX8OCBAd83wfLnTrDASzV4I8mNU_P');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'inscribed-ivory-box-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1qiAMX8OCBAd83wfLnTrDASzV4I8mNU_P', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -4293,8 +4293,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Valley of the Kings (KV62)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/02040818b3ce42c7b427a8371807af62/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'gilded-statue-of-ptah-3d-embed', N'text/html', N'https://sketchfab.com/models/02040818b3ce42c7b427a8371807af62/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'gilded-statue-of-ptah-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=15vs1nfOfGTTQn25C2rxNQOZXHS4H4ZZg');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'gilded-statue-of-ptah-thumb', N'image', N'https://drive.google.com/uc?export=view&id=15vs1nfOfGTTQn25C2rxNQOZXHS4H4ZZg', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -4349,8 +4349,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Giza (Khufu Pyramid)', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/560d1842576345a9b96572bb338901fb/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'khufus-solar-boat-3d-embed', N'text/html', N'https://sketchfab.com/models/560d1842576345a9b96572bb338901fb/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'khufus-solar-boat-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1kGq3X6BF6XMUpbRukOYBLmTdlTs2KMv0');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'khufus-solar-boat-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1kGq3X6BF6XMUpbRukOYBLmTdlTs2KMv0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -4405,8 +4405,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Abydos', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/b5bde7711b154764978d09340ff3a406/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'small-statue-of-khufu-3d-embed', N'text/html', N'https://sketchfab.com/models/b5bde7711b154764978d09340ff3a406/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'small-statue-of-khufu-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1RzrvzOyvFjEnFEWUzfSqJJcHlZd4iI09');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'small-statue-of-khufu-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1RzrvzOyvFjEnFEWUzfSqJJcHlZd4iI09', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -4461,8 +4461,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Giza', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/4ccbcc060ce246e897e2750cfbafb7ec/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'hetepheres-collection-bedchair-3d-embed', N'text/html', N'https://sketchfab.com/models/4ccbcc060ce246e897e2750cfbafb7ec/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'hetepheres-collection-bedchair-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1tRk3tKe1rwLXVvjgSAqCXwvsf8uHjr9q');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'hetepheres-collection-bedchair-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1tRk3tKe1rwLXVvjgSAqCXwvsf8uHjr9q', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -4517,8 +4517,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Saqqara', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/be699d5cd26e4c2fa831cca6651b9212/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'egyptian-scribe-gem-copy-3d-embed', N'text/html', N'https://sketchfab.com/models/be699d5cd26e4c2fa831cca6651b9212/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'egyptian-scribe-gem-copy-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1HfzZi4Ofu910Awm_u01dIsJRXYmlZi88');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'egyptian-scribe-gem-copy-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1HfzZi4Ofu910Awm_u01dIsJRXYmlZi88', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -4573,8 +4573,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Thebes', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/b1c1b7c155fb48e4803775a4bbc3c506/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'victory-stele-of-merneptah-3d-embed', N'text/html', N'https://sketchfab.com/models/b1c1b7c155fb48e4803775a4bbc3c506/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'victory-stele-of-merneptah-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1uArh8_6auPdZuBndxbp4DvDhIS8ZFc1B');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'victory-stele-of-merneptah-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1uArh8_6auPdZuBndxbp4DvDhIS8ZFc1B', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -4629,8 +4629,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Tanis', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/b62546fca1d04896b8fff19d0ad4e230/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'amenemhat-iii-lion-head-3d-embed', N'text/html', N'https://sketchfab.com/models/b62546fca1d04896b8fff19d0ad4e230/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'amenemhat-iii-lion-head-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1XNtyJx6_y2KmWyWt9Dxc_ZYYqAtUzSOw');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'amenemhat-iii-lion-head-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1XNtyJx6_y2KmWyWt9Dxc_ZYYqAtUzSOw', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -4685,8 +4685,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Fayum', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/0eeee86532d34a91bf71956a5da65399/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'fayum-portraits-selection-3d-embed', N'text/html', N'https://sketchfab.com/models/0eeee86532d34a91bf71956a5da65399/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'fayum-portraits-selection-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1EjByuzgfQhHjsRXgy6H880bX0a2EIqwp');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'fayum-portraits-selection-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1EjByuzgfQhHjsRXgy6H880bX0a2EIqwp', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();
@@ -4741,8 +4741,8 @@ SET @DiscoveryLocationId = (SELECT TOP 1 [Id] FROM [DiscoveryLocations] WHERE [N
 IF @DiscoveryLocationId IS NULL BEGIN SET @DiscoveryLocationId = NEWID(); INSERT INTO [DiscoveryLocations] ([Id], [Name], [Latitude], [Longitude]) VALUES (@DiscoveryLocationId, N'Amarna', NULL, NULL); END;
 SET @ModelFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://sketchfab.com/models/8c60faca6152405e9d35784efa8b9aa1/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0');
 IF @ModelFileId IS NULL BEGIN SET @ModelFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ModelFileId, N'nefertiti-and-akhenaten-artworks-3d-embed', N'text/html', N'https://sketchfab.com/models/8c60faca6152405e9d35784efa8b9aa1/embed?autostart=1&ui_theme=dark&ui_infos=0&ui_hint=0', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
-SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G');
-IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'nefertiti-and-akhenaten-artworks-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1VXx9jgwjXeHO3YdooiJIsqYt9L1lmJ2G', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
+SET @ThumbFileId = (SELECT TOP 1 [Id] FROM [Files] WHERE [Url] = N'https://drive.google.com/uc?export=view&id=1UR_hHxk3t4OwOQz3LbRWkK1Ji83WRHCw');
+IF @ThumbFileId IS NULL BEGIN SET @ThumbFileId = NEWID(); INSERT INTO [Files] ([Id], [FileName], [FileType], [Url], [StorageProvider], [UploadedBy], [CreatedAt]) VALUES (@ThumbFileId, N'nefertiti-and-akhenaten-artworks-thumb', N'image', N'https://drive.google.com/uc?export=view&id=1UR_hHxk3t4OwOQz3LbRWkK1Ji83WRHCw', N'external', ISNULL(@AdminUserId, '00000000-0000-0000-0000-000000000000'), SYSUTCDATETIME()); END;
 IF @ArtifactId IS NULL
 BEGIN
     SET @ArtifactId = NEWID();

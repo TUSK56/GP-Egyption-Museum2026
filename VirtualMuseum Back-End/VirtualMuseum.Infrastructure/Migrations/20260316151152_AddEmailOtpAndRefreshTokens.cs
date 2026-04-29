@@ -73,8 +73,12 @@ namespace VirtualMuseum.Infrastructure.Migrations
                 table: "RefreshTokens",
                 column: "UserId");
 
-            migrationBuilder.Sql(
-                "UPDATE [Users] SET [EmailConfirmed] = 1 WHERE [Email] = 'admin@museum.com';");
+            migrationBuilder.Sql("""
+                IF COL_LENGTH('Users', 'Email') IS NOT NULL
+                    EXEC(N'UPDATE [Users] SET [EmailConfirmed] = 1 WHERE [Email] = N''admin@museum.com'';');
+                ELSE IF COL_LENGTH('Users', 'EmailAddress') IS NOT NULL
+                    EXEC(N'UPDATE [Users] SET [EmailConfirmed] = 1 WHERE [EmailAddress] = N''admin@museum.com'';');
+                """);
         }
 
         /// <inheritdoc />

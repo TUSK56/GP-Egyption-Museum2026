@@ -42,6 +42,10 @@ export async function googleLogin(payload) {
     });
 }
 
+export async function verifyAuthToken() {
+    return apiRequest("/api/auth/verify");
+}
+
 export async function requestPasswordReset(payload) {
     return apiRequest("/api/auth/forgot-password/request", {
         method: "POST",

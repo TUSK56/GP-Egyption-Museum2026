@@ -11,14 +11,24 @@ namespace VirtualMuseum.Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql(
-                "UPDATE [Users] SET [EmailConfirmed] = 1 WHERE [Email] = 'admin@museum.com';");
+                """
+                IF COL_LENGTH('Users', 'Email') IS NOT NULL
+                    EXEC(N'UPDATE [Users] SET [EmailConfirmed] = 1 WHERE [Email] = N''admin@museum.com'';');
+                ELSE IF COL_LENGTH('Users', 'EmailAddress') IS NOT NULL
+                    EXEC(N'UPDATE [Users] SET [EmailConfirmed] = 1 WHERE [EmailAddress] = N''admin@museum.com'';');
+                """);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql(
-                "UPDATE [Users] SET [EmailConfirmed] = 0 WHERE [Email] = 'admin@museum.com';");
+                """
+                IF COL_LENGTH('Users', 'Email') IS NOT NULL
+                    EXEC(N'UPDATE [Users] SET [EmailConfirmed] = 0 WHERE [Email] = N''admin@museum.com'';');
+                ELSE IF COL_LENGTH('Users', 'EmailAddress') IS NOT NULL
+                    EXEC(N'UPDATE [Users] SET [EmailConfirmed] = 0 WHERE [EmailAddress] = N''admin@museum.com'';');
+                """);
         }
     }
 }

@@ -31,6 +31,7 @@ public class MuseumDbContext : DbContext
     public DbSet<ArtifactView> ArtifactViews => Set<ArtifactView>();
     public DbSet<EmailOtp> EmailOtps => Set<EmailOtp>();
     public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<PendingUserRegistration> PendingUserRegistrations => Set<PendingUserRegistration>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

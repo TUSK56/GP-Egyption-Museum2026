@@ -6,7 +6,7 @@ import Image from "next/image";
 import { Mail, Lock, Eye, EyeOff, User } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { registerUser, sendOtp, verifyOtp } from "../../lib/authApi";
+import { registerUser, verifyOtp } from "../../lib/authApi";
 import GoogleAuthButton from "../Auth/GoogleAuthButton";
 import { pushAdminNotification } from "../../lib/adminEvents";
 
@@ -59,14 +59,9 @@ export default function Signup() {
                 );
             }
 
-            const otpResponse = await sendOtp({ email: email.trim() });
-            if (!otpResponse?.success) {
-                throw new Error(otpResponse?.message || "Could not send OTP.");
-            }
-
             setOtpSent(true);
             setSuccessMessage(
-                "Account created. OTP sent to your email. Enter the code to verify your account.",
+                "OTP sent to your email. Enter the code to verify and create your account.",
             );
         } catch (err) {
             setError(err?.message || "Registration failed. Please try again.");

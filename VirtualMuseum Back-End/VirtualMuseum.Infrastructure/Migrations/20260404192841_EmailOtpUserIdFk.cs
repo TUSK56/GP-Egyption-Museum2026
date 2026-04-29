@@ -18,10 +18,20 @@ namespace VirtualMuseum.Infrastructure.Migrations
                 nullable: true);
 
             migrationBuilder.Sql("""
-                UPDATE eo
-                SET eo.UserId = u.Id
-                FROM EmailOtps AS eo
-                INNER JOIN Users AS u ON u.Email = eo.Email
+                IF COL_LENGTH('Users', 'Email') IS NOT NULL
+                    EXEC(N'
+                        UPDATE eo
+                        SET eo.UserId = u.Id
+                        FROM EmailOtps AS eo
+                        INNER JOIN Users AS u ON u.Email = eo.Email
+                    ');
+                ELSE IF COL_LENGTH('Users', 'EmailAddress') IS NOT NULL
+                    EXEC(N'
+                        UPDATE eo
+                        SET eo.UserId = u.Id
+                        FROM EmailOtps AS eo
+                        INNER JOIN Users AS u ON u.EmailAddress = eo.Email
+                    ');
                 """);
 
             migrationBuilder.Sql("DELETE FROM EmailOtps WHERE UserId IS NULL");

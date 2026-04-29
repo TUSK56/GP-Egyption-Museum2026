@@ -1,4 +1,4 @@
-IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+﻿IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
 BEGIN
     CREATE TABLE [__EFMigrationsHistory] (
         [MigrationId] nvarchar(150) NOT NULL,
@@ -701,14 +701,14 @@ BEGIN
             UPDATE eo
             SET eo.UserId = u.Id
             FROM EmailOtps AS eo
-            INNER JOIN Users AS u ON u.Email = eo.Email;
+            INNER JOIN Users AS u ON u.Email = eo.Email
         ');
     ELSE IF COL_LENGTH('Users', 'EmailAddress') IS NOT NULL
         EXEC(N'
             UPDATE eo
             SET eo.UserId = u.Id
             FROM EmailOtps AS eo
-            INNER JOIN Users AS u ON u.EmailAddress = eo.Email;
+            INNER JOIN Users AS u ON u.EmailAddress = eo.Email
         ');
 END;
 GO
@@ -777,6 +777,81 @@ IF NOT EXISTS (
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
     VALUES (N'20260404192841_EmailOtpUserIdFk', N'8.0.11');
+END;
+GO
+
+COMMIT;
+GO
+
+BEGIN TRANSACTION;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260429200507_AddPendingUserRegistrationOtpFlow'
+)
+BEGIN
+    DECLARE @var2 sysname;
+    SELECT @var2 = [d].[name]
+    FROM [sys].[default_constraints] [d]
+    INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+    WHERE ([d].[parent_object_id] = OBJECT_ID(N'[DiscoveryLocations]') AND [c].[name] = N'Longitude');
+    IF @var2 IS NOT NULL EXEC(N'ALTER TABLE [DiscoveryLocations] DROP CONSTRAINT [' + @var2 + '];');
+    ALTER TABLE [DiscoveryLocations] ALTER COLUMN [Longitude] decimal(18,6) NULL;
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260429200507_AddPendingUserRegistrationOtpFlow'
+)
+BEGIN
+    DECLARE @var3 sysname;
+    SELECT @var3 = [d].[name]
+    FROM [sys].[default_constraints] [d]
+    INNER JOIN [sys].[columns] [c] ON [d].[parent_column_id] = [c].[column_id] AND [d].[parent_object_id] = [c].[object_id]
+    WHERE ([d].[parent_object_id] = OBJECT_ID(N'[DiscoveryLocations]') AND [c].[name] = N'Latitude');
+    IF @var3 IS NOT NULL EXEC(N'ALTER TABLE [DiscoveryLocations] DROP CONSTRAINT [' + @var3 + '];');
+    ALTER TABLE [DiscoveryLocations] ALTER COLUMN [Latitude] decimal(18,6) NULL;
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260429200507_AddPendingUserRegistrationOtpFlow'
+)
+BEGIN
+    CREATE TABLE [PendingUserRegistrations] (
+        [Id] uniqueidentifier NOT NULL,
+        [FullName] nvarchar(200) NOT NULL,
+        [Email] nvarchar(256) NOT NULL,
+        [Region] nvarchar(200) NOT NULL,
+        [PasswordHash] nvarchar(max) NOT NULL,
+        [OtpCode] nvarchar(16) NOT NULL,
+        [OtpExpirationTime] datetime2 NOT NULL,
+        [IsVerified] bit NOT NULL,
+        [CreatedAt] datetime2 NOT NULL,
+        CONSTRAINT [PK_PendingUserRegistrations] PRIMARY KEY ([Id])
+    );
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260429200507_AddPendingUserRegistrationOtpFlow'
+)
+BEGIN
+    CREATE UNIQUE INDEX [IX_PendingUserRegistrations_Email] ON [PendingUserRegistrations] ([Email]);
+END;
+GO
+
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20260429200507_AddPendingUserRegistrationOtpFlow'
+)
+BEGIN
+    INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+    VALUES (N'20260429200507_AddPendingUserRegistrationOtpFlow', N'8.0.11');
 END;
 GO
 

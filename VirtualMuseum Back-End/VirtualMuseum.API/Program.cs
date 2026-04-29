@@ -48,6 +48,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IOtpRepository, OtpRepository>();
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+builder.Services.AddScoped<IPendingUserRegistrationRepository, PendingUserRegistrationRepository>();
 
 // Services
 builder.Services.AddScoped<TokenService>();
@@ -61,7 +62,8 @@ builder.Services.AddScoped<TagService>();
 builder.Services.AddScoped<UserService>();
 
 // JWT Authentication
-var jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured in appsettings.json");
+var jwtKey = builder.Configuration["Jwt:Key"] ?? builder.Configuration["Jwt:Secret"]
+    ?? throw new InvalidOperationException("Jwt:Key (or Jwt:Secret) is not configured in appsettings.json");
 if (jwtKey.Length < 32)
 {
     throw new InvalidOperationException("Jwt:Key must be at least 32 characters for production safety.");

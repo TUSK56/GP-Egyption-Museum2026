@@ -12,6 +12,7 @@ public class AuthService : IAuthService
     private readonly IRoleRepository _roleRepository;
     private readonly IOtpRepository _otpRepository;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
+    private readonly IPendingUserRegistrationRepository _pendingUserRegistrationRepository;
     private readonly IEmailService _emailService;
     private readonly TokenService _tokenService;
     private readonly IConfiguration _configuration;
@@ -21,6 +22,7 @@ public class AuthService : IAuthService
         IRoleRepository roleRepository,
         IOtpRepository otpRepository,
         IRefreshTokenRepository refreshTokenRepository,
+        IPendingUserRegistrationRepository pendingUserRegistrationRepository,
         IEmailService emailService,
         TokenService tokenService,
         IConfiguration configuration)
@@ -29,6 +31,7 @@ public class AuthService : IAuthService
         _roleRepository = roleRepository;
         _otpRepository = otpRepository;
         _refreshTokenRepository = refreshTokenRepository;
+        _pendingUserRegistrationRepository = pendingUserRegistrationRepository;
         _emailService = emailService;
         _tokenService = tokenService;
         _configuration = configuration;
@@ -81,28 +84,52 @@ public class AuthService : IAuthService
 
     public async Task<RegisterResult?> RegisterAsync(string fullName, string email, string region, string password, CancellationToken cancellationToken = default)
     {
+        if (string.IsNullOrWhiteSpace(fullName) ||
+            string.IsNullOrWhiteSpace(email) ||
+            string.IsNullOrWhiteSpace(region) ||
+            string.IsNullOrWhiteSpace(password))
+        {
+            return null;
+        }
+
         var existing = await _userRepository.GetByEmailAsync(email, cancellationToken);
         if (existing != null)
             return null;
 
-        var userRole = await _roleRepository.GetByNameAsync("User", cancellationToken)
-                       ?? throw new InvalidOperationException("Default 'User' role is missing");
-
-        var user = new User
+        var code = GenerateOtpCode();
+        var pending = await _pendingUserRegistrationRepository.GetByEmailAsync(email, cancellationToken);
+        if (pending == null)
         {
-            Id = Guid.NewGuid(),
-            FullName = fullName,
-            Email = email,
-            Region = region,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
-            RoleId = userRole.Id,
-            IsActive = true,
-            CreatedAt = DateTime.UtcNow,
-            EmailConfirmed = false
-        };
+            pending = new PendingUserRegistration
+            {
+                Id = Guid.NewGuid(),
+                FullName = fullName,
+                Email = email,
+                Region = region,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
+                OtpCode = code,
+                OtpExpirationTime = DateTime.UtcNow.AddMinutes(5),
+                IsVerified = false,
+                CreatedAt = DateTime.UtcNow
+            };
+            await _pendingUserRegistrationRepository.AddAsync(pending, cancellationToken);
+        }
+        else
+        {
+            pending.FullName = fullName;
+            pending.Region = region;
+            pending.PasswordHash = BCrypt.Net.BCrypt.HashPassword(password);
+            pending.OtpCode = code;
+            pending.OtpExpirationTime = DateTime.UtcNow.AddMinutes(5);
+            pending.IsVerified = false;
+            pending.CreatedAt = DateTime.UtcNow;
+            await _pendingUserRegistrationRepository.UpdateAsync(pending, cancellationToken);
+        }
 
-        await _userRepository.AddAsync(user, cancellationToken);
-        return new RegisterResult(user.Id, user.Email, user.FullName, user.Region);
+        var body = $"Your verification code is: {code}{Environment.NewLine}This code will expire in 5 minutes.";
+        await _emailService.SendEmailAsync(email, "Email Verification", body, cancellationToken);
+
+        return new RegisterResult(Guid.Empty, email, fullName, region);
     }
 
     public async Task<string?> SendOtpAsync(string email, CancellationToken cancellationToken = default)
@@ -110,9 +137,24 @@ public class AuthService : IAuthService
         if (string.IsNullOrWhiteSpace(email))
             return null;
 
-        var user = await _userRepository.GetByEmailAsync(email.Trim(), cancellationToken);
-        if (user == null)
-            return null;
+        var normalizedEmail = email.Trim();
+        var pending = await _pendingUserRegistrationRepository.GetByEmailAsync(normalizedEmail, cancellationToken);
+        if (pending != null)
+        {
+            var pendingCode = GenerateOtpCode();
+            pending.OtpCode = pendingCode;
+            pending.OtpExpirationTime = DateTime.UtcNow.AddMinutes(5);
+            pending.IsVerified = false;
+            pending.CreatedAt = DateTime.UtcNow;
+            await _pendingUserRegistrationRepository.UpdateAsync(pending, cancellationToken);
+
+            var pendingBody = $"Your verification code is: {pendingCode}{Environment.NewLine}This code will expire in 5 minutes.";
+            await _emailService.SendEmailAsync(normalizedEmail, "Email Verification", pendingBody, cancellationToken);
+            return pendingCode;
+        }
+
+        var user = await _userRepository.GetByEmailAsync(normalizedEmail, cancellationToken);
+        if (user == null) return null;
 
         var code = GenerateOtpCode();
         var otp = new EmailOtp
@@ -129,13 +171,43 @@ public class AuthService : IAuthService
         await _otpRepository.SaveChangesAsync(cancellationToken);
 
         var body = $"Your verification code is: {code}{Environment.NewLine}This code will expire in 5 minutes.";
-        await _emailService.SendEmailAsync(user.Email, "Email Verification", body, cancellationToken);
+        await _emailService.SendEmailAsync(normalizedEmail, "Email Verification", body, cancellationToken);
         return code;
     }
 
     public async Task<bool> VerifyOtpAsync(string email, string code, CancellationToken cancellationToken = default)
     {
-        var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
+        var normalizedEmail = email.Trim();
+        var pending = await _pendingUserRegistrationRepository.GetActiveByEmailAndOtpAsync(normalizedEmail, code, cancellationToken);
+        if (pending != null)
+        {
+            var existingUser = await _userRepository.GetByEmailAsync(normalizedEmail, cancellationToken);
+            if (existingUser != null)
+                return false;
+
+            var userRole = await _roleRepository.GetByNameAsync("User", cancellationToken)
+                           ?? throw new InvalidOperationException("Default 'User' role is missing");
+
+            var newUser = new User
+            {
+                Id = Guid.NewGuid(),
+                FullName = pending.FullName,
+                Email = pending.Email,
+                Region = pending.Region,
+                PasswordHash = pending.PasswordHash,
+                RoleId = userRole.Id,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+                EmailConfirmed = true
+            };
+            await _userRepository.AddAsync(newUser, cancellationToken);
+
+            pending.IsVerified = true;
+            await _pendingUserRegistrationRepository.DeleteAsync(pending, cancellationToken);
+            return true;
+        }
+
+        var user = await _userRepository.GetByEmailAsync(normalizedEmail, cancellationToken);
         if (user == null)
             return false;
 
@@ -246,9 +318,9 @@ public class AuthService : IAuthService
         if (string.IsNullOrWhiteSpace(idToken))
             return null;
 
-        var clientId = _configuration["GoogleAuth:ClientId"];
+        var clientId = _configuration["Google:ClientId"] ?? _configuration["GoogleAuth:ClientId"];
         if (string.IsNullOrWhiteSpace(clientId))
-            throw new InvalidOperationException("GoogleAuth:ClientId is not configured in appsettings.json");
+            throw new InvalidOperationException("Google:ClientId is not configured in appsettings.json");
 
         GoogleJsonWebSignature.Payload payload;
         try
@@ -312,6 +384,6 @@ public class AuthService : IAuthService
         await _refreshTokenRepository.AddAsync(rt, cancellationToken);
         await _refreshTokenRepository.SaveChangesAsync(cancellationToken);
 
-        return new AuthResult(accessToken, refreshToken, user.Id, user.Email, user.FullName, roleName);
+        return new AuthResult(accessToken, refreshToken, user.Id, user.Email, user.FullName, roleName, payload.Picture);
     }
 }

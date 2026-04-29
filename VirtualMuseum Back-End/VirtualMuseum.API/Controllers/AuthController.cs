@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using VirtualMuseum.API.DTOs;
 using VirtualMuseum.Application.Interfaces;
@@ -10,11 +12,13 @@ namespace VirtualMuseum.API.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _authService;
+    private readonly IUserRepository _userRepository;
     private readonly ILogger<AuthController> _logger;
 
-    public AuthController(IAuthService authService, ILogger<AuthController> logger)
+    public AuthController(IAuthService authService, IUserRepository userRepository, ILogger<AuthController> logger)
     {
         _authService = authService;
+        _userRepository = userRepository;
         _logger = logger;
     }
 
@@ -60,10 +64,10 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// Register a new user account (name, email, region, password).
+    /// Register a new user account and send OTP. User is created only after OTP verification.
     /// </summary>
     [HttpPost("register")]
-    [ProducesResponseType(typeof(ApiResponse<RegisterResponse>), 201)]
+    [ProducesResponseType(typeof(ApiResponse<RegisterResponse>), 200)]
     [ProducesResponseType(typeof(ApiResponse), 400)]
     public async Task<IActionResult> Register([FromBody] RegisterRequest? request, CancellationToken cancellationToken)
     {
@@ -86,8 +90,8 @@ public class AuthController : ControllerBase
             return BadRequest(new ApiResponse(false, "Email already registered"));
         }
 
-        return Created("api/auth/register", new ApiResponse<RegisterResponse>(true, new RegisterResponse(
-            result.UserId, result.Email, result.FullName, result.Region)));
+        return Ok(new ApiResponse<RegisterResponse>(true, new RegisterResponse(
+            result.UserId, result.Email, result.FullName, result.Region), "Registration OTP sent. Verify OTP to activate account."));
     }
 
     /// <summary>
@@ -199,9 +203,51 @@ public class AuthController : ControllerBase
 
         var result = await _authService.GoogleLoginAsync(request.IdToken, cancellationToken);
         if (result == null)
-            return BadRequest(new ApiResponse(false, "Invalid Google token"));
+            return Unauthorized(new ApiResponse(false, "Invalid Google token"));
 
         return Ok(new ApiResponse<LoginResponse>(true, new LoginResponse(
             result.AccessToken, result.RefreshToken, result.UserId, result.Email, result.FullName, result.Role)));
+    }
+
+    /// <summary>
+    /// Login or register using Google ID token.
+    /// </summary>
+    [HttpPost("google")]
+    [ProducesResponseType(typeof(ApiResponse<GoogleAuthResponse>), 200)]
+    [ProducesResponseType(typeof(ApiResponse), 401)]
+    [ProducesResponseType(typeof(ApiResponse), 400)]
+    public async Task<IActionResult> Google([FromBody] GoogleLoginRequest? request, CancellationToken cancellationToken)
+    {
+        if (request == null)
+            return BadRequest(new ApiResponse(false, "Invalid request body"));
+
+        var result = await _authService.GoogleLoginAsync(request.IdToken, cancellationToken);
+        if (result == null)
+            return Unauthorized(new ApiResponse(false, "Invalid Google token"));
+
+        return Ok(new ApiResponse<GoogleAuthResponse>(true, new GoogleAuthResponse(
+            result.AccessToken,
+            new GoogleAuthUserDto(result.UserId, result.FullName, result.Email, result.Picture))));
+    }
+
+    /// <summary>
+    /// Verify current JWT token and return logged-in user info.
+    /// </summary>
+    [Authorize]
+    [HttpGet("verify")]
+    [ProducesResponseType(typeof(ApiResponse<VerifyTokenResponse>), 200)]
+    [ProducesResponseType(typeof(ApiResponse), 401)]
+    public async Task<IActionResult> Verify(CancellationToken cancellationToken)
+    {
+        var userIdRaw = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!Guid.TryParse(userIdRaw, out var userId))
+            return Unauthorized(new ApiResponse(false, "Invalid token"));
+
+        var user = await _userRepository.GetByIdAsync(userId, cancellationToken);
+        if (user == null || !user.IsActive)
+            return Unauthorized(new ApiResponse(false, "Invalid token"));
+
+        var role = user.Role?.Name ?? User.FindFirstValue(ClaimTypes.Role) ?? "User";
+        return Ok(new ApiResponse<VerifyTokenResponse>(true, new VerifyTokenResponse(user.Id, user.FullName, user.Email, role)));
     }
 }

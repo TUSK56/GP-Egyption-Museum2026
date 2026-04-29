@@ -20,7 +20,7 @@ public class TokenService
     public string GenerateAccessToken(User user, string roleName)
     {
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-            _configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key is not configured")));
+            _configuration["Jwt:Key"] ?? _configuration["Jwt:Secret"] ?? throw new InvalidOperationException("Jwt:Key (or Jwt:Secret) is not configured")));
         var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var claims = new[]
@@ -48,7 +48,9 @@ public class TokenService
     {
         var bytes = RandomNumberGenerator.GetBytes(64);
         var token = Convert.ToBase64String(bytes);
-        var days = int.TryParse(_configuration["Jwt:RefreshTokenDays"], out var d) ? d : 7;
+        var days = int.TryParse(_configuration["Jwt:RefreshTokenDays"], out var d)
+            ? d
+            : (int.TryParse(_configuration["Jwt:ExpiryDays"], out var expiryDays) ? expiryDays : 7);
         return (token, DateTime.UtcNow.AddDays(days));
     }
 }

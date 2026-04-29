@@ -1,6 +1,6 @@
 param(
-    [string]$ArtifactsJsonPath = "..\VirtualMuseum Front-End\src\Data\artifacts.json",
-    [string]$CategoriesJsonPath = "..\VirtualMuseum Front-End\src\Data\categories.json",
+    [string]$ArtifactsJsonPath = "..\Data\artifacts.json",
+    [string]$CategoriesJsonPath = "..\Data\categories.json",
     [string]$OutputSqlPath = "publish\MonsterASP.net\sql\002-seed-artifacts-from-json.sql"
 )
 
@@ -33,7 +33,7 @@ foreach ($cat in $categories) {
 }
 
 $sb = New-Object System.Text.StringBuilder
-[void]$sb.AppendLine("-- Auto-generated from src/Data/artifacts.json + categories.json")
+[void]$sb.AppendLine("-- Auto-generated from Data/artifacts.json + Data/categories.json")
 [void]$sb.AppendLine("-- Safe to run multiple times (upsert pattern).")
 [void]$sb.AppendLine("SET XACT_ABORT ON;")
 [void]$sb.AppendLine("BEGIN TRANSACTION;")

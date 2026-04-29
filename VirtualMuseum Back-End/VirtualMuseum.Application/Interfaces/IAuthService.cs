@@ -15,7 +15,7 @@ public interface IAuthService
     Task<bool> ResetPasswordWithOtpAsync(string email, string code, string newPassword, CancellationToken cancellationToken = default);
 }
 
-public record AuthResult(string AccessToken, string RefreshToken, Guid UserId, string Email, string FullName, string Role);
+public record AuthResult(string AccessToken, string RefreshToken, Guid UserId, string Email, string FullName, string Role, string? Picture = null);
 
 public record LoginOutcome(AuthResult? Result, LoginFailureKind Failure);
 

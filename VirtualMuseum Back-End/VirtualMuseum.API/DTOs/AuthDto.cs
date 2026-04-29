@@ -28,6 +28,12 @@ public record RegisterRequest(
 
 public record RegisterResponse(Guid UserId, string Email, string FullName, string Region);
 
+public record GoogleAuthResponse(string Token, GoogleAuthUserDto User);
+
+public record GoogleAuthUserDto(Guid Id, string Name, string Email, string? Picture);
+
+public record VerifyTokenResponse(Guid Id, string Name, string Email, string Role);
+
 public record ForgotPasswordRequestDto(
     [Required(ErrorMessage = "Email is required")]
     [EmailAddress(ErrorMessage = "Invalid email format")]
