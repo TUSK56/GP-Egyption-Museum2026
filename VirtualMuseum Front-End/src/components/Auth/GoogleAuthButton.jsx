@@ -35,8 +35,20 @@ export default function GoogleAuthButton({ variant = "default" }) {
                 if (!response?.success || !response?.data) {
                     throw new Error(response?.message || "Google login failed.");
                 }
+                const payload = response.data;
+                const session =
+                    payload?.accessToken
+                        ? payload
+                        : {
+                              accessToken: payload?.token,
+                              refreshToken: "",
+                              userId: payload?.user?.id,
+                              email: payload?.user?.email,
+                              fullName: payload?.user?.name,
+                              role: "User",
+                          };
 
-                setAuthSession(response.data);
+                setAuthSession(session);
                 window.dispatchEvent(new Event("auth:logged-in"));
                 const nextPath =
                     searchParams.get("next") || consumePostLoginRedirect();

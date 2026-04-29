@@ -129,7 +129,8 @@ public class AuthService : IAuthService
         var body = $"Your verification code is: {code}{Environment.NewLine}This code will expire in 5 minutes.";
         await _emailService.SendEmailAsync(email, "Email Verification", body, cancellationToken);
 
-        return new RegisterResult(Guid.Empty, email, fullName, region);
+        var smtpEnabled = bool.TryParse(_configuration.GetSection("Smtp")["Enabled"], out var enabled) && enabled;
+        return new RegisterResult(Guid.Empty, email, fullName, region, smtpEnabled ? null : code);
     }
 
     public async Task<string?> SendOtpAsync(string email, CancellationToken cancellationToken = default)
@@ -258,14 +259,14 @@ public class AuthService : IAuthService
         return GoogleLoginInternalAsync(idToken, cancellationToken);
     }
 
-    public async Task RequestPasswordResetAsync(string email, CancellationToken cancellationToken = default)
+    public async Task<string?> RequestPasswordResetAsync(string email, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(email))
-            return;
+            return null;
 
         var user = await _userRepository.GetByEmailAsync(email, cancellationToken);
         if (user == null || !user.IsActive)
-            return;
+            return null;
 
         var code = GenerateOtpCode();
         var otp = new EmailOtp
@@ -283,6 +284,8 @@ public class AuthService : IAuthService
 
         var body = $"Your password reset code is: {code}{Environment.NewLine}This code will expire in 5 minutes.{Environment.NewLine}If you did not request this, you can ignore this email.";
         await _emailService.SendEmailAsync(user.Email, "Password reset", body, cancellationToken);
+        var smtpEnabled = bool.TryParse(_configuration.GetSection("Smtp")["Enabled"], out var enabled) && enabled;
+        return smtpEnabled ? null : code;
     }
 
     public async Task<bool> ResetPasswordWithOtpAsync(string email, string code, string newPassword, CancellationToken cancellationToken = default)

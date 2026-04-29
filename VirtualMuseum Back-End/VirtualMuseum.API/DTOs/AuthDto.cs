@@ -26,7 +26,7 @@ public record RegisterRequest(
     [MinLength(6, ErrorMessage = "Password must be at least 6 characters")]
     string Password);
 
-public record RegisterResponse(Guid UserId, string Email, string FullName, string Region);
+public record RegisterResponse(Guid UserId, string Email, string FullName, string Region, string? OtpCode = null);
 
 public record GoogleAuthResponse(string Token, GoogleAuthUserDto User);
 

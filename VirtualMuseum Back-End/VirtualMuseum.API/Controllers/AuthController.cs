@@ -91,7 +91,7 @@ public class AuthController : ControllerBase
         }
 
         return Ok(new ApiResponse<RegisterResponse>(true, new RegisterResponse(
-            result.UserId, result.Email, result.FullName, result.Region), "Registration OTP sent. Verify OTP to activate account."));
+            result.UserId, result.Email, result.FullName, result.Region, result.OtpCode), "Registration OTP sent. Verify OTP to activate account."));
     }
 
     /// <summary>
@@ -147,7 +147,10 @@ public class AuthController : ControllerBase
         if (request == null)
             return BadRequest(new ApiResponse(false, "Invalid request body"));
 
-        await _authService.RequestPasswordResetAsync(request.Email, cancellationToken);
+        var code = await _authService.RequestPasswordResetAsync(request.Email, cancellationToken);
+        if (code != null)
+            return Ok(new ApiResponse<object>(true, new { code }, "OTP generated (SMTP disabled)"));
+
         return Ok(new ApiResponse(true, "If an account exists for this email, a reset code has been sent."));
     }
 

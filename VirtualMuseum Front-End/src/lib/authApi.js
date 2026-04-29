@@ -36,7 +36,7 @@ export async function refreshToken(payload) {
 }
 
 export async function googleLogin(payload) {
-    return apiRequest("/api/auth/google-login", {
+    return apiRequest("/api/auth/google", {
         method: "POST",
         body: payload,
     });

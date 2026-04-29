@@ -10,7 +10,7 @@ public interface IAuthService
     Task<AuthResult?> GoogleLoginAsync(string idToken, CancellationToken cancellationToken = default);
 
     /// <summary>Sends a password-reset OTP if the email is registered. Does not reveal whether the email exists.</summary>
-    Task RequestPasswordResetAsync(string email, CancellationToken cancellationToken = default);
+    Task<string?> RequestPasswordResetAsync(string email, CancellationToken cancellationToken = default);
 
     Task<bool> ResetPasswordWithOtpAsync(string email, string code, string newPassword, CancellationToken cancellationToken = default);
 }
@@ -28,4 +28,4 @@ public enum LoginFailureKind
     AccountDisabled
 }
 
-public record RegisterResult(Guid UserId, string Email, string FullName, string Region);
+public record RegisterResult(Guid UserId, string Email, string FullName, string Region, string? OtpCode = null);
