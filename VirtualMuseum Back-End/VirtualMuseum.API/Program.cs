@@ -147,7 +147,11 @@ var enableSwagger =
 
 app.UseForwardedHeaders(new ForwardedHeadersOptions
 {
-    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+    // Shared hosts / reverse proxies often don't show up as "known".
+    // Clearing these allows forwarded headers to be processed.
+    KnownNetworks = { },
+    KnownProxies = { }
 });
 
 // Global exception handling - must be first
@@ -240,7 +244,8 @@ if (enableSwagger)
     app.UseSwagger();
     app.UseSwaggerUI(c =>
     {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "3D Virtual Museum API v1");
+        // Relative path works even when hosted under an IIS virtual directory / PathBase.
+        c.SwaggerEndpoint("v1/swagger.json", "3D Virtual Museum API v1");
     });
 }
 if (!app.Environment.IsDevelopment())

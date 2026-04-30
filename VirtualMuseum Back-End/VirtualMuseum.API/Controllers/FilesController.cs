@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using VirtualMuseum.API.DTOs;
 using VirtualMuseum.Domain.Entities;
 using VirtualMuseum.Infrastructure.Data;
@@ -37,7 +38,7 @@ public class FilesController : ControllerBase
             return BadRequest(new ApiResponse(false, "File url is required."));
         }
 
-        var userIdClaim = User.FindFirst("sub")?.Value ?? User.FindFirst("nameid")?.Value;
+        var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var uploadedBy = Guid.TryParse(userIdClaim, out var parsedUserId) ? parsedUserId : Guid.Empty;
 
         var fileName = string.IsNullOrWhiteSpace(request.FileName)
