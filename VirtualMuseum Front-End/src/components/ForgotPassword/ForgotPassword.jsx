@@ -27,11 +27,8 @@ export default function ForgotPassword() {
                 throw new Error(res?.message || "Could not request reset code.");
             }
 
-            const returnedOtp = res?.data?.code;
             setSuccessMessage(
-                returnedOtp
-                    ? `OTP generated (SMTP disabled): ${returnedOtp}. Redirecting...`
-                    : "If an account exists for this email, a reset code has been sent. Redirecting...",
+                "If an account exists for this email, a reset code has been sent. Redirecting...",
             );
             setTimeout(
                 () =>

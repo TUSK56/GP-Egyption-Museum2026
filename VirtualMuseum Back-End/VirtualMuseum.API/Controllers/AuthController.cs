@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Hosting;
 using VirtualMuseum.API.DTOs;
 using VirtualMuseum.Application.Interfaces;
 
@@ -14,11 +15,20 @@ public class AuthController : ControllerBase
     private readonly IAuthService _authService;
     private readonly IUserRepository _userRepository;
     private readonly ILogger<AuthController> _logger;
+    private readonly IWebHostEnvironment _environment;
+    private readonly IConfiguration _configuration;
 
-    public AuthController(IAuthService authService, IUserRepository userRepository, ILogger<AuthController> logger)
+    public AuthController(
+        IAuthService authService,
+        IUserRepository userRepository,
+        IWebHostEnvironment environment,
+        IConfiguration configuration,
+        ILogger<AuthController> logger)
     {
         _authService = authService;
         _userRepository = userRepository;
+        _environment = environment;
+        _configuration = configuration;
         _logger = logger;
     }
 
@@ -77,6 +87,13 @@ public class AuthController : ControllerBase
             return BadRequest(new ApiResponse(false, "Invalid request body"));
         }
 
+        var smtpEnabled = bool.TryParse(_configuration.GetSection("Smtp")["Enabled"], out var enabled) && enabled;
+        if (!smtpEnabled && !_environment.IsDevelopment())
+        {
+            return StatusCode(StatusCodes.Status503ServiceUnavailable,
+                new ApiResponse(false, "Email delivery is not configured. Please enable SMTP on the server to receive OTP emails."));
+        }
+
         var result = await _authService.RegisterAsync(
             request.FullName ?? string.Empty,
             request.Email ?? string.Empty,
@@ -91,7 +108,7 @@ public class AuthController : ControllerBase
         }
 
         return Ok(new ApiResponse<RegisterResponse>(true, new RegisterResponse(
-            result.UserId, result.Email, result.FullName, result.Region, result.OtpCode), "Registration OTP sent. Verify OTP to activate account."));
+            result.UserId, result.Email, result.FullName, result.Region), "Registration OTP sent. Verify OTP to activate account."));
     }
 
     /// <summary>
@@ -104,16 +121,16 @@ public class AuthController : ControllerBase
         if (request == null)
             return BadRequest(new ApiResponse(false, "Invalid request body"));
 
+        var smtpEnabled = bool.TryParse(_configuration.GetSection("Smtp")["Enabled"], out var enabled) && enabled;
+        if (!smtpEnabled && !_environment.IsDevelopment())
+        {
+            return StatusCode(StatusCodes.Status503ServiceUnavailable,
+                new ApiResponse(false, "Email delivery is not configured. Please enable SMTP on the server to receive OTP emails."));
+        }
+
         var code = await _authService.SendOtpAsync(request.Email, cancellationToken);
         if (code == null)
             return BadRequest(new ApiResponse(false, "Invalid email"));
-
-        // If SMTP sending is disabled (development), return the OTP code in response data for easy testing.
-        var smtpEnabled = bool.TryParse(HttpContext.RequestServices.GetService<IConfiguration>()?
-            .GetSection("Smtp")["Enabled"], out var enabled) && enabled;
-
-        if (!smtpEnabled)
-            return Ok(new ApiResponse<object>(true, new { code }, "OTP generated (SMTP disabled)"));
 
         return Ok(new ApiResponse(true, "OTP has been sent"));
     }
@@ -147,9 +164,14 @@ public class AuthController : ControllerBase
         if (request == null)
             return BadRequest(new ApiResponse(false, "Invalid request body"));
 
-        var code = await _authService.RequestPasswordResetAsync(request.Email, cancellationToken);
-        if (code != null)
-            return Ok(new ApiResponse<object>(true, new { code }, "OTP generated (SMTP disabled)"));
+        var smtpEnabled = bool.TryParse(_configuration.GetSection("Smtp")["Enabled"], out var enabled) && enabled;
+        if (!smtpEnabled && !_environment.IsDevelopment())
+        {
+            return StatusCode(StatusCodes.Status503ServiceUnavailable,
+                new ApiResponse(false, "Email delivery is not configured. Please enable SMTP on the server to receive OTP emails."));
+        }
+
+        await _authService.RequestPasswordResetAsync(request.Email, cancellationToken);
 
         return Ok(new ApiResponse(true, "If an account exists for this email, a reset code has been sent."));
     }

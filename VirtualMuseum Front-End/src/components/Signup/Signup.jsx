@@ -60,11 +60,8 @@ export default function Signup() {
             }
 
             setOtpSent(true);
-            const returnedOtp = registerResponse?.data?.otpCode;
             setSuccessMessage(
-                returnedOtp
-                    ? `OTP generated (SMTP disabled): ${returnedOtp}. Enter the code to verify and create your account.`
-                    : "OTP sent to your email. Enter the code to verify and create your account.",
+                "OTP sent to your email. Enter the code to verify and create your account.",
             );
         } catch (err) {
             setError(err?.message || "Registration failed. Please try again.");
