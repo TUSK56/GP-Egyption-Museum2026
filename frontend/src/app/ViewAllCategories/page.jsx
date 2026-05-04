@@ -7,9 +7,9 @@ import * as LucideIcons from "lucide-react";
 import { getCategories } from "../../lib/museumApi";
 
 const categoryCardImages = [
-    "/assets/images/1.jpg",
-    "/assets/images/2.jpg",
-    "/assets/images/3.jpg",
+    "/assets/images/1.png",
+    "/assets/images/2.png",
+    "/assets/images/3.png",
 ];
 
 function mapApiCategoryToUi(category) {

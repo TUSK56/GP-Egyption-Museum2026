@@ -215,7 +215,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 8 }}
-                    className="fixed right-3 md:right-8 top-20 w-96 max-w-[92vw] bg-[#0a0a0f] border border-white/10 rounded-2xl shadow-2xl p-3 z-[2000]"
+                    className="fixed right-3 md:right-8 top-20 w-96 max-w-[92vw] bg-[#0a0a0f] border border-white/10 rounded-2xl shadow-2xl p-3 z-[99999]"
                   >
                     <div className="text-[10px] uppercase tracking-widest text-[#D4AF37] font-black px-2 py-1 border-b border-white/10 mb-2">
                       New Notifications

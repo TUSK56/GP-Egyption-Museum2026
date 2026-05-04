@@ -27,6 +27,8 @@ export default function settings() {
   const [notifMetrics, setNotifMetrics] = useState(true);
   const [appOpen, setAppOpen] = useState(true);
   const [appCloseMessage, setAppCloseMessage] = useState("The application is temporarily unavailable.");
+  const [appStatusReady, setAppStatusReady] = useState(false);
+  const [appStatusSaving, setAppStatusSaving] = useState(false);
   const [stats, setStats] = useState({ users: 0, artifacts: 0, categories: 0 });
 
   useEffect(() => {
@@ -59,6 +61,7 @@ export default function settings() {
         setAppCloseMessage(
           appStatusRes?.data?.message || "The application is temporarily unavailable.",
         );
+        setAppStatusReady(true);
       } catch {
         setProfile({
           fullName: me?.fullName || "",
@@ -78,6 +81,27 @@ export default function settings() {
     };
     load();
   }, []);
+
+  useEffect(() => {
+    if (!appStatusReady) return;
+    const handle = window.setTimeout(async () => {
+      setAppStatusSaving(true);
+      try {
+        await setAppStatus({
+          maintenanceEnabled: !appOpen,
+          message:
+            appCloseMessage.trim() ||
+            "The application is temporarily unavailable.",
+        });
+      } catch (e: any) {
+        setMessage(e?.message || "Failed to update application availability.");
+      } finally {
+        setAppStatusSaving(false);
+      }
+    }, 500);
+
+    return () => window.clearTimeout(handle);
+  }, [appOpen, appCloseMessage, appStatusReady]);
 
   const roleLabel = useMemo(() => {
     const role = (getCurrentUser()?.role || "admin").toString();
@@ -275,6 +299,11 @@ export default function settings() {
                   <span className={appOpen ? "text-emerald-400 font-bold" : "text-red-400 font-bold"}>
                     {appOpen ? "OPEN" : "CLOSED"}
                   </span>
+                  {appStatusSaving ? (
+                    <span className="ml-2 text-[10px] text-[#D4AF37] font-bold">
+                      SAVING...
+                    </span>
+                  ) : null}
                 </div>
               </div>
             </div>
