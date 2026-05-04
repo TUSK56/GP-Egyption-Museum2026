@@ -105,12 +105,12 @@ export default function Signup() {
             const nextPath = searchParams.get("next");
             setTimeout(
                 () =>
-                    router.push(
+                    router.replace(
                         nextPath
                             ? `/Signin?next=${encodeURIComponent(nextPath)}`
                             : "/Signin",
                     ),
-                900,
+                400,
             );
         } catch (err) {
             setError(err?.message || "OTP verification failed.");
