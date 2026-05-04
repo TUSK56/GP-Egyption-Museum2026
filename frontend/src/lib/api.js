@@ -6,6 +6,7 @@ import {
 } from "./authStorage";
 
 const DEFAULT_API_BASE_URL = "https://egymuseum.runasp.net";
+const FALLBACK_API_BASE_URL = "https://virtualmuseum.runasp.net";
 
 function getApiBaseUrl() {
     const fromPublic = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -39,6 +40,11 @@ async function sendRequest(url, method, headers, body) {
         headers,
         ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
     });
+}
+
+function getCandidateBaseUrls() {
+    const configured = getApiBaseUrl();
+    return [...new Set([configured, DEFAULT_API_BASE_URL, FALLBACK_API_BASE_URL])];
 }
 
 async function tryRefreshToken(baseUrl) {
@@ -77,8 +83,9 @@ export async function apiRequest(path, options = {}) {
         headers = {},
         retryOnAuthError = true,
     } = options;
-    const baseUrl = getApiBaseUrl();
-    const url = `${baseUrl}${path}`;
+    const candidateBases = getCandidateBaseUrls();
+    const lastBase = candidateBases[candidateBases.length - 1];
+    const primaryBase = candidateBases[0];
 
     const bearer = token || getAccessToken();
     const requestHeaders = {
@@ -87,11 +94,42 @@ export async function apiRequest(path, options = {}) {
         ...headers,
     };
 
-    let response = await sendRequest(url, method, requestHeaders, body);
-    let payload = await parsePayload(response);
+    let response = null;
+    let payload = null;
+    let lastNetworkError = null;
+    for (const base of candidateBases) {
+        const candidateUrl = `${base}${path}`;
+        try {
+            const candidateResponse = await sendRequest(
+                candidateUrl,
+                method,
+                requestHeaders,
+                body,
+            );
+            const candidatePayload = await parsePayload(candidateResponse);
+
+            // Retry on other base URLs when this host is clearly wrong for API routing.
+            if (candidateResponse.status === 404 && base !== lastBase) {
+                continue;
+            }
+
+            response = candidateResponse;
+            payload = candidatePayload;
+            break;
+        } catch (networkError) {
+            lastNetworkError = networkError;
+            if (base === lastBase) {
+                throw networkError;
+            }
+        }
+    }
+
+    if (!response) {
+        throw lastNetworkError || new Error("Unable to reach API host.");
+    }
 
     if (response.status === 401 && retryOnAuthError) {
-        const newAccessToken = await tryRefreshToken(baseUrl);
+        const newAccessToken = await tryRefreshToken(primaryBase);
         if (newAccessToken) {
             const retryHeaders = {
                 ...requestHeaders,
