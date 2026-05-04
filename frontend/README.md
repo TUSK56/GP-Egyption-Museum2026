@@ -4,7 +4,7 @@
 	<img src="public/assets/images/eh.png" alt="Grand Egyptian Museum Logo" width="320" />
 </p>
 
-A modern Next.js frontend for the Grand Egyptian Museum virtual experience. The project includes public museum pages, authentication flows, artifact browsing, 3D model viewing, AI assistant interactions, community features, favorites, tours, and an admin area.
+A modern Next.js frontend for the Grand Egyptian Museum virtual experience. The project includes public museum pages, authentication flows, artifact browsing, 3D model viewing, AI assistant interactions, community features, favorites, tours, and an admin area and do it any .
 
 ## Tech Stack
 
