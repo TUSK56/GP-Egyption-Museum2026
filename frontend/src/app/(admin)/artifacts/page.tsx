@@ -18,6 +18,16 @@ function slugify(input: string) {
   return input.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-");
 }
 
+function normalizePreviewUrl(value: string) {
+  const url = String(value || "").trim();
+  if (!url) return "";
+  const match = url.match(/[?&]id=([^&]+)/i);
+  if (url.includes("drive.google.com") && match?.[1]) {
+    return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1200`;
+  }
+  return url;
+}
+
 export default function Artifacts() {
   const [artifacts, setArtifacts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
@@ -303,7 +313,15 @@ export default function Artifacts() {
                         <div className="w-12 h-12 bg-[#050505] border border-white/10 rounded-xl flex items-center justify-center text-2xl group-hover:border-[#D4AF37]/50 transition-colors shadow-inner overflow-hidden">
                           {artifact.thumbnailFile?.url ? (
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img src={artifact.thumbnailFile.url} alt={artifact.slug || "Artifact"} className="w-full h-full object-cover" />
+                            <img
+                              src={normalizePreviewUrl(artifact.thumbnailFile.url)}
+                              alt={artifact.slug || "Artifact"}
+                              className="w-full h-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.onerror = null;
+                                e.currentTarget.src = "/assets/images/eh.png";
+                              }}
+                            />
                           ) : (
                             <Box className="w-5 h-5 text-[#D4AF37]" />
                           )}

@@ -35,6 +35,16 @@ function slugify(input: string) {
         .replace(/-+/g, "-");
 }
 
+function normalizePreviewUrl(value: string) {
+    const url = String(value || "").trim();
+    if (!url) return "";
+    const match = url.match(/[?&]id=([^&]+)/i);
+    if (url.includes("drive.google.com") && match?.[1]) {
+        return `https://drive.google.com/thumbnail?id=${match[1]}&sz=w1200`;
+    }
+    return url;
+}
+
 export default function Models3D() {
     const router = useRouter();
     const [models, setModels] = useState<any[]>([]);
@@ -329,9 +339,13 @@ export default function Models3D() {
                                                     {model.thumbnailFile?.url ? (
                                                         // eslint-disable-next-line @next/next/no-img-element
                                                         <img
-                                                            src={model.thumbnailFile.url}
+                                                            src={normalizePreviewUrl(model.thumbnailFile.url)}
                                                             alt={model.slug || "Model"}
                                                             className="w-full h-full object-cover"
+                                                            onError={(e) => {
+                                                                e.currentTarget.onerror = null;
+                                                                e.currentTarget.src = "/assets/images/eh.png";
+                                                            }}
                                                         />
                                                     ) : (
                                                         <Box className="w-6 h-6 text-[#D4AF37]" />
