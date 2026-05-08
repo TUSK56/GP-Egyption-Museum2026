@@ -34,6 +34,7 @@ export function mapApiArtifactToUi(artifact) {
     const translation = firstTranslation(artifact);
     const displayName = translation?.name || artifact?.slug || "Artifact";
     const storyKing = translation?.historicalStory?.trim() || "Unknown";
+    const historicalContext = translation?.historicalStory?.trim() || "";
 
     return {
         id: artifact?.id || "",
@@ -48,6 +49,7 @@ export function mapApiArtifactToUi(artifact) {
         accessionNumber: artifact?.slug || "N/A",
         period: artifact?.era?.name || "Unknown Era",
         associatedKing: storyKing,
+        historicalContext,
         material: artifact?.material?.name || "Unknown",
         dimensions: {
             height: toDimensionValue(artifact?.height),

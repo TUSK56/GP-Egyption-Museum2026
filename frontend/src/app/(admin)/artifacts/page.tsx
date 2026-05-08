@@ -36,6 +36,8 @@ export default function Artifacts() {
   const [materialId, setMaterialId] = useState("");
   const [thumbnailUrl, setThumbnailUrl] = useState("");
   const [modelUrl, setModelUrl] = useState("");
+  const [historicalContext, setHistoricalContext] = useState("");
+  const [discoverySite, setDiscoverySite] = useState("");
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -78,6 +80,8 @@ export default function Artifacts() {
     setMaterialId("");
     setThumbnailUrl("");
     setModelUrl("");
+    setHistoricalContext("");
+    setDiscoverySite("");
     setShowAddModal(true);
   };
 
@@ -89,6 +93,11 @@ export default function Artifacts() {
     setMaterialId(artifact.materialId || "");
     setThumbnailUrl(artifact.thumbnailFile?.url || "");
     setModelUrl(artifact.modelFile?.url || "");
+    const englishTranslation = Array.isArray(artifact.translations)
+      ? artifact.translations.find((t: any) => t?.languageCode === "en") || artifact.translations[0]
+      : null;
+    setHistoricalContext(englishTranslation?.historicalStory || "");
+    setDiscoverySite(artifact.discoveryLocation?.name || "");
     setShowAddModal(true);
   };
 
@@ -117,10 +126,6 @@ export default function Artifacts() {
       setError("Please select a valid image format.");
       return;
     }
-    if (file.size > 5_000_000) {
-      setError("Image too large. Max 5MB.");
-      return;
-    }
     setUploading(true);
     setError("");
     try {
@@ -142,10 +147,6 @@ export default function Artifacts() {
       );
     if (!allowed) {
       setError("Supported 3D formats: GLB, GLTF, OBJ, FBX, STL, USDZ.");
-      return;
-    }
-    if (file.size > 8_000_000) {
-      setError("3D model too large. Max 8MB.");
       return;
     }
     setUploading(true);
@@ -179,7 +180,8 @@ export default function Artifacts() {
         categoryId: categoryId || null,
         eraId: eraId || null,
         materialId: materialId || null,
-        discoveryLocationId: null,
+        discoverySite: discoverySite.trim() || null,
+        historicalContext: historicalContext.trim() || null,
         modelFileId,
         thumbnailFileId,
         height: null,
@@ -298,8 +300,13 @@ export default function Artifacts() {
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-[#050505] border border-white/10 rounded-xl flex items-center justify-center text-2xl group-hover:border-[#D4AF37]/50 transition-colors shadow-inner">
-                          {artifact.image}
+                        <div className="w-12 h-12 bg-[#050505] border border-white/10 rounded-xl flex items-center justify-center text-2xl group-hover:border-[#D4AF37]/50 transition-colors shadow-inner overflow-hidden">
+                          {artifact.thumbnailFile?.url ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={artifact.thumbnailFile.url} alt={artifact.slug || "Artifact"} className="w-full h-full object-cover" />
+                          ) : (
+                            <Box className="w-5 h-5 text-[#D4AF37]" />
+                          )}
                         </div>
                         <div>
                           <div className="text-white font-medium group-hover:text-[#D4AF37] transition-colors">{artifact.slug}</div>
@@ -422,12 +429,35 @@ export default function Artifacts() {
                   />
                 </div>
 
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-xs font-bold text-[#D4AF37] uppercase tracking-widest mb-2">Discovery Site</label>
+                    <input
+                      type="text"
+                      value={discoverySite}
+                      onChange={(e) => setDiscoverySite(e.target.value)}
+                      className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-[#D4AF37]/50 transition-all"
+                      placeholder="e.g. Valley of the Kings"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-[#D4AF37] uppercase tracking-widest mb-2">Historical Context</label>
+                    <input
+                      type="text"
+                      value={historicalContext}
+                      onChange={(e) => setHistoricalContext(e.target.value)}
+                      className="w-full px-5 py-4 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-[#D4AF37]/50 transition-all"
+                      placeholder="Brief historical context"
+                    />
+                  </div>
+                </div>
+
                 <div>
                   <label className="block text-xs font-bold text-[#D4AF37] uppercase tracking-widest mb-2">Visual Content</label>
                   <div className="border-2 border-dashed border-white/10 rounded-2xl p-6 text-center hover:border-[#D4AF37]/50 transition-all bg-white/[0.01]">
                     <Upload className="w-8 h-8 text-gray-600 mx-auto mb-3" />
                     <p className="text-sm text-gray-400 font-medium">Upload image and 3D model files</p>
-                    <p className="text-[10px] text-gray-600 mt-1">Images: all formats (max 5MB) • 3D: glb/gltf/obj/fbx/stl/usdz (max 8MB)</p>
+                    <p className="text-[10px] text-gray-600 mt-1">Images: all formats • 3D: glb/gltf/obj/fbx/stl/usdz</p>
                     <div className="mt-4 flex flex-col sm:flex-row gap-3 justify-center">
                       <label className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-xs font-bold text-white cursor-pointer hover:border-[#D4AF37]/40">
                         Upload Image

@@ -15,6 +15,7 @@ import { useRouter } from "next/navigation";
 import { getArtifacts } from "../../lib/museumApi";
 import { mapApiArtifactToUi } from "../../lib/museumMappers";
 import { isLoggedIn } from "../../lib/authStorage";
+import { getScopedFavorites, setScopedFavorites } from "../../lib/favoritesStorage";
 import {
     consumePostLoginAction,
     setPostLoginAction,
@@ -52,12 +53,8 @@ const ArtifactCardContent = ({ artifact }) => {
 
     // التحقق من حالة الحفظ واللايك عند تحميل الصفحة
     useEffect(() => {
-        const savedItems = JSON.parse(
-            localStorage.getItem("saved_artifacts") || "[]",
-        );
-        const likedItems = JSON.parse(
-            localStorage.getItem("liked_artifacts") || "[]",
-        );
+        const savedItems = getScopedFavorites("saved_artifacts");
+        const likedItems = getScopedFavorites("liked_artifacts");
 
         setIsSaved(savedItems.some((item) => item.id === artifact.id));
         setIsLiked(likedItems.some((item) => item.id === artifact.id));
@@ -67,7 +64,7 @@ const ArtifactCardContent = ({ artifact }) => {
         e.stopPropagation(); // منع الانتقال لصفحة التفاصيل عند الضغط على الأزرار
 
         const key = type === "save" ? "saved_artifacts" : "liked_artifacts";
-        let items = JSON.parse(localStorage.getItem(key) || "[]");
+        let items = getScopedFavorites(key);
 
         const isPresent = items.some((item) => item.id === artifact.id);
 
@@ -77,7 +74,7 @@ const ArtifactCardContent = ({ artifact }) => {
             items.push(artifact);
         }
 
-        localStorage.setItem(key, JSON.stringify(items));
+        setScopedFavorites(key, items);
 
         // تحديث الحالة محلياً
         if (type === "save") {

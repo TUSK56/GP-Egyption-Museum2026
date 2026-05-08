@@ -58,6 +58,8 @@ export default function Models3D() {
     const [saving, setSaving] = useState(false);
     const [thumbnailUrl, setThumbnailUrl] = useState("");
     const [modelUrl, setModelUrl] = useState("");
+    const [historicalContext, setHistoricalContext] = useState("");
+    const [discoverySite, setDiscoverySite] = useState("");
 
     const totalStorageMb = useMemo(() => models.length * 18.5, [models.length]);
 
@@ -98,6 +100,8 @@ export default function Models3D() {
         setWeight("");
         setThumbnailUrl("");
         setModelUrl("");
+        setHistoricalContext("");
+        setDiscoverySite("");
         setShowUploadModal(true);
         setError("");
         setSuccess("");
@@ -115,6 +119,11 @@ export default function Models3D() {
         setWeight(model.weight ?? "");
         setThumbnailUrl(model.thumbnailFile?.url || "");
         setModelUrl(model.modelFile?.url || "");
+        const englishTranslation = Array.isArray(model.translations)
+            ? model.translations.find((t: any) => t?.languageCode === "en") || model.translations[0]
+            : null;
+        setHistoricalContext(englishTranslation?.historicalStory || "");
+        setDiscoverySite(model.discoveryLocation?.name || "");
         setShowUploadModal(true);
         setError("");
         setSuccess("");
@@ -148,7 +157,8 @@ export default function Models3D() {
                 categoryId: categoryId || null,
                 eraId: eraId || null,
                 materialId: materialId || null,
-                discoveryLocationId: null,
+                discoverySite: discoverySite.trim() || null,
+                historicalContext: historicalContext.trim() || null,
                 modelFileId,
                 thumbnailFileId,
                 height: height === "" ? null : Number(height),
@@ -315,8 +325,17 @@ export default function Models3D() {
                                     >
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-xl flex items-center justify-center border border-[#D4AF37]/20 group-hover:border-[#D4AF37]/50 transition-colors">
-                                                    <Box className="w-6 h-6 text-[#D4AF37]" />
+                                                <div className="w-12 h-12 bg-gradient-to-br from-[#D4AF37]/10 to-transparent rounded-xl flex items-center justify-center border border-[#D4AF37]/20 group-hover:border-[#D4AF37]/50 transition-colors overflow-hidden">
+                                                    {model.thumbnailFile?.url ? (
+                                                        // eslint-disable-next-line @next/next/no-img-element
+                                                        <img
+                                                            src={model.thumbnailFile.url}
+                                                            alt={model.slug || "Model"}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <Box className="w-6 h-6 text-[#D4AF37]" />
+                                                    )}
                                                 </div>
                                                 <div className="text-white font-medium group-hover:text-[#D4AF37] transition-colors">
                                                     {model.slug}
@@ -497,6 +516,33 @@ export default function Models3D() {
                                             onChange={(e) => setModelUrl(e.target.value)}
                                             type="text"
                                             placeholder="3D model URL (.glb/.gltf)"
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-[#D4AF37]/50 transition-all"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    <div>
+                                        <label className="block text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-3">
+                                            Discovery Site
+                                        </label>
+                                        <input
+                                            value={discoverySite}
+                                            onChange={(e) => setDiscoverySite(e.target.value)}
+                                            type="text"
+                                            placeholder="e.g. Valley of the Kings"
+                                            className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-[#D4AF37]/50 transition-all"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-[10px] font-black text-[#D4AF37] uppercase tracking-[0.2em] mb-3">
+                                            Historical Context
+                                        </label>
+                                        <input
+                                            value={historicalContext}
+                                            onChange={(e) => setHistoricalContext(e.target.value)}
+                                            type="text"
+                                            placeholder="Brief historical context"
                                             className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-2xl text-white focus:outline-none focus:border-[#D4AF37]/50 transition-all"
                                         />
                                     </div>

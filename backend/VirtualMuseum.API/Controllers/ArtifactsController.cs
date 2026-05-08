@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using VirtualMuseum.API.DTOs;
 using VirtualMuseum.Application.Services;
 using VirtualMuseum.Domain.Entities;
@@ -84,10 +85,29 @@ public class ArtifactsController : ControllerBase
     [Authorize(Roles = "Admin")]
     [ProducesResponseType(typeof(ApiResponse<Artifact>), 201)]
     [ProducesResponseType(400)]
-    public async Task<IActionResult> Create([FromBody] Artifact? artifact, CancellationToken cancellationToken)
+    public async Task<IActionResult> Create([FromBody] ArtifactUpsertDto? request, CancellationToken cancellationToken)
     {
-        if (artifact == null)
+        if (request == null)
             return BadRequest(new ApiResponse(false, "Invalid request body"));
+        if (string.IsNullOrWhiteSpace(request.Slug))
+            return BadRequest(new ApiResponse(false, "Slug is required"));
+        var discoveryLocationId = await ResolveDiscoveryLocationIdAsync(request.DiscoveryLocationId, request.DiscoverySite, cancellationToken);
+        var artifact = new Artifact
+        {
+            Slug = request.Slug.Trim(),
+            EraId = request.EraId,
+            CategoryId = request.CategoryId,
+            MaterialId = request.MaterialId,
+            DiscoveryLocationId = discoveryLocationId,
+            ModelFileId = request.ModelFileId,
+            ThumbnailFileId = request.ThumbnailFileId,
+            Height = request.Height,
+            Width = request.Width,
+            Depth = request.Depth,
+            Weight = request.Weight,
+            CreatedBy = request.CreatedBy,
+        };
+        AttachHistoricalContext(artifact, request.HistoricalContext);
         var created = await _artifactService.CreateAsync(artifact, cancellationToken);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, new ApiResponse<ArtifactResponseDto>(true, MapArtifact(created)));
     }
@@ -97,25 +117,28 @@ public class ArtifactsController : ControllerBase
     [ProducesResponseType(typeof(ApiResponse<Artifact>), 200)]
     [ProducesResponseType(400)]
     [ProducesResponseType(404)]
-    public async Task<IActionResult> Update(Guid id, [FromBody] Artifact? artifact, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update(Guid id, [FromBody] ArtifactUpsertDto? request, CancellationToken cancellationToken)
     {
-        if (artifact == null)
+        if (request == null)
             return BadRequest(new ApiResponse(false, "Invalid request body"));
         var existing = await _artifactService.GetByIdAsync(id, cancellationToken);
         if (existing == null)
             return NotFound(new ApiResponse(false, "Artifact not found"));
-        existing.Slug = artifact.Slug;
-        existing.EraId = artifact.EraId;
-        existing.CategoryId = artifact.CategoryId;
-        existing.MaterialId = artifact.MaterialId;
-        existing.DiscoveryLocationId = artifact.DiscoveryLocationId;
-        existing.ModelFileId = artifact.ModelFileId;
-        existing.ThumbnailFileId = artifact.ThumbnailFileId;
-        existing.Height = artifact.Height;
-        existing.Width = artifact.Width;
-        existing.Depth = artifact.Depth;
-        existing.Weight = artifact.Weight;
-        existing.CreatedBy = artifact.CreatedBy;
+        if (string.IsNullOrWhiteSpace(request.Slug))
+            return BadRequest(new ApiResponse(false, "Slug is required"));
+        existing.Slug = request.Slug.Trim();
+        existing.EraId = request.EraId;
+        existing.CategoryId = request.CategoryId;
+        existing.MaterialId = request.MaterialId;
+        existing.DiscoveryLocationId = await ResolveDiscoveryLocationIdAsync(request.DiscoveryLocationId, request.DiscoverySite, cancellationToken);
+        existing.ModelFileId = request.ModelFileId;
+        existing.ThumbnailFileId = request.ThumbnailFileId;
+        existing.Height = request.Height;
+        existing.Width = request.Width;
+        existing.Depth = request.Depth;
+        existing.Weight = request.Weight;
+        existing.CreatedBy = request.CreatedBy;
+        AttachHistoricalContext(existing, request.HistoricalContext);
         await _artifactService.UpdateAsync(existing, cancellationToken);
         return Ok(new ApiResponse<ArtifactResponseDto>(true, MapArtifact(existing)));
     }
@@ -221,4 +244,63 @@ public class ArtifactsController : ControllerBase
         Guid Id,
         string Slug,
         int Views);
+
+    public sealed record ArtifactUpsertDto(
+        [property: Required] string Slug,
+        Guid? EraId,
+        Guid? CategoryId,
+        Guid? MaterialId,
+        Guid? DiscoveryLocationId,
+        string? DiscoverySite,
+        Guid? ModelFileId,
+        Guid? ThumbnailFileId,
+        decimal? Height,
+        decimal? Width,
+        decimal? Depth,
+        decimal? Weight,
+        Guid? CreatedBy,
+        string? HistoricalContext);
+
+    private async Task<Guid?> ResolveDiscoveryLocationIdAsync(Guid? discoveryLocationId, string? discoverySite, CancellationToken cancellationToken)
+    {
+        if (discoveryLocationId.HasValue)
+            return discoveryLocationId;
+        var siteName = (discoverySite ?? string.Empty).Trim();
+        if (string.IsNullOrWhiteSpace(siteName))
+            return null;
+        var existing = await _db.DiscoveryLocations
+            .FirstOrDefaultAsync(
+                x => x.Name.ToLower() == siteName.ToLower(),
+                cancellationToken);
+        if (existing != null)
+            return existing.Id;
+        var created = new DiscoveryLocation
+        {
+            Name = siteName
+        };
+        _db.DiscoveryLocations.Add(created);
+        await _db.SaveChangesAsync(cancellationToken);
+        return created.Id;
+    }
+
+    private static void AttachHistoricalContext(Artifact artifact, string? historicalContext)
+    {
+        var contextText = (historicalContext ?? string.Empty).Trim();
+        var translation = artifact.Translations.FirstOrDefault(t => t.LanguageCode == "en");
+        if (translation == null && !string.IsNullOrWhiteSpace(contextText))
+        {
+            artifact.Translations.Add(new ArtifactTranslation
+            {
+                LanguageCode = "en",
+                Name = artifact.Slug,
+                HistoricalStory = contextText
+            });
+            return;
+        }
+        if (translation == null)
+            return;
+        translation.HistoricalStory = string.IsNullOrWhiteSpace(contextText) ? null : contextText;
+        if (string.IsNullOrWhiteSpace(translation.Name))
+            translation.Name = artifact.Slug;
+    }
 }

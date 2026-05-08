@@ -21,6 +21,7 @@ import {
 import { getArtifactById } from "../../../lib/museumApi";
 import { mapApiArtifactToUi } from "../../../lib/museumMappers";
 import { isLoggedIn } from "../../../lib/authStorage";
+import { getScopedFavorites, setScopedFavorites } from "../../../lib/favoritesStorage";
 import {
     consumePostLoginAction,
     setPostLoginAction,
@@ -45,6 +46,7 @@ type Artifact = {
     material: string;
     dimensions: Record<string, string>;
     discoverySite: string;
+    historicalContext?: string;
     image3D: string | null;
     status: string;
 };
@@ -83,9 +85,7 @@ export default function ArtifactDetails() {
                 ) as Artifact;
                 setArtifact(mappedArtifact);
 
-                const liked: Artifact[] = JSON.parse(
-                    localStorage.getItem("liked_artifacts") || "[]",
-                );
+                const liked: Artifact[] = getScopedFavorites("liked_artifacts");
                 setIsFavorite(
                     liked.some(
                         (item: Artifact) => item.id === mappedArtifact.id,
@@ -113,7 +113,7 @@ export default function ArtifactDetails() {
     const toggleFavorite = () => {
         if (!artifact) return;
 
-        let liked = JSON.parse(localStorage.getItem("liked_artifacts") || "[]");
+        let liked = getScopedFavorites("liked_artifacts");
 
         if (isFavorite) {
             liked = liked.filter((item: Artifact) => item.id !== artifact.id);
@@ -121,7 +121,7 @@ export default function ArtifactDetails() {
             liked.push(artifact);
         }
 
-        localStorage.setItem("liked_artifacts", JSON.stringify(liked));
+        setScopedFavorites("liked_artifacts", liked);
         setIsFavorite(!isFavorite);
 
         window.dispatchEvent(new Event("update_liked"));
@@ -243,7 +243,7 @@ export default function ArtifactDetails() {
                         <SpecCard
                             icon={<MapPin size={18} />}
                             label="Discovery Site"
-                            value={artifact.discoverySite}
+                            value={artifact.discoverySite === "Unknown Site" ? "Not specified yet" : artifact.discoverySite}
                         />
                     </div>
 
@@ -273,11 +273,9 @@ export default function ArtifactDetails() {
                             Historical Context
                         </h3>
                         <p className="text-gray-400 leading-relaxed text-lg italic">
-                            This magnificent piece, belonging to the{" "}
-                            {artifact.period}, was discovered in{" "}
-                            {artifact.discoverySite}. It stands as a testament
-                            to the unparalleled craftsmanship of ancient Egypt
-                            during the reign of {artifact.associatedKing}.
+                            {artifact.historicalContext?.trim()
+                                ? artifact.historicalContext
+                                : `This magnificent piece, belonging to the ${artifact.period}, was discovered in ${artifact.discoverySite === "Unknown Site" ? "an unregistered location" : artifact.discoverySite}. It stands as a testament to the craftsmanship of ancient Egypt.`}
                         </p>
                     </div>
 

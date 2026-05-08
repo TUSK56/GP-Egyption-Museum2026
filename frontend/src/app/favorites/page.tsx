@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Trash2, Box, Bookmark } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { getScopedFavorites, setScopedFavorites } from '../../lib/favoritesStorage';
 
 type VaultArtifact = {
   id: string;
@@ -64,7 +65,7 @@ export default function FavoritesPage() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    const data: VaultArtifact[] = JSON.parse(localStorage.getItem('saved_artifacts') || '[]');
+    const data: VaultArtifact[] = getScopedFavorites('saved_artifacts');
     setSavedArtifacts(data);
     setIsLoaded(true);
   }, []);
@@ -72,7 +73,7 @@ export default function FavoritesPage() {
   const removeItem = (id: string) => {
     const updated = savedArtifacts.filter((item: VaultArtifact) => item.id !== id);
     setSavedArtifacts(updated);
-    localStorage.setItem('saved_artifacts', JSON.stringify(updated));
+    setScopedFavorites('saved_artifacts', updated);
     window.dispatchEvent(new Event('update_saved'));
   };
 

@@ -7,6 +7,7 @@ import { motion, AnimatePresence, useScroll, useSpring } from 'framer-motion';
 import { Search, Heart, Bookmark, Menu, X, Sparkles, ChevronRight, Clock, UserCircle2, LogOut } from 'lucide-react';
 import { useThemeScheduler } from '../Theme/ThemeSchedulerProvider';
 import { clearAuthSession, getCurrentUser, isLoggedIn as isLoggedInFn } from '../../lib/authStorage';
+import { getScopedFavorites } from '../../lib/favoritesStorage';
 
 // =====================================================================
 // 1. مكون الزرار المغناطيسي (Magnetic Hover Effect)
@@ -80,11 +81,11 @@ const PharaohNavbar = () => {
     // 1. تحديث عدادات المحفوظات واللايك
     const updateCounts = () => {
       // تحديث عداد السيف
-      const saved = JSON.parse(localStorage.getItem('saved_artifacts') || '[]');
+      const saved = getScopedFavorites('saved_artifacts');
       setSavedCount(saved.length);
 
       // تحديث عداد القلوب (تم ربطه بـ lovedCount)
-      const liked = JSON.parse(localStorage.getItem('liked_artifacts') || '[]');
+      const liked = getScopedFavorites('liked_artifacts');
       setLovedCount(liked.length);
     };
 

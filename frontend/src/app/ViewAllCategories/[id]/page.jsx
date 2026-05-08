@@ -15,6 +15,7 @@ import Link from "next/link";
 import { getArtifacts } from "../../../lib/museumApi";
 import { mapApiArtifactToUi } from "../../../lib/museumMappers";
 import { isLoggedIn } from "../../../lib/authStorage";
+import { getScopedFavorites, setScopedFavorites } from "../../../lib/favoritesStorage";
 import {
     consumePostLoginAction,
     setPostLoginAction,
@@ -31,12 +32,8 @@ const ArtifactCardContent = ({ artifact }) => {
 
     // التأكد من حالة القطعة (محفوظة أو معجب بها) عند تحميل الصفحة
     useEffect(() => {
-        const savedItems = JSON.parse(
-            localStorage.getItem("saved_artifacts") || "[]",
-        );
-        const likedItems = JSON.parse(
-            localStorage.getItem("liked_artifacts") || "[]",
-        );
+        const savedItems = getScopedFavorites("saved_artifacts");
+        const likedItems = getScopedFavorites("liked_artifacts");
 
         setIsSaved(savedItems.some((item) => item.id === artifact.id));
         setIsLiked(likedItems.some((item) => item.id === artifact.id));
@@ -49,7 +46,7 @@ const ArtifactCardContent = ({ artifact }) => {
         const key = type === "save" ? "saved_artifacts" : "liked_artifacts";
         const eventName = type === "save" ? "update_saved" : "update_liked";
 
-        let items = JSON.parse(localStorage.getItem(key) || "[]");
+        let items = getScopedFavorites(key);
         const isPresent = items.some((item) => item.id === artifact.id);
 
         if (isPresent) {
@@ -58,7 +55,7 @@ const ArtifactCardContent = ({ artifact }) => {
             items.push(artifact);
         }
 
-        localStorage.setItem(key, JSON.stringify(items));
+        setScopedFavorites(key, items);
 
         if (type === "save") {
             setIsSaved(!isPresent);
