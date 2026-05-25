@@ -19,5 +19,8 @@ public sealed class ArtifactUpsertDto
     public decimal? Depth { get; set; }
     public decimal? Weight { get; set; }
     public Guid? CreatedBy { get; set; }
+    /// <summary>Short label (pharaoh / ruler) stored in translation HistoricalStory.</summary>
+    public string? AssociatedKing { get; set; }
+    /// <summary>Long narrative stored in translation Description.</summary>
     public string? HistoricalContext { get; set; }
 }

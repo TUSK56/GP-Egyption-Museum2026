@@ -62,6 +62,7 @@ public class AiAssistantController : ControllerBase
         var outbound = new
         {
             message,
+            chatInput = message,
             sessionId,
             imageBase64 = request.ImageBase64,
             imageMimeType = request.ImageMimeType ?? "image/jpeg",
@@ -87,9 +88,10 @@ public class AiAssistantController : ControllerBase
             if (!response.IsSuccessStatusCode)
             {
                 _logger.LogWarning("n8n webhook returned {Status}: {Body}", (int)response.StatusCode, raw);
+                var hint = BuildN8nErrorHint((int)response.StatusCode, raw);
                 return Ok(new ApiResponse<AiChatResponse>(
                     true,
-                    new AiChatResponse("The AI service is temporarily unavailable. Please try again shortly.", false),
+                    new AiChatResponse(hint, false),
                     "n8n request failed"));
             }
 
@@ -107,6 +109,19 @@ public class AiAssistantController : ControllerBase
                 new AiChatResponse("Could not reach the AI workflow. Verify N8n:WebhookUrl and that n8n is online.", false),
                 "n8n call failed"));
         }
+    }
+
+    private static string BuildN8nErrorHint(int statusCode, string raw)
+    {
+        if (statusCode == 404 && raw.Contains("not registered", StringComparison.OrdinalIgnoreCase))
+        {
+            return "n8n webhook is not active. Open your workflow in n8n, turn ON the Active toggle (top-right), then try again.";
+        }
+
+        if (statusCode == 404)
+            return "n8n webhook URL was not found. Check N8n:WebhookUrl matches the Production URL from your Webhook node.";
+
+        return "The AI service is temporarily unavailable. Please try again shortly.";
     }
 
     private static string? ExtractReply(string raw)

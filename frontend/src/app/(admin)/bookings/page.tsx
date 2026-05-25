@@ -58,16 +58,27 @@ export default function BookingsPage() {
         load();
     }, [load]);
 
+    const cairoOptions = { timeZone: "Africa/Cairo" } as const;
+
     const formatDate = (value: string) => {
         if (!value) return "-";
         const d = new Date(value);
-        return Number.isNaN(d.getTime()) ? value : d.toLocaleDateString();
+        return Number.isNaN(d.getTime())
+            ? value
+            : d.toLocaleDateString("en-GB", cairoOptions);
     };
 
     const formatDateTime = (value: string) => {
         if (!value) return "-";
         const d = new Date(value);
-        return Number.isNaN(d.getTime()) ? value : d.toLocaleString();
+        return Number.isNaN(d.getTime())
+            ? value
+            : d.toLocaleString("en-GB", {
+                  ...cairoOptions,
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+              });
     };
 
     return (
