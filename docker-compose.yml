@@ -1,68 +1,13 @@
 name: VirtualMuseum
 
 services:
-    db:
-        image: mcr.microsoft.com/mssql/server:2022-latest
-        container_name: VirtualMuseum-db
-        environment:
-            ACCEPT_EULA: "Y"
-            MSSQL_SA_PASSWORD: "VmStrongP@ssw0rd123"
-        ports:
-            - "1433:1433"
-        healthcheck:
-            test:
-                [
-                    "CMD-SHELL",
-                    '/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P "$${MSSQL_SA_PASSWORD}" -Q "SELECT 1" -C || exit 1',
-                ]
-            interval: 10s
-            timeout: 5s
-            retries: 10
-            start_period: 30s
-        restart: unless-stopped
-
-    mailpit:
-        image: axllent/mailpit:latest
-        container_name: VirtualMuseum-mailpit
-        ports:
-            - "8025:8025" # Web UI
-            - "1025:1025" # SMTP
-        restart: unless-stopped
-
-    backend:
-        build:
-            context: ./VirtualMuseum Back-End
-            dockerfile: VirtualMuseum.API/Dockerfile
-        container_name: VirtualMuseum-backend
-        env_file:
-            - ./VirtualMuseum Back-End/.env
-        environment:
-            DataProtection__KeyPath: /var/aspnet-keys
-        ports:
-            - "8090:8090"
-        volumes:
-            - backend_data_protection_keys:/var/aspnet-keys
-            - ./VirtualMuseum Front-End/src/Data:/seed-data:ro
-        depends_on:
-            db:
-                condition: service_healthy
-            mailpit:
-                condition: service_started
-        restart: unless-stopped
-
-    frontend:
-        build:
-            context: ./VirtualMuseum Front-End
-            dockerfile: Dockerfile
-        container_name: VirtualMuseum-frontend
-        env_file:
-            - ./VirtualMuseum Front-End/.env
-        ports:
-            - "3000:3000"
-        depends_on:
-            backend:
-                condition: service_started
-        restart: unless-stopped
-
-volumes:
-    backend_data_protection_keys:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: VirtualMuseum-frontend
+    env_file:
+      - ./frontend/.env
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
