@@ -1,6 +1,7 @@
-# Use when Netlify "Base directory" is set to `frontend`.
+# Netlify site base directory = `frontend` (set in UI or parent netlify.toml).
 [build]
   command = "npm ci && npm run build"
+  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "20"

@@ -5,10 +5,7 @@ import MaintenanceGate from "../components/MaintenanceGate";
 import MuseumPrefetch from "../components/MuseumPrefetch";
 import { MuseumDataProvider } from "../components/MuseumDataProvider";
 import { DEFAULT_API_BASE_URL, normalizeApiBaseUrl } from "../lib/apiConfig";
-import {
-    getArtifactsServer,
-    getCategoriesServer,
-} from "../lib/serverMuseumApi";
+import { getCategoriesServer } from "../lib/serverMuseumApi";
 
 export const metadata: Metadata = {
   title: "Grand Egyptian Museum | GEM",
@@ -29,10 +26,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const origin = apiOrigin();
-  const [artifacts, categories] = await Promise.all([
-    getArtifactsServer().catch(() => null),
-    getCategoriesServer().catch(() => null),
-  ]);
+  // Only prefetch categories at build — full artifacts payload is ~29MB and breaks Netlify cache.
+  const categories = await getCategoriesServer().catch(() => null);
 
   return (
     <html lang="en" dir="ltr">
@@ -41,7 +36,7 @@ export default async function RootLayout({
         <link rel="preconnect" href={origin} crossOrigin="anonymous" />
       </head>
       <body className="antialiased m-0 p-0">
-        <MuseumDataProvider artifacts={artifacts} categories={categories}>
+        <MuseumDataProvider artifacts={null} categories={categories}>
           <ThemeSchedulerProvider>
             <MuseumPrefetch />
             <MaintenanceGate />
