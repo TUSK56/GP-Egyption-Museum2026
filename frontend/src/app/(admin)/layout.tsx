@@ -10,6 +10,13 @@ import {
 import { EgyptianPattern } from "./EgyptianPattern";
 import { clearAuthSession, getCurrentUser, getAccessToken } from "../../lib/authStorage";
 import { getAdminNotifications, removeAdminNotification } from "../../lib/adminEvents";
+import {
+  getAdminArtifacts,
+  getAdminCategories,
+  getAdminEras,
+  getAdminMaterials,
+} from "../../lib/adminApi";
+import { prefetchMuseumData } from "../../lib/museumCache";
 
 const cinzelClass = "font-serif";
 
@@ -44,6 +51,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     setAdminName(currentUser?.fullName || "Admin");
     setNotifications(getAdminNotifications());
     setAuthReady(true);
+
+    // Warm admin lists in the background so Artifacts opens with cached data.
+    prefetchMuseumData(
+      [
+        "admin:/api/artifacts",
+        "/api/categories",
+        "/api/eras",
+        "/api/materials",
+      ],
+      async (key) => {
+        if (key === "admin:/api/artifacts") return getAdminArtifacts();
+        if (key === "/api/categories") return getAdminCategories();
+        if (key === "/api/eras") return getAdminEras();
+        if (key === "/api/materials") return getAdminMaterials();
+        return null;
+      },
+    );
   }, [router]);
 
   useEffect(() => {

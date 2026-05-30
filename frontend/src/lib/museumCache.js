@@ -32,6 +32,58 @@ function writeStorage(key, data) {
     }
 }
 
+/** Smaller payload so localStorage survives reload (full artifact JSON can exceed quota). */
+function slimAdminArtifactsResponse(response) {
+    const data = Array.isArray(response?.data) ? response.data : [];
+    return {
+        success: response?.success ?? true,
+        data: data.map((a) => ({
+            id: a.id,
+            slug: a.slug,
+            eraId: a.eraId,
+            categoryId: a.categoryId,
+            materialId: a.materialId,
+            modelFileId: a.modelFileId,
+            createdAt: a.createdAt,
+            era: a.era ? { id: a.era.id, name: a.era.name } : null,
+            category: a.category ? { id: a.category.id, name: a.category.name } : null,
+            material: a.material ? { id: a.material.id, name: a.material.name } : null,
+            discoveryLocation: a.discoveryLocation
+                ? { id: a.discoveryLocation.id, name: a.discoveryLocation.name }
+                : null,
+            thumbnailFile: a.thumbnailFile?.url ? { url: a.thumbnailFile.url } : null,
+            modelFile: a.modelFile?.url
+                ? { id: a.modelFile.id, url: a.modelFile.url }
+                : null,
+            translations: Array.isArray(a.translations)
+                ? a.translations.slice(0, 1).map((t) => ({
+                      languageCode: t.languageCode,
+                      name: t.name,
+                      description: t.description,
+                      historicalStory: t.historicalStory,
+                  }))
+                : [],
+        })),
+    };
+}
+
+function normalizeForStorage(key, data) {
+    if (key.startsWith("admin:") && data && Array.isArray(data.data)) {
+        return slimAdminArtifactsResponse(data);
+    }
+    return data;
+}
+
+/** Read cached API payload synchronously (for useState initializers). */
+export function getCachedMuseumList(key) {
+    const hit = getCachedMuseum(key);
+    return Array.isArray(hit?.data) ? hit.data : [];
+}
+
+export function hasCachedMuseum(key) {
+    return getCachedMuseumList(key).length > 0 || getCachedMuseum(key) != null;
+}
+
 export function getCachedMuseum(key) {
     const entry = store.get(key);
     if (entry && Date.now() <= entry.expires) {
@@ -48,8 +100,9 @@ export function getCachedMuseum(key) {
 }
 
 export function setCachedMuseum(key, data, ttlMs = TTL_MS) {
-    store.set(key, { data, expires: Date.now() + ttlMs });
-    writeStorage(key, data);
+    const normalized = normalizeForStorage(key, data);
+    store.set(key, { data: normalized, expires: Date.now() + ttlMs });
+    writeStorage(key, normalized);
 }
 
 export async function cachedMuseumRequest(key, loader) {

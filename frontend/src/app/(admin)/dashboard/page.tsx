@@ -13,25 +13,35 @@ import {
   getTopViewed3DArtifacts,
   getAdminUsers,
 } from "../../../lib/adminApi";
+import { cachedMuseumRequest, getCachedMuseumList } from "../../../lib/museumCache";
 
 const CHART_COLORS = ["#d4af37", "#c19a6b", "#8b6f47", "#5f4b2c", "#d6c09a"];
 
 export default function dashboard() {
-  const [artifacts, setArtifacts] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
+  const [artifacts, setArtifacts] = useState<any[]>(() =>
+    getCachedMuseumList("admin:/api/artifacts"),
+  );
+  const [categories, setCategories] = useState<any[]>(() =>
+    getCachedMuseumList("/api/categories"),
+  );
   const [users, setUsers] = useState<any[]>([]);
   const [topViewed3D, setTopViewed3D] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(
+    () =>
+      typeof window !== "undefined" &&
+      getCachedMuseumList("admin:/api/artifacts").length === 0,
+  );
   const [error, setError] = useState("");
 
   useEffect(() => {
     const load = async () => {
-      setLoading(true);
+      const hasCache = getCachedMuseumList("admin:/api/artifacts").length > 0;
+      if (!hasCache) setLoading(true);
       setError("");
       try {
         const [artRes, catRes, userRes, topViewedRes] = await Promise.all([
-          getAdminArtifacts(),
-          getAdminCategories(),
+          cachedMuseumRequest("admin:/api/artifacts", getAdminArtifacts),
+          cachedMuseumRequest("/api/categories", getAdminCategories),
           getAdminUsers(),
           getTopViewed3DArtifacts(),
         ]);

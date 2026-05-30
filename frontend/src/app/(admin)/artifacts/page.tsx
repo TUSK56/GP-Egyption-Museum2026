@@ -12,7 +12,8 @@ import {
   getAdminMaterials,
   updateArtifact,
 } from "../../../lib/adminApi";
-import { getCurrentUser } from "../../../lib/authStorage";
+import { cachedMuseumRequest, getCachedMuseumList } from "../../../lib/museumCache";
+import { useAdminCachedList } from "../../../lib/useAdminCachedList";
 
 function slugify(input: string) {
   return input.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-").replace(/-+/g, "-");
@@ -28,12 +29,24 @@ function normalizePreviewUrl(value: string) {
   return url;
 }
 
+const ADMIN_ARTIFACTS_CACHE_KEY = "admin:/api/artifacts";
+
 export default function Artifacts() {
-  const [artifacts, setArtifacts] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
-  const [eras, setEras] = useState<any[]>([]);
-  const [materials, setMaterials] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    items: artifacts,
+    setItems: setArtifacts,
+    loading,
+    refreshing,
+    error: loadError,
+    reload: reloadArtifacts,
+  } = useAdminCachedList(ADMIN_ARTIFACTS_CACHE_KEY, getAdminArtifacts);
+  const [categories, setCategories] = useState<any[]>(() =>
+    getCachedMuseumList("/api/categories"),
+  );
+  const [eras, setEras] = useState<any[]>(() => getCachedMuseumList("/api/eras"));
+  const [materials, setMaterials] = useState<any[]>(() =>
+    getCachedMuseumList("/api/materials"),
+  );
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -52,30 +65,30 @@ export default function Artifacts() {
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
 
-  const load = async () => {
-    setLoading(true);
-    setError("");
+  const loadLookups = async () => {
     try {
-      const [artRes, catRes, eraRes, matRes] = await Promise.all([
-        getAdminArtifacts(),
-        getAdminCategories(),
-        getAdminEras(),
-        getAdminMaterials(),
+      const [catRes, eraRes, matRes] = await Promise.all([
+        cachedMuseumRequest("/api/categories", getAdminCategories),
+        cachedMuseumRequest("/api/eras", getAdminEras),
+        cachedMuseumRequest("/api/materials", getAdminMaterials),
       ]);
-      setArtifacts(Array.isArray(artRes?.data) ? artRes.data : []);
       setCategories(Array.isArray(catRes?.data) ? catRes.data : []);
       setEras(Array.isArray(eraRes?.data) ? eraRes.data : []);
       setMaterials(Array.isArray(matRes?.data) ? matRes.data : []);
-    } catch (e: any) {
-      setError(e?.message || "Failed to load artifacts.");
-    } finally {
-      setLoading(false);
+    } catch {
+      // Lookups are optional for the table; artifacts list is primary.
     }
   };
 
   useEffect(() => {
-    load();
+    void loadLookups();
   }, []);
+
+  const load = async () => {
+    setError("");
+    await reloadArtifacts({ forceNetwork: true });
+    await loadLookups();
+  };
 
   const filteredArtifacts = useMemo(() => artifacts.filter(
     (artifact) =>
@@ -245,7 +258,12 @@ export default function Artifacts() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-serif font-bold text-white mb-2">Artifacts Management</h1>
-          <p className="text-gray-400 text-sm">Create, edit, and organize museum treasures.</p>
+          <p className="text-gray-400 text-sm">
+            Create, edit, and organize museum treasures.
+            {refreshing ? (
+              <span className="ml-2 text-[#D4AF37]/80 text-xs uppercase tracking-widest">Updating…</span>
+            ) : null}
+          </p>
         </div>
         <button
           onClick={openCreate}
@@ -288,9 +306,13 @@ export default function Artifacts() {
         </div>
       </div>
 
-      {(error || success) ? (
+      {(error || loadError || success) ? (
         <div className="space-y-2">
-          {error ? <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-red-300 text-sm">{error}</div> : null}
+          {(error || loadError) ? (
+            <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-red-300 text-sm">
+              {error || loadError}
+            </div>
+          ) : null}
           {success ? <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-emerald-300 text-sm">{success}</div> : null}
         </div>
       ) : null}
@@ -310,8 +332,16 @@ export default function Artifacts() {
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
+              {loading && filteredArtifacts.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="px-6 py-16 text-center text-gray-500 text-sm">
+                    Loading artifacts…
+                  </td>
+                </tr>
+              ) : null}
               <AnimatePresence>
-                {filteredArtifacts.map((artifact, index) => (
+                {!loading || filteredArtifacts.length > 0
+                  ? filteredArtifacts.map((artifact, index) => (
                   <motion.tr 
                     key={artifact.id}
                     initial={{ opacity: 0, x: -10 }}
@@ -370,7 +400,8 @@ export default function Artifacts() {
                       </div>
                     </td>
                   </motion.tr>
-                ))}
+                ))
+                  : null}
               </AnimatePresence>
             </tbody>
           </table>
