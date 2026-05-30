@@ -31,7 +31,7 @@ function normalizePreviewUrl(value: string) {
   return url;
 }
 
-const ADMIN_ARTIFACTS_CACHE_KEY = "admin:/api/artifacts";
+const ARTIFACTS_CACHE_KEY = "/api/artifacts";
 
 export default function Artifacts() {
   const {
@@ -41,7 +41,7 @@ export default function Artifacts() {
     refreshing,
     error: loadError,
     reload: reloadArtifacts,
-  } = useAdminCachedList<AdminArtifact>(ADMIN_ARTIFACTS_CACHE_KEY, getAdminArtifacts);
+  } = useAdminCachedList<AdminArtifact>(ARTIFACTS_CACHE_KEY, getAdminArtifacts);
   const [categories, setCategories] = useState<any[]>(() =>
     getCachedMuseumList("/api/categories"),
   );

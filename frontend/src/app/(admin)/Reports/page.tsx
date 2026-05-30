@@ -7,12 +7,15 @@ import {
   CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area 
 } from "recharts";
 import { getAdminArtifacts, getAdminCategories, getAdminUsers } from "../../../lib/adminApi";
+import { cachedMuseumRequest, getCachedMuseumList } from "../../../lib/museumCache";
 
 export default function Reports() {
-  const [artifacts, setArtifacts] = useState<any[]>([]);
-  const [users, setUsers] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [artifacts, setArtifacts] = useState<any[]>(() => getCachedMuseumList("/api/artifacts"));
+  const [users, setUsers] = useState<any[]>(() => getCachedMuseumList("/api/users"));
+  const [categories, setCategories] = useState<any[]>(() => getCachedMuseumList("/api/categories"));
+  const [loading, setLoading] = useState(
+    () => typeof window !== "undefined" && getCachedMuseumList("/api/artifacts").length === 0,
+  );
   const [error, setError] = useState("");
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
@@ -23,13 +26,14 @@ export default function Reports() {
 
   useEffect(() => {
     const load = async () => {
-      setLoading(true);
+      const hasCache = getCachedMuseumList("/api/artifacts").length > 0;
+      if (!hasCache) setLoading(true);
       setError("");
       try {
         const [artRes, userRes, catRes] = await Promise.all([
-          getAdminArtifacts(),
-          getAdminUsers(),
-          getAdminCategories(),
+          cachedMuseumRequest("/api/artifacts", getAdminArtifacts),
+          cachedMuseumRequest("/api/users", getAdminUsers),
+          cachedMuseumRequest("/api/categories", getAdminCategories),
         ]);
         setArtifacts(Array.isArray(artRes?.data) ? artRes.data : []);
         setUsers(Array.isArray(userRes?.data) ? userRes.data : []);

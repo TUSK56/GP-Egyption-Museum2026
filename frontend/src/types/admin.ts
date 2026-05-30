@@ -3,6 +3,31 @@ export type AdminNamedRef = {
   name?: string;
 };
 
+export type AdminUser = {
+  id: string;
+  fullName: string;
+  email: string;
+  isActive: boolean;
+  region?: string;
+  lastLogin?: string;
+  createdAt?: string;
+  role?: { name?: string };
+};
+
+export type AdminCategory = {
+  id: string;
+  name: string;
+  color?: string;
+};
+
+export type AdminEra = {
+  id: string;
+  name: string;
+  color?: string;
+  startYear?: number;
+  endYear?: number;
+};
+
 export type AdminArtifact = {
   id: string;
   slug?: string;

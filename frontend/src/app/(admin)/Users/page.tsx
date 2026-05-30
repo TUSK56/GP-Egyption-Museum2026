@@ -6,32 +6,27 @@ import {
   Ban, Mail, Calendar, Activity, Crown, X, MapPin
 } from "lucide-react";
 import { getAdminUsers, updateAdminUser } from "../../../lib/adminApi";
+import { useAdminCachedList } from "../../../lib/useAdminCachedList";
+import type { AdminUser } from "../../../types/admin";
 
 export default function Users() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [users, setUsers] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    items: users,
+    setItems: setUsers,
+    loading,
+    error: loadError,
+    reload: reloadUsers,
+  } = useAdminCachedList<AdminUser>("/api/users", getAdminUsers);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [selectedUser, setSelectedUser] = useState<any | null>(null);
 
   const load = async () => {
-    setLoading(true);
     setError("");
-    try {
-      const res = await getAdminUsers();
-      setUsers(Array.isArray(res?.data) ? res.data : []);
-    } catch (e: any) {
-      setError(e?.message || "Failed to load users.");
-    } finally {
-      setLoading(false);
-    }
+    await reloadUsers({ forceNetwork: true });
   };
-
-  useEffect(() => {
-    load();
-  }, []);
 
   const filteredUsers = users.filter(
     (user) =>
@@ -68,9 +63,13 @@ export default function Users() {
         </motion.div>
       </div>
 
-      {(error || success) && (
+      {(error || loadError || success) && (
         <div className="space-y-2">
-          {error ? <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-red-300 text-sm">{error}</div> : null}
+          {(error || loadError) ? (
+            <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-red-300 text-sm">
+              {error || loadError}
+            </div>
+          ) : null}
           {success ? <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-emerald-300 text-sm">{success}</div> : null}
         </div>
       )}
@@ -170,7 +169,10 @@ export default function Users() {
                     </td>
                     <td className="px-6 py-5">
                       <div className="text-xs text-gray-300 font-medium">{user.lastLogin ? new Date(user.lastLogin).toLocaleString() : "Never"}</div>
-                      <div className="text-[9px] text-gray-600 flex items-center gap-1 mt-1"><Calendar size={10}/> Joined {new Date(user.createdAt).toLocaleDateString()}</div>
+                      <div className="text-[9px] text-gray-600 flex items-center gap-1 mt-1">
+                        <Calendar size={10}/>
+                        Joined {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "—"}
+                      </div>
                     </td>
                     <td className="px-6 py-5">
                       {user.isActive ? (

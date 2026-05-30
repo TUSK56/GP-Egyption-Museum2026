@@ -11,21 +11,54 @@ import {
     getRemoteApiBaseUrl,
     normalizeApiBaseUrl,
 } from "./apiConfig";
+import { getCachedMuseum, setCachedMuseum } from "./museumCache";
 
-function getApiBaseUrl() {
-    // Browser: call Heroku directly (CORS allowed). Netlify /api-proxy often 404s if env uses wrong host.
-    if (typeof window !== "undefined") {
+/** GET paths cached in memory + localStorage (stale-while-revalidate). */
+const CACHEABLE_GET_PATHS = new Set([
+    "/api/artifacts",
+    "/api/categories",
+    "/api/eras",
+    "/api/materials",
+    "/api/users",
+    "/api/artifacts/top-viewed-3d",
+]);
+
+function cacheKeyForPath(path) {
+    return path.split("?")[0];
+}
+
+function isCacheableGet(method, path) {
+    return method === "GET" && CACHEABLE_GET_PATHS.has(cacheKeyForPath(path));
+}
+
+function getBrowserApiBase() {
+    if (typeof window === "undefined") return null;
+    // Same-origin proxy: no browser CORS/OPTIONS to Heroku (avoids 503 preflight when dyno is stressed).
+    if (process.env.NEXT_PUBLIC_API_DIRECT === "true") {
         const fromPublic =
             typeof process.env.NEXT_PUBLIC_API_BASE_URL === "string"
                 ? process.env.NEXT_PUBLIC_API_BASE_URL.trim()
                 : "";
         return normalizeApiBaseUrl(fromPublic || DEFAULT_API_BASE_URL);
     }
+    return BROWSER_API_PROXY_PREFIX;
+}
+
+function getApiBaseUrl() {
+    const browserBase = getBrowserApiBase();
+    if (browserBase) return browserBase;
 
     const fromInternal = process.env.NEXT_INTERNAL_API_BASE_URL;
     const fromPublic = process.env.NEXT_PUBLIC_API_BASE_URL;
     const selected = fromInternal || fromPublic || DEFAULT_API_BASE_URL;
     return normalizeApiBaseUrl(selected);
+}
+
+function buildRequestUrl(base, path) {
+    if (base === BROWSER_API_PROXY_PREFIX) {
+        return `${BROWSER_API_PROXY_PREFIX}${path}`;
+    }
+    return `${base}${path}`;
 }
 
 export class ApiError extends Error {
@@ -43,7 +76,7 @@ async function parsePayload(response) {
     return isJson ? await response.json() : null;
 }
 
-const REQUEST_TIMEOUT_MS = 12_000;
+const REQUEST_TIMEOUT_MS = 20_000;
 
 async function sendRequest(url, method, headers, body) {
     const controller = new AbortController();
@@ -81,7 +114,8 @@ async function tryRefreshToken(baseUrl) {
         return null;
     }
 
-    const refreshResponse = await fetch(`${baseUrl}/api/auth/refresh-token`, {
+    const refreshUrl = buildRequestUrl(baseUrl, "/api/auth/refresh-token");
+    const refreshResponse = await fetch(refreshUrl, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -103,7 +137,7 @@ async function tryRefreshToken(baseUrl) {
     return refreshPayload.data.accessToken;
 }
 
-export async function apiRequest(path, options = {}) {
+async function apiRequestNetwork(path, options = {}) {
     const {
         method = "GET",
         body,
@@ -126,7 +160,7 @@ export async function apiRequest(path, options = {}) {
     let payload = null;
     let lastNetworkError = null;
     for (const base of candidateBases) {
-        const candidateUrl = `${base}${path}`;
+        const candidateUrl = buildRequestUrl(base, path);
         try {
             const candidateResponse = await sendRequest(
                 candidateUrl,
@@ -136,13 +170,9 @@ export async function apiRequest(path, options = {}) {
             );
             const candidatePayload = await parsePayload(candidateResponse);
 
-            // Retry on other base URLs when this host is clearly wrong for API routing.
             if (candidateResponse.status === 404 && base !== lastBase) {
                 continue;
             }
-            // Some deployments misconfigure NEXT_PUBLIC_API_BASE_URL to a frontend host
-            // that returns HTML with 200 OK. In that case payload is null (non-JSON) and
-            // we should try other candidate API hosts.
             if (
                 candidateResponse.ok &&
                 candidatePayload === null &&
@@ -174,7 +204,7 @@ export async function apiRequest(path, options = {}) {
                 Authorization: `Bearer ${newAccessToken}`,
             };
             response = await sendRequest(
-                `${primaryBase}${path}`,
+                buildRequestUrl(primaryBase, path),
                 method,
                 retryHeaders,
                 body,
@@ -192,6 +222,40 @@ export async function apiRequest(path, options = {}) {
     return payload;
 }
 
+export async function apiRequest(path, options = {}) {
+    const { method = "GET", skipCache = false } = options;
+    const cacheKey = cacheKeyForPath(path);
+
+    if (
+        typeof window !== "undefined" &&
+        !skipCache &&
+        isCacheableGet(method, path)
+    ) {
+        const hit = getCachedMuseum(cacheKey);
+        if (hit) {
+            void apiRequestNetwork(path, { ...options, skipCache: true })
+                .then((fresh) => setCachedMuseum(cacheKey, fresh))
+                .catch(() => {});
+            return hit;
+        }
+    }
+
+    const payload = await apiRequestNetwork(path, options);
+
+    if (
+        typeof window !== "undefined" &&
+        isCacheableGet(method, path)
+    ) {
+        setCachedMuseum(cacheKey, payload);
+    }
+
+    return payload;
+}
+
 export function getConfiguredApiBaseUrl() {
     return getApiBaseUrl();
+}
+
+export function getConfiguredRemoteApiBaseUrl() {
+    return getRemoteApiBaseUrl();
 }

@@ -15,6 +15,8 @@ import {
   getAdminCategories,
   getAdminEras,
   getAdminMaterials,
+  getAdminUsers,
+  getTopViewed3DArtifacts,
 } from "../../lib/adminApi";
 import { prefetchMuseumData } from "../../lib/museumCache";
 
@@ -55,16 +57,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     // Warm admin lists in the background so Artifacts opens with cached data.
     prefetchMuseumData(
       [
-        "admin:/api/artifacts",
+        "/api/artifacts",
         "/api/categories",
         "/api/eras",
         "/api/materials",
+        "/api/users",
+        "/api/artifacts/top-viewed-3d",
       ],
       async (key: string) => {
-        if (key === "admin:/api/artifacts") return getAdminArtifacts();
+        if (key === "/api/artifacts") return getAdminArtifacts();
         if (key === "/api/categories") return getAdminCategories();
         if (key === "/api/eras") return getAdminEras();
         if (key === "/api/materials") return getAdminMaterials();
+        if (key === "/api/users") return getAdminUsers();
+        if (key === "/api/artifacts/top-viewed-3d") return getTopViewed3DArtifacts();
         return null;
       },
     );

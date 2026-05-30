@@ -8,10 +8,16 @@ import {
     getAdminCategories,
     updateCategory,
 } from "../../../lib/adminApi";
+import { useAdminCachedList } from "../../../lib/useAdminCachedList";
+import type { AdminCategory } from "../../../types/admin";
 
 export default function AdminCategories() {
-    const [categories, setCategories] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+    const {
+        items: categories,
+        loading,
+        error: loadError,
+        reload: reloadCategories,
+    } = useAdminCachedList<AdminCategory>("/api/categories", getAdminCategories);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
@@ -21,23 +27,11 @@ export default function AdminCategories() {
     const [saving, setSaving] = useState(false);
 
     const total = useMemo(() => categories.length, [categories.length]);
-// test
-    const load = async () => {
-        setLoading(true);
-        setError("");
-        try {
-            const res = await getAdminCategories();
-            setCategories(Array.isArray(res?.data) ? res.data : []);
-        } catch (e: any) {
-            setError(e?.message || "Failed to load categories.");
-        } finally {
-            setLoading(false);
-        }
-    };
 
-    useEffect(() => {
-        load();
-    }, []);
+    const load = async () => {
+        setError("");
+        await reloadCategories({ forceNetwork: true });
+    };
 
     const openCreate = () => {
         setEditingId(null);
@@ -117,7 +111,11 @@ export default function AdminCategories() {
 
       {(error || success) && (
         <div className="space-y-2">
-          {error ? <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-red-300 text-sm">{error}</div> : null}
+          {(error || loadError) ? (
+            <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-red-300 text-sm">
+              {error || loadError}
+            </div>
+          ) : null}
           {success ? <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-emerald-300 text-sm">{success}</div> : null}
         </div>
       )}

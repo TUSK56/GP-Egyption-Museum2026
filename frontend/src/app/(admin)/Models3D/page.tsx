@@ -23,6 +23,7 @@ import {
     getAdminMaterials,
     updateArtifact,
 } from "../../../lib/adminApi";
+import { cachedMuseumRequest, getCachedMuseumList } from "../../../lib/museumCache";
 import { getCurrentUser } from "../../../lib/authStorage";
 import { useRouter } from "next/navigation";
 
@@ -47,11 +48,13 @@ function normalizePreviewUrl(value: string) {
 
 export default function Models3D() {
     const router = useRouter();
-    const [models, setModels] = useState<any[]>([]);
-    const [categories, setCategories] = useState<any[]>([]);
-    const [eras, setEras] = useState<any[]>([]);
-    const [materials, setMaterials] = useState<any[]>([]);
-    const [loading, setLoading] = useState(true);
+    const [models, setModels] = useState<any[]>(() => getCachedMuseumList("/api/artifacts"));
+    const [categories, setCategories] = useState<any[]>(() => getCachedMuseumList("/api/categories"));
+    const [eras, setEras] = useState<any[]>(() => getCachedMuseumList("/api/eras"));
+    const [materials, setMaterials] = useState<any[]>(() => getCachedMuseumList("/api/materials"));
+    const [loading, setLoading] = useState(
+        () => typeof window !== "undefined" && getCachedMuseumList("/api/artifacts").length === 0,
+    );
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
 
@@ -75,14 +78,15 @@ export default function Models3D() {
     const totalStorageMb = useMemo(() => models.length * 18.5, [models.length]);
 
     const load = async () => {
-        setLoading(true);
+        const hasCache = getCachedMuseumList("/api/artifacts").length > 0;
+        if (!hasCache) setLoading(true);
         setError("");
         try {
             const [artRes, catRes, eraRes, matRes] = await Promise.all([
-                getAdminArtifacts(),
-                getAdminCategories(),
-                getAdminEras(),
-                getAdminMaterials(),
+                cachedMuseumRequest("/api/artifacts", getAdminArtifacts),
+                cachedMuseumRequest("/api/categories", getAdminCategories),
+                cachedMuseumRequest("/api/eras", getAdminEras),
+                cachedMuseumRequest("/api/materials", getAdminMaterials),
             ]);
             setModels(Array.isArray(artRes?.data) ? artRes.data : []);
             setCategories(Array.isArray(catRes?.data) ? catRes.data : []);

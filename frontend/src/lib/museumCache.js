@@ -68,7 +68,12 @@ function slimAdminArtifactsResponse(response) {
 }
 
 function normalizeForStorage(key, data) {
-    if (key.startsWith("admin:") && data && Array.isArray(data.data)) {
+    const baseKey = String(key).split("?")[0];
+    if (
+        (baseKey === "/api/artifacts" || baseKey.startsWith("admin:")) &&
+        data &&
+        Array.isArray(data.data)
+    ) {
         return slimAdminArtifactsResponse(data);
     }
     return data;

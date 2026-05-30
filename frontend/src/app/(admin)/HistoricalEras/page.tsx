@@ -11,10 +11,16 @@ import {
   Map 
 } from "lucide-react";
 import { createEra, deleteEra, getAdminEras, updateEra } from "../../../lib/adminApi";
+import { useAdminCachedList } from "../../../lib/useAdminCachedList";
+import type { AdminEra } from "../../../types/admin";
 
 export default function HistoricalEras() {
-  const [eras, setEras] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const {
+    items: eras,
+    loading,
+    error: loadError,
+    reload: reloadEras,
+  } = useAdminCachedList<AdminEra>("/api/eras", getAdminEras);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -26,21 +32,9 @@ export default function HistoricalEras() {
   const [saving, setSaving] = useState(false);
 
   const load = async () => {
-    setLoading(true);
     setError("");
-    try {
-      const res = await getAdminEras();
-      setEras(Array.isArray(res?.data) ? res.data : []);
-    } catch (e: any) {
-      setError(e?.message || "Failed to load eras.");
-    } finally {
-      setLoading(false);
-    }
+    await reloadEras({ forceNetwork: true });
   };
-
-  useEffect(() => {
-    load();
-  }, []);
 
   const openCreate = () => {
     setEditingId(null);
@@ -123,7 +117,7 @@ export default function HistoricalEras() {
         </button>
       </div>
 
-      {(error || success) && (
+      {(error || loadError || success) && (
         <div className="space-y-2">
           {error ? <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-red-300 text-sm">{error}</div> : null}
           {success ? <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3 text-emerald-300 text-sm">{success}</div> : null}

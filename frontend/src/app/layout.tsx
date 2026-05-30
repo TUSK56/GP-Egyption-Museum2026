@@ -32,8 +32,8 @@ export default async function RootLayout({
   return (
     <html lang="en" dir="ltr">
       <head>
-        <link rel="dns-prefetch" href={origin} />
-        <link rel="preconnect" href={origin} crossOrigin="anonymous" />
+        {/* API calls go through same-origin /api-proxy in the browser. */}
+        <link rel="dns-prefetch" href="https://egyptianmuseum.me" />
       </head>
       <body className="antialiased m-0 p-0">
         <MuseumDataProvider artifacts={null} categories={categories}>

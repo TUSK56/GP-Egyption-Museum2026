@@ -13,7 +13,7 @@ import {
     Sparkles,
 } from "lucide-react";
 import { getArtifacts } from "../../lib/museumApi";
-import { getCachedMuseum } from "../../lib/museumCache";
+import { cachedMuseumRequest, getCachedMuseum } from "../../lib/museumCache";
 import { mapApiArtifactToUi } from "../../lib/museumMappers";
 import { useMuseumData } from "../MuseumDataProvider";
 
@@ -52,7 +52,7 @@ export default function FeaturedArtifacts() {
 
         async function loadFeatured() {
             try {
-                const response = await getArtifacts();
+                const response = await cachedMuseumRequest("/api/artifacts", getArtifacts);
                 const apiArtifacts = Array.isArray(response?.data)
                     ? response.data
                     : [];

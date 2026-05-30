@@ -31,7 +31,14 @@ async function proxyRequest(request, context) {
         init.body = await request.arrayBuffer();
     }
 
-    const upstream = await fetch(targetUrl, init);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 25_000);
+    let upstream;
+    try {
+        upstream = await fetch(targetUrl, { ...init, signal: controller.signal });
+    } finally {
+        clearTimeout(timeout);
+    }
     const responseHeaders = new Headers(upstream.headers);
     responseHeaders.delete("content-encoding");
     responseHeaders.delete("content-length");

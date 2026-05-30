@@ -19,31 +19,35 @@ const CHART_COLORS = ["#d4af37", "#c19a6b", "#8b6f47", "#5f4b2c", "#d6c09a"];
 
 export default function dashboard() {
   const [artifacts, setArtifacts] = useState<any[]>(() =>
-    getCachedMuseumList("admin:/api/artifacts"),
+    getCachedMuseumList("/api/artifacts"),
   );
   const [categories, setCategories] = useState<any[]>(() =>
     getCachedMuseumList("/api/categories"),
   );
-  const [users, setUsers] = useState<any[]>([]);
-  const [topViewed3D, setTopViewed3D] = useState<any[]>([]);
+  const [users, setUsers] = useState<any[]>(() => getCachedMuseumList("/api/users"));
+  const [topViewed3D, setTopViewed3D] = useState<any[]>(() =>
+    getCachedMuseumList("/api/artifacts/top-viewed-3d"),
+  );
   const [loading, setLoading] = useState(
     () =>
       typeof window !== "undefined" &&
-      getCachedMuseumList("admin:/api/artifacts").length === 0,
+      getCachedMuseumList("/api/artifacts").length === 0,
   );
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     const load = async () => {
-      const hasCache = getCachedMuseumList("admin:/api/artifacts").length > 0;
+      const hasCache = getCachedMuseumList("/api/artifacts").length > 0;
       if (!hasCache) setLoading(true);
+      else setRefreshing(true);
       setError("");
       try {
         const [artRes, catRes, userRes, topViewedRes] = await Promise.all([
-          cachedMuseumRequest("admin:/api/artifacts", getAdminArtifacts),
+          cachedMuseumRequest("/api/artifacts", getAdminArtifacts),
           cachedMuseumRequest("/api/categories", getAdminCategories),
-          getAdminUsers(),
-          getTopViewed3DArtifacts(),
+          cachedMuseumRequest("/api/users", getAdminUsers),
+          cachedMuseumRequest("/api/artifacts/top-viewed-3d", getTopViewed3DArtifacts),
         ]);
         setArtifacts(Array.isArray(artRes?.data) ? artRes.data : []);
         setCategories(Array.isArray(catRes?.data) ? catRes.data : []);
@@ -53,6 +57,7 @@ export default function dashboard() {
         setError(e?.message || "Failed to load dashboard data.");
       } finally {
         setLoading(false);
+        setRefreshing(false);
       }
     };
     load();
