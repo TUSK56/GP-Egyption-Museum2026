@@ -2,31 +2,52 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeSchedulerProvider } from "../components/Theme/ThemeSchedulerProvider";
 import MaintenanceGate from "../components/MaintenanceGate";
-import MuseumPrefetch, { museumApiOrigin } from "../components/MuseumPrefetch";
+import MuseumPrefetch from "../components/MuseumPrefetch";
+import { MuseumDataProvider } from "../components/MuseumDataProvider";
+import { DEFAULT_API_BASE_URL, normalizeApiBaseUrl } from "../lib/apiConfig";
+import {
+    getArtifactsServer,
+    getCategoriesServer,
+} from "../lib/serverMuseumApi";
 
 export const metadata: Metadata = {
   title: "Grand Egyptian Museum | GEM",
   description: "الموقع الرسمي للمتحف المصري الكبير",
 };
 
-export default function RootLayout({
+function apiOrigin() {
+  return normalizeApiBaseUrl(
+    process.env.NEXT_INTERNAL_API_BASE_URL ||
+      process.env.NEXT_PUBLIC_API_BASE_URL ||
+      DEFAULT_API_BASE_URL,
+  );
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const apiOrigin = museumApiOrigin();
+  const origin = apiOrigin();
+  const [artifacts, categories] = await Promise.all([
+    getArtifactsServer().catch(() => null),
+    getCategoriesServer().catch(() => null),
+  ]);
+
   return (
     <html lang="en" dir="ltr">
       <head>
-        <link rel="dns-prefetch" href={apiOrigin} />
-        <link rel="preconnect" href={apiOrigin} crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href={origin} />
+        <link rel="preconnect" href={origin} crossOrigin="anonymous" />
       </head>
       <body className="antialiased m-0 p-0">
-        <ThemeSchedulerProvider>
-          <MuseumPrefetch />
-          <MaintenanceGate />
-          {children}
-        </ThemeSchedulerProvider>
+        <MuseumDataProvider artifacts={artifacts} categories={categories}>
+          <ThemeSchedulerProvider>
+            <MuseumPrefetch />
+            <MaintenanceGate />
+            {children}
+          </ThemeSchedulerProvider>
+        </MuseumDataProvider>
       </body>
     </html>
   );

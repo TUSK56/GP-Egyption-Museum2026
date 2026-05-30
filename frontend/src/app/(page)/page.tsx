@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import FeaturedArtifacts from "../../components/FeaturedArtifacts/FeaturedArtifacts";
 
 const Hero = dynamic(() => import("../../components/Hero/Hero"), {
   loading: () => <div className="h-screen bg-[#050505] animate-pulse" />,
@@ -9,9 +10,6 @@ const Smart_Museum = dynamic(() => import("../../components/Smart Dashboard/Smar
 });
 const PharaohLegacy = dynamic(() => import("../../components/PharaohLegacy/PharaohLegacy"), {
   loading: () => <div className="py-28 bg-white animate-pulse" />,
-});
-const FeaturedArtifacts = dynamic(() => import("../../components/FeaturedArtifacts/FeaturedArtifacts"), {
-  loading: () => <div className="py-32 bg-[#050505] animate-pulse" />,
 });
 const ServicesCTA = dynamic(() => import("../../components/ServicesCTA/ServicesCTA"), {
   loading: () => <div className="py-24 bg-white animate-pulse" />,

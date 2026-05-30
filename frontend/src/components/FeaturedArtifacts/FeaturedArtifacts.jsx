@@ -15,6 +15,7 @@ import {
 import { getArtifacts } from "../../lib/museumApi";
 import { getCachedMuseum } from "../../lib/museumCache";
 import { mapApiArtifactToUi } from "../../lib/museumMappers";
+import { useMuseumData } from "../MuseumDataProvider";
 
 function mapApiArtifactToCard(apiArtifact) {
     const mapped = mapApiArtifactToUi(apiArtifact);
@@ -28,12 +29,23 @@ function mapApiArtifactToCard(apiArtifact) {
     };
 }
 
+function initialFeaturedFrom(source) {
+    const apiArtifacts = Array.isArray(source?.data) ? source.data : [];
+    return apiArtifacts.slice(0, 3).map(mapApiArtifactToCard);
+}
+
 export default function FeaturedArtifacts() {
+    const { artifacts: serverArtifacts } = useMuseumData();
     const [featured, setFeatured] = useState(() => {
-        const cached = getCachedMuseum("/api/artifacts");
-        const apiArtifacts = Array.isArray(cached?.data) ? cached.data : [];
-        return apiArtifacts.slice(0, 3).map(mapApiArtifactToCard);
+        const cached = serverArtifacts ?? getCachedMuseum("/api/artifacts");
+        return initialFeaturedFrom(cached);
     });
+
+    useEffect(() => {
+        if (featured.length === 0 && serverArtifacts) {
+            setFeatured(initialFeaturedFrom(serverArtifacts));
+        }
+    }, [serverArtifacts, featured.length]);
 
     useEffect(() => {
         let isMounted = true;

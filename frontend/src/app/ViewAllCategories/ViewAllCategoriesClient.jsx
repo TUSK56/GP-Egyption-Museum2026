@@ -7,12 +7,11 @@ import * as LucideIcons from "lucide-react";
 import { getCategories } from "../../lib/museumApi";
 import { getCachedMuseum } from "../../lib/museumCache";
 import { resolveGalleryCardImage } from "../../lib/galleryCardImages";
+import { useMuseumData } from "../../components/MuseumDataProvider";
 
 function mapApiCategoryToUi(category) {
     const name = category?.name || "Collection";
-
     const cardImage = resolveGalleryCardImage(name);
-
     return {
         id: category?.id || "",
         slug: name.toLowerCase().replace(/\s+/g, "-"),
@@ -26,7 +25,6 @@ function mapApiCategoryToUi(category) {
     };
 }
 
-// مكون الأيقونة الديناميكي
 const DynamicIcon = ({ name, size = 32 }) => {
     const IconComponent = LucideIcons[name];
     return IconComponent ? (
@@ -36,43 +34,33 @@ const DynamicIcon = ({ name, size = 32 }) => {
     );
 };
 
-// --- المكون الرئيسي للملف ---
-export default function ViewAllCategories() {
+function categoriesFromSource(source) {
+    return Array.isArray(source?.data) ? source.data.map(mapApiCategoryToUi) : [];
+}
+
+export default function ViewAllCategoriesClient({ initialCategories = null }) {
+    const { categories: serverCategories } = useMuseumData();
     const [searchTerm, setSearchTerm] = useState("");
     const [categories, setCategories] = useState(() => {
-        const cached = getCachedMuseum("/api/categories");
-        const apiCategories = Array.isArray(cached?.data)
-            ? cached.data.map(mapApiCategoryToUi)
-            : [];
-        return apiCategories;
+        const seed = initialCategories ?? serverCategories ?? getCachedMuseum("/api/categories");
+        return categoriesFromSource(seed);
     });
 
     useEffect(() => {
         let isMounted = true;
-
         async function loadCategories() {
             try {
                 const response = await getCategories();
-                const apiCategories = Array.isArray(response?.data)
-                    ? response.data.map(mapApiCategoryToUi)
-                    : [];
-
-                if (!isMounted) {
-                    return;
-                }
-
-                setCategories(apiCategories);
+                if (!isMounted) return;
+                setCategories(categoriesFromSource(response));
             } catch {}
         }
-
         loadCategories();
-
         return () => {
             isMounted = false;
         };
     }, []);
 
-    // 2. فلترة الأقسام بناءً على البحث (للصفحة الرئيسية)
     const filteredCategories = categories.filter(
         (cat) =>
             cat.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -81,7 +69,6 @@ export default function ViewAllCategories() {
 
     return (
         <div className="min-h-screen bg-[#050505] text-white pt-32 pb-20 px-6 relative overflow-hidden">
-            {/* الديكور الخلفي (النقشة المصرية) */}
             <div
                 className="absolute inset-0 opacity-[0.02] pointer-events-none"
                 style={{
@@ -90,21 +77,15 @@ export default function ViewAllCategories() {
                 }}></div>
 
             <div className="max-w-7xl mx-auto relative z-10">
-                {/* Header: العنوان والبحث */}
                 <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
                     <div className="max-w-2xl">
-                        {/* 1. زرار الرجوع (بقى فوق خالص وفي مكانه الصح) */}
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ opacity: 1, x: 0 }}>
+                        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}>
                             <Link
                                 href="/"
                                 className="inline-flex items-center gap-2 text-gray-400 hover:text-[#D4AF37] transition-colors mb-8 font-bold uppercase tracking-widest text-xs">
                                 <ArrowLeft size={16} /> Back to Tours
                             </Link>
                         </motion.div>
-
-                        {/* 2. التاج الصغير (Archive Management) */}
                         <motion.div
                             initial={{ opacity: 0, x: -20 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -115,21 +96,15 @@ export default function ViewAllCategories() {
                                 Archive Management
                             </span>
                         </motion.div>
-
-                        {/* 3. العنوان الرئيسي العملاق */}
                         <motion.h1
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
                             className="text-5xl md:text-7xl font-serif font-bold leading-tight">
                             The Sacred{" "}
-                            <span className="text-[#D4AF37] italic">
-                                Collections
-                            </span>
+                            <span className="text-[#D4AF37] italic">Collections</span>
                         </motion.h1>
                     </div>
-
-                    {/* 4. شريط البحث (خد delay بسيط عشان يظهر بعد العنوان) */}
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -149,7 +124,6 @@ export default function ViewAllCategories() {
                     </motion.div>
                 </div>
 
-                {/* شبكة الأقسام (Grid) */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <AnimatePresence>
                         {filteredCategories.map((cat, index) => (
@@ -159,13 +133,9 @@ export default function ViewAllCategories() {
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.9 }}
-                                transition={{
-                                    duration: 0.5,
-                                    delay: index * 0.1,
-                                }}
+                                transition={{ duration: 0.5, delay: index * 0.1 }}
                                 whileHover={{ y: -10 }}
                                 className="group relative h-[500px] rounded-[2.5rem] bg-[#0a0a0f] border border-white/5 overflow-hidden flex flex-col justify-end p-8 shadow-2xl">
-                                {/* الصورة الخلفية */}
                                 <div className="absolute inset-0 z-0">
                                     <img
                                         src={cat.image}
@@ -174,13 +144,9 @@ export default function ViewAllCategories() {
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/60 to-transparent" />
                                 </div>
-
-                                {/* الهيروغليف الشفاف */}
                                 <div className="absolute top-8 left-8 text-white/25 text-6xl font-bold select-none z-10">
                                     {cat.hieroglyph}
                                 </div>
-
-                                {/* المحتوى */}
                                 <div className="relative z-20">
                                     <div className="mb-6 text-[#D4AF37] opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-500">
                                         <DynamicIcon name={cat.iconName} />
@@ -200,8 +166,6 @@ export default function ViewAllCategories() {
                                     <p className="text-gray-400 text-xs font-medium leading-relaxed mb-8 line-clamp-2">
                                         {cat.title}
                                     </p>
-
-                                    {/* زر فتح الجاليري الخاص بهذا القسم */}
                                     <Link href={`/ViewAllCategories/${cat.id}`}>
                                         <button className="w-full py-4 rounded-2xl border border-white/10 text-white text-[10px] font-bold uppercase tracking-widest hover:bg-[#D4AF37] hover:text-black hover:border-[#D4AF37] transition-all duration-500">
                                             Open Gallery
@@ -213,12 +177,10 @@ export default function ViewAllCategories() {
                     </AnimatePresence>
                 </div>
 
-                {/* رسالة في حالة عدم وجود نتائج */}
                 {filteredCategories.length === 0 && (
                     <div className="text-center py-40">
                         <p className="text-gray-500 font-serif italic text-xl">
-                            "The scrolls are silent... no galleries found for
-                            this search."
+                            "The scrolls are silent... no galleries found for this search."
                         </p>
                     </div>
                 )}

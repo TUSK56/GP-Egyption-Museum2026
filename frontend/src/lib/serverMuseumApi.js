@@ -1,6 +1,6 @@
 import { DEFAULT_API_BASE_URL, normalizeApiBaseUrl } from "./apiConfig";
 
-const REVALIDATE_SECONDS = 300;
+const REVALIDATE_SECONDS = 120;
 
 function serverApiBase() {
     return normalizeApiBaseUrl(
