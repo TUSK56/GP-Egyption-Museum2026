@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, LayoutGrid, Sparkles, ArrowLeft } from "lucide-react";
 import * as LucideIcons from "lucide-react";
 import { getCategories } from "../../lib/museumApi";
+import { getCachedMuseum } from "../../lib/museumCache";
 import { resolveGalleryCardImage } from "../../lib/galleryCardImages";
 
 function mapApiCategoryToUi(category) {
@@ -38,7 +39,13 @@ const DynamicIcon = ({ name, size = 32 }) => {
 // --- المكون الرئيسي للملف ---
 export default function ViewAllCategories() {
     const [searchTerm, setSearchTerm] = useState("");
-    const [categories, setCategories] = useState([]);
+    const [categories, setCategories] = useState(() => {
+        const cached = getCachedMuseum("/api/categories");
+        const apiCategories = Array.isArray(cached?.data)
+            ? cached.data.map(mapApiCategoryToUi)
+            : [];
+        return apiCategories;
+    });
 
     useEffect(() => {
         let isMounted = true;

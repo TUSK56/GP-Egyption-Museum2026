@@ -47,6 +47,18 @@ export async function middleware(request: NextRequest) {
         return NextResponse.next();
     }
 
+    // Public museum pages should not wait on a live API check before HTML is sent.
+    const isPublicBrowse =
+        pathname === "/" ||
+        pathname.startsWith("/ViewAllCategories") ||
+        pathname.startsWith("/artifacts") ||
+        pathname.startsWith("/favorites") ||
+        pathname.startsWith("/Love") ||
+        pathname.startsWith("/community");
+    if (isPublicBrowse) {
+        return NextResponse.next();
+    }
+
     try {
         const res = await fetch(`${API_BASE}/api/app-status`, {
             method: "GET",

@@ -13,6 +13,7 @@ import {
     Sparkles,
 } from "lucide-react";
 import { getArtifacts } from "../../lib/museumApi";
+import { getCachedMuseum } from "../../lib/museumCache";
 import { mapApiArtifactToUi } from "../../lib/museumMappers";
 
 function mapApiArtifactToCard(apiArtifact) {
@@ -28,7 +29,11 @@ function mapApiArtifactToCard(apiArtifact) {
 }
 
 export default function FeaturedArtifacts() {
-    const [featured, setFeatured] = useState([]);
+    const [featured, setFeatured] = useState(() => {
+        const cached = getCachedMuseum("/api/artifacts");
+        const apiArtifacts = Array.isArray(cached?.data) ? cached.data : [];
+        return apiArtifacts.slice(0, 3).map(mapApiArtifactToCard);
+    });
 
     useEffect(() => {
         let isMounted = true;
