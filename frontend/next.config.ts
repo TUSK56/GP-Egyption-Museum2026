@@ -1,5 +1,18 @@
 /** @type {import('next').NextConfig} */
+const remoteApi =
+    process.env.NEXT_PUBLIC_API_BASE_URL ||
+    process.env.NEXT_INTERNAL_API_BASE_URL ||
+    "https://museum-a252b23f7b32.herokuapp.com";
+
 const nextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: "/api-proxy/:path*",
+        destination: `${remoteApi.replace(/\/$/, "")}/:path*`,
+      },
+    ];
+  },
   images: {
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [320, 420, 640, 768, 1024, 1280, 1536, 1920],

@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { apiRequest } from "../lib/api";
 import { prefetchMuseumData } from "../lib/museumCache";
-import { DEFAULT_API_BASE_URL, normalizeApiBaseUrl } from "../lib/apiConfig";
+import { DEFAULT_API_BASE_URL, normalizeApiBaseUrl, getRemoteApiBaseUrl } from "../lib/apiConfig";
 
 export default function MuseumPrefetch() {
     useEffect(() => {
@@ -16,7 +16,5 @@ export default function MuseumPrefetch() {
 }
 
 export function museumApiOrigin() {
-    return normalizeApiBaseUrl(
-        process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE_URL,
-    );
+    return getRemoteApiBaseUrl();
 }

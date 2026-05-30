@@ -7,16 +7,20 @@ import {
 import {
     DEFAULT_API_BASE_URL,
     FALLBACK_API_BASE_URL,
+    BROWSER_API_PROXY_PREFIX,
+    getRemoteApiBaseUrl,
     normalizeApiBaseUrl,
 } from "./apiConfig";
 
 function getApiBaseUrl() {
-    const fromPublic = process.env.NEXT_PUBLIC_API_BASE_URL;
+    // Browser: same-origin proxy (Netlify/Next rewrite → Heroku). Avoids CORS + OPTIONS 503.
+    if (typeof window !== "undefined") {
+        return BROWSER_API_PROXY_PREFIX;
+    }
+
     const fromInternal = process.env.NEXT_INTERNAL_API_BASE_URL;
-    const selected =
-        typeof window === "undefined"
-            ? fromInternal || fromPublic || DEFAULT_API_BASE_URL
-            : fromPublic || DEFAULT_API_BASE_URL;
+    const fromPublic = process.env.NEXT_PUBLIC_API_BASE_URL;
+    const selected = fromInternal || fromPublic || DEFAULT_API_BASE_URL;
     return normalizeApiBaseUrl(selected);
 }
 
